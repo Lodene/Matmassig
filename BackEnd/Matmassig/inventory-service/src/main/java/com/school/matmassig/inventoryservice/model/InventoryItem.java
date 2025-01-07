@@ -8,13 +8,25 @@ public class InventoryItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
-    private Long ingredientId;
-    private Long quantity;
-    private Long userId;
+    private Integer ingredientId;
+    private Integer quantity;
+    private Integer userId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    public InventoryItem() {
+        // Default constructor required by JPA
+    }
+
+    public InventoryItem(Integer ingredientId, Integer quantity, Integer userId) {
+        this.ingredientId = ingredientId;
+        this.quantity = quantity;
+        this.userId = userId;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
 
     @PrePersist
     protected void onCreate() {
@@ -28,40 +40,45 @@ public class InventoryItem {
     }
 
     // Getters and Setters
-    public Long getId() {
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public Long getIngredientId() {
+    public Integer getIngredientId() {
         return ingredientId;
     }
 
-    public void setIngredientId(Long ingredientId) {
+    public void setIngredientId(Integer ingredientId) {
         this.ingredientId = ingredientId;
     }
 
-    public Long getQuantity() {
+    public Integer getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Long quantity) {
+    public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
 
-    public Long getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public LocalDateTime getUpdatedAt() {
@@ -71,5 +88,4 @@ public class InventoryItem {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
-
 }

@@ -23,18 +23,18 @@ public class InventoryController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<InventoryItem> updateItem(@PathVariable Long id, @RequestBody InventoryItem item) {
+    public ResponseEntity<InventoryItem> updateItem(@PathVariable Integer id, @RequestBody InventoryItem item) {
         return ResponseEntity.ok(service.updateItem(id, item));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteItem(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteItem(@PathVariable Integer id) {
         service.deleteItem(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<InventoryItem>> getItemsByUserId(@PathVariable Long userId) {
+    public ResponseEntity<List<InventoryItem>> getItemsByUserId(@PathVariable Integer userId) {
         return ResponseEntity.ok(service.getItemsByUserId(userId));
     }
 }

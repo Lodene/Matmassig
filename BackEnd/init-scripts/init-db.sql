@@ -55,11 +55,11 @@ CREATE TABLE Review (
 );
 
 -- Create InventoryItem table
-CREATE TABLE InventoryItem (
+CREATE TABLE Inventory_Item (
     id SERIAL PRIMARY KEY,
-    ingredient_id BIGINT NOT NULL REFERENCES Ingredient(id),
-    quantity BIGINT NOT NULL,
-    user_id BIGINT NOT NULL REFERENCES "User"(id),
+    ingredient_id INT NOT NULL REFERENCES Ingredient(id),
+    quantity INT NOT NULL,
+    user_id INT NOT NULL REFERENCES "User"(id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
