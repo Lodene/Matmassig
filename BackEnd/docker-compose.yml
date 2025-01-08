@@ -12,6 +12,9 @@ services:
     volumes:
       - ./init-scripts:/docker-entrypoint-initdb.d
     restart: always
+    networks:
+      - app-network
+
   rabbitmq:
     image: rabbitmq:management
     container_name: rabbitmq
@@ -21,3 +24,49 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: admin
       RABBITMQ_DEFAULT_PASS: admin
+    networks:
+      - app-network
+
+  orchestrator:
+    build:
+      context: ./Matmassig/orchestrator
+      dockerfile: Dockerfile
+    container_name: orchestrator
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres_matmassig:5432/matmassig
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: admin
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+    depends_on:
+      - postgres
+      - rabbitmq
+    ports:
+      - "8080:8080" # Port exposé pour le service orchestrator
+    restart: always
+    networks:
+      - app-network
+
+  recipe-service:
+    build:
+      context: ./Matmassig/recipe-service
+      dockerfile: Dockerfile
+    container_name: recipe-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres_matmassig:5432/matmassig
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: admin
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+    depends_on:
+      - postgres
+      - rabbitmq
+    ports:
+      - "8081:8081" # Port exposé pour le service recipe-service
+    restart: always
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
