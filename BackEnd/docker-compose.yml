@@ -12,3 +12,12 @@ services:
     volumes:
       - ./init-scripts:/docker-entrypoint-initdb.d
     restart: always
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"  # Port pour la communication RabbitMQ
+      - "15672:15672" # Port pour l'interface de gestion
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin

@@ -10,6 +10,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>orchestrator</module>
         <module>user-service</module>
         <module>recipe-service</module>
         <module>review-service</module>
