@@ -20,13 +20,13 @@ public class Recipe {
     private String instructions;
 
     @Column(name = "user_id", nullable = false)
-    private Integer userId; // Ajustez ici si la colonne est camelCase ou snake_case dans la base.
+    private Integer userId;
 
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private LocalDateTime updatedAt = LocalDateTime.now();
 
     // Constructeur par défaut requis par JPA
     public Recipe() {
