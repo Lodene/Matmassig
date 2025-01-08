@@ -3,10 +3,10 @@ package com.school.matmassig.recipeservice.model;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-
-@EntityScan
+@Entity
+@Table(name = "recipes")
 public class Recipe {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -15,28 +15,26 @@ public class Recipe {
     private String description;
     private Integer ingredientsRecipeId;
     private String instructions;
-    private Integer createdBy;
+    private Integer userId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    // contructor
+    // Constructeur par défaut requis par JPA
     public Recipe() {
-        // Default constructor required by JPA
     }
 
     public Recipe(String title, String description, Integer ingredientsRecipeId, String instructions,
-            Integer createdBy) {
+            Integer userId) {
         this.title = title;
         this.description = description;
         this.ingredientsRecipeId = ingredientsRecipeId;
         this.instructions = instructions;
-        this.createdBy = createdBy;
+        this.userId = userId;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
 
-    // Getters and Setters
-
+    // Getters et Setters
     public Integer getId() {
         return id;
     }
@@ -77,12 +75,12 @@ public class Recipe {
         this.instructions = instructions;
     }
 
-    public Integer getCreatedBy() {
-        return createdBy;
+    public Integer getuserId() {
+        return userId;
     }
 
-    public void setCreatedBy(Integer createdBy) {
-        this.createdBy = createdBy;
+    public void setuserId(Integer userId) {
+        this.userId = userId;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -100,5 +98,4 @@ public class Recipe {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
-
 }
