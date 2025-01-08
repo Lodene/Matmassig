@@ -5,8 +5,8 @@ import java.time.LocalDateTime;
 
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
-@EntityScan
-public class Ingredient {
+@Entity
+public class Ingredients {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -14,11 +14,11 @@ public class Ingredient {
     private String name;
 
     // constructor
-    public Ingredient() {
+    public Ingredients() {
         // Default constructor required by JPA
     }
 
-    public Ingredient(String name) {
+    public Ingredients(String name) {
         this.name = name;
     }
 
