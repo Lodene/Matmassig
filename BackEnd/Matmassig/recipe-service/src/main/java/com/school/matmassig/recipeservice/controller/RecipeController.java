@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import com.school.matmassig.recipeservice.model.Ingredients;
 import com.school.matmassig.recipeservice.model.IngredientsRecipe;
 import com.school.matmassig.recipeservice.model.Recipe;
+import com.school.matmassig.recipeservice.model.dto.RecipeWithIngredients;
 import com.school.matmassig.recipeservice.service.RecipeService;
 
 @RestController
@@ -26,7 +27,7 @@ public class RecipeController {
         recipe.setDescription(recipeRequest.getDescription());
         recipe.setIngredientsRecipeId(recipeRequest.getIngredientsRecipeId());
         recipe.setInstructions(recipeRequest.getInstructions());
-        recipe.setuserId(recipeRequest.getuserId());
+        recipe.setUserId(recipeRequest.getUserId()); // Assurez-vous que cette ligne est correcte
         recipe.setCreatedAt(LocalDateTime.now());
         recipe.setUpdatedAt(LocalDateTime.now());
 
@@ -41,7 +42,7 @@ public class RecipeController {
         recipe.setDescription(recipeRequest.getDescription());
         recipe.setIngredientsRecipeId(recipeRequest.getIngredientsRecipeId());
         recipe.setInstructions(recipeRequest.getInstructions());
-        recipe.setuserId(recipeRequest.getuserId());
+        recipe.setUserId(recipeRequest.getUserId());
         recipe.setUpdatedAt(LocalDateTime.now());
 
         Recipe updatedRecipe = recipeService.updateRecipe(id, recipe, recipeRequest.getListIngredients());
@@ -77,6 +78,12 @@ public class RecipeController {
     public ResponseEntity<List<Ingredients>> getAllIngredients() {
         List<Ingredients> ingredients = recipeService.getAllIngredients();
         return ResponseEntity.ok(ingredients);
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<RecipeWithIngredients>> getRecipesForUser(@PathVariable Integer userId) {
+        List<RecipeWithIngredients> recipes = recipeService.getRecipesForUser(userId);
+        return ResponseEntity.ok(recipes);
     }
 }
 
@@ -123,11 +130,11 @@ class RecipeRequest {
         this.instructions = instructions;
     }
 
-    public Integer getuserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setuserId(Integer userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 

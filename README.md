@@ -237,6 +237,85 @@ Met à jour une recette existante.
 
 ---
 
+# Recipe-Service API Documentation
+
+Cette documentation décrit les endpoints exposés par le microservice Recipe-Service pour la gestion des recettes et leurs associations avec les ingrédients.
+
+---
+
+## Endpoints
+
+### Ajouter une recette
+
+**POST** `/api/recipes`
+
+Crée une nouvelle recette.
+
+**Corps de la requête (JSON)** :
+```json
+{
+  "title": "Spaghetti Bolognese",
+  "description": "Une recette classique italienne",
+  "ingredientsRecipeId": 1,
+  "instructions": "Faites cuire les pâtes et mélangez-les avec la sauce",
+  "userId": 123,
+  "listIngredients": [2, 5, 13, 30]
+}
+```
+
+**Réponse (200)** :
+```json
+{
+  "id": 1,
+  "title": "Spaghetti Bolognese",
+  "description": "Une recette classique italienne",
+  "ingredientsRecipeId": 1,
+  "instructions": "Faites cuire les pâtes et mélangez-les avec la sauce",
+  "userId": 123,
+  "createdAt": "2025-01-08T14:45:00",
+  "updatedAt": "2025-01-08T14:45:00"
+}
+```
+
+---
+
+### Modifier une recette
+
+**PUT** `/api/recipes/{id}`
+
+Met à jour une recette existante.
+
+**Paramètres d'URL** :
+- `id` : L'identifiant unique de la recette à mettre à jour.
+
+**Corps de la requête (JSON)** :
+```json
+{
+  "title": "Spaghetti Carbonara",
+  "description": "Une autre recette classique italienne",
+  "ingredientsRecipeId": 2,
+  "instructions": "Ajoutez des œufs, du bacon et du fromage",
+  "userId": 123,
+  "listIngredients": [3, 8, 14, 32]
+}
+```
+
+**Réponse (200)** :
+```json
+{
+  "id": 1,
+  "title": "Spaghetti Carbonara",
+  "description": "Une autre recette classique italienne",
+  "ingredientsRecipeId": 2,
+  "instructions": "Ajoutez des œufs, du bacon et du fromage",
+  "userId": 123,
+  "createdAt": "2025-01-08T14:45:00",
+  "updatedAt": "2025-01-08T15:00:00"
+}
+```
+
+---
+
 ### Supprimer une recette
 
 **DELETE** `/api/recipes/{id}`
@@ -348,6 +427,63 @@ Récupère les ingrédients associés à une recette spécifique.
     "ingredientId": 2,
     "quantity": 2,
     "recipeId": 1
+  }
+]
+```
+
+---
+
+### Lister toutes les recettes et leurs ingrédients pour un utilisateur
+
+**GET** `/api/recipes/user/{userId}`
+
+Récupère toutes les recettes d'un utilisateur spécifique avec les ingrédients associés.
+
+**Paramètres d'URL** :
+- `userId` : L'identifiant unique de l'utilisateur.
+
+**Réponse (200)** :
+```json
+[
+  {
+    "id": 1,
+    "title": "Spaghetti Bolognese",
+    "description": "Une recette classique italienne",
+    "instructions": "Faites cuire les pâtes et mélangez-les avec la sauce",
+    "createdAt": "2025-01-08T14:45:00",
+    "updatedAt": "2025-01-08T14:45:00",
+    "ingredients": [
+      {
+        "id": 2,
+        "name": "Oignons",
+        "quantity": 3
+      },
+      {
+        "id": 5,
+        "name": "Carottes",
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "title": "Salade César",
+    "description": "Une salade classique",
+    "instructions": "Mélangez tous les ingrédients et servez frais",
+    "createdAt": "2025-01-07T10:00:00",
+    "updatedAt": "2025-01-07T10:30:00",
+    "ingredients": [
+      {
+        "id": 8,
+        "name": "Laitue",
+        "quantity": 1
+      },
+      {
+        "id": 9,
+        "name": "Croutons",
+        "quantity": 5
+      }
+    ]
   }
 ]
 ```

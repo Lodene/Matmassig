@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "recipes")
+@Table(name = "Recipes")
 public class Recipe {
 
     @Id
@@ -13,10 +13,19 @@ public class Recipe {
 
     private String title;
     private String description;
+
+    @Column(name = "ingredients_recipe_id")
     private Integer ingredientsRecipeId;
+
     private String instructions;
-    private Integer userId;
+
+    @Column(name = "user_id", nullable = false)
+    private Integer userId; // Ajustez ici si la colonne est camelCase ou snake_case dans la base.
+
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     // Constructeur par défaut requis par JPA
@@ -75,11 +84,11 @@ public class Recipe {
         this.instructions = instructions;
     }
 
-    public Integer getuserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setuserId(Integer userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
