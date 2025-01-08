@@ -132,7 +132,39 @@ Pour exécuter ce projet localement :
 
 ---
 
-## Endpoints
+<details>
+<summary>Table des matières</summary>
+
+- [Configuration](#configuration)
+- [Endpoints](#endpoints)
+  - [Ajouter une recette](#ajouter-une-recette)
+  - [Modifier une recette](#modifier-une-recette)
+  - [Supprimer une recette](#supprimer-une-recette)
+  - [Ajouter un ingrédient](#ajouter-un-ingrédient)
+  - [Associer un ingrédient à une recette](#associer-un-ingrédient-à-une-recette)
+  - [Lister les ingrédients d'une recette](#lister-les-ingrédients-dune-recette)
+</details>
+
+---
+
+## Configuration
+
+Pour exécuter ce projet localement :
+
+1. Clonez le dépôt :
+   ```bash
+   git clone https://github.com/example/recipe-service.git
+   ```
+2. Configurez les informations de base de données dans `application.properties` :
+   ```properties
+   spring.datasource.url=jdbc:mysql://localhost:3306/recipe_service
+   spring.datasource.username=root
+   spring.datasource.password=yourpassword
+   spring.jpa.hibernate.ddl-auto=update
+   ```
+3. Lancez l'application Spring Boot.
+
+---
 
 ### Ajouter une recette
 
@@ -147,7 +179,8 @@ Crée une nouvelle recette.
   "description": "Une recette classique italienne",
   "ingredientsRecipeId": 1,
   "instructions": "Faites cuire les pâtes et mélangez-les avec la sauce",
-  "createdBy": 123
+  "userId": 123,
+  "listIngredients": [2, 5, 13, 30]
 }
 ```
 
@@ -159,7 +192,7 @@ Crée une nouvelle recette.
   "description": "Une recette classique italienne",
   "ingredientsRecipeId": 1,
   "instructions": "Faites cuire les pâtes et mélangez-les avec la sauce",
-  "createdBy": 123,
+  "userId": 123,
   "createdAt": "2025-01-08T14:45:00",
   "updatedAt": "2025-01-08T14:45:00"
 }
@@ -183,7 +216,8 @@ Met à jour une recette existante.
   "description": "Une autre recette classique italienne",
   "ingredientsRecipeId": 2,
   "instructions": "Ajoutez des œufs, du bacon et du fromage",
-  "createdBy": 123
+  "userId": 123,
+  "listIngredients": [3, 8, 14, 32]
 }
 ```
 
@@ -195,7 +229,7 @@ Met à jour une recette existante.
   "description": "Une autre recette classique italienne",
   "ingredientsRecipeId": 2,
   "instructions": "Ajoutez des œufs, du bacon et du fromage",
-  "createdBy": 123,
+  "userId": 123,
   "createdAt": "2025-01-08T14:45:00",
   "updatedAt": "2025-01-08T15:00:00"
 }
@@ -217,17 +251,103 @@ Aucune donnée renvoyée.
 
 ---
 
-## Notes
+### Ajouter un ingrédient
 
-- Les erreurs sont retournées sous le format suivant :
+**POST** `/api/recipes/ingredients`
+
+Ajoute un nouvel ingrédient.
+
+**Corps de la requête (JSON)** :
 ```json
 {
-  "timestamp": "2025-01-08T14:50:00",
-  "message": "Recipe not found",
-  "status": 404
+  "name": "Tomates"
 }
 ```
-- L'API utilise le format ISO 8601 pour les dates (`YYYY-MM-DDTHH:mm:ss`).
 
-Pour toute question ou problème, veuillez contacter l'équipe de développement à support@example.com.
+**Réponse (200)** :
+```json
+{
+  "id": 1,
+  "name": "Tomates"
+}
+```
 
+---
+
+### Lister tous les ingrédients
+
+**GET** `/api/recipes/ingredients`
+
+Récupère la liste de tous les ingrédients disponibles.
+
+**Réponse (200)** :
+```json
+[
+  {
+    "id": 1,
+    "name": "Tomates"
+  },
+  {
+    "id": 2,
+    "name": "Oignons"
+  }
+]
+```
+
+---
+
+### Associer un ingrédient à une recette
+
+**POST** `/api/recipes/{recipeId}/ingredients`
+
+Associe un ingrédient existant à une recette.
+
+**Paramètres d'URL** :
+- `recipeId` : L'identifiant unique de la recette.
+
+**Corps de la requête (JSON)** :
+```json
+{
+  "ingredientId": 1,
+  "quantity": 3
+}
+```
+
+**Réponse (200)** :
+```json
+{
+  "id": 1,
+  "ingredientId": 1,
+  "quantity": 3,
+  "recipeId": 1
+}
+```
+
+---
+
+### Lister les ingrédients d'une recette
+
+**GET** `/api/recipes/{recipeId}/ingredients`
+
+Récupère les ingrédients associés à une recette spécifique.
+
+**Paramètres d'URL** :
+- `recipeId` : L'identifiant unique de la recette.
+
+**Réponse (200)** :
+```json
+[
+  {
+    "id": 1,
+    "ingredientId": 1,
+    "quantity": 3,
+    "recipeId": 1
+  },
+  {
+    "id": 2,
+    "ingredientId": 2,
+    "quantity": 2,
+    "recipeId": 1
+  }
+]
+```

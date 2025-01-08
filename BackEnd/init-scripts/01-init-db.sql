@@ -1,10 +1,12 @@
--- Create Ingredient table (doit être créé en premier pour éviter l'erreur de dépendance)
-CREATE TABLE Ingredient (
+-- Création des tables dans le bon ordre
+
+-- Table Ingredient
+CREATE TABLE Ingredients (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) UNIQUE NOT NULL
 );
 
--- Create User table
+-- Table User
 CREATE TABLE "User" (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -15,59 +17,60 @@ CREATE TABLE "User" (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create Recipe table
-CREATE TABLE Recipe (
+-- Table Recipe
+CREATE TABLE Recipes (
     id SERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     description TEXT,
-    ingredients_recipe_id BIGINT,
+    ingredients_recipe_id Integer,
     instructions TEXT,
-    created_by BIGINT NOT NULL REFERENCES "User"(id),
+    userId Integer NOT NULL REFERENCES "User"(id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create IngredientsRecipe table (références Ingredient, donc doit venir après)
+-- Table IngredientsRecipe
 CREATE TABLE IngredientsRecipe (
     id SERIAL PRIMARY KEY,
-    ingredient_id BIGINT NOT NULL REFERENCES Ingredient(id),
-    quantity BIGINT NOT NULL
+    ingredient_id Integer NOT NULL REFERENCES Ingredients(id),
+    recipe_id Integer NOT NULL REFERENCES Recipes(id),
+    quantity Integer NOT NULL
 );
 
--- Create UserPreferences table
+-- Table UserPreferences
 CREATE TABLE UserPreferences (
     id SERIAL PRIMARY KEY,
-    user_id BIGINT NOT NULL REFERENCES "User"(id),
-    note BIGINT,
-    recipe_id BIGINT NOT NULL REFERENCES Recipe(id),
+    user_id Integer NOT NULL REFERENCES "User"(id),
+    note Integer,
+    recipe_id Integer NOT NULL REFERENCES Recipes(id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create Review table
+-- Table Review
 CREATE TABLE Review (
     id SERIAL PRIMARY KEY,
-    recipe_id BIGINT NOT NULL REFERENCES Recipe(id),
-    user_id BIGINT NOT NULL REFERENCES "User"(id),
+    recipe_id Integer NOT NULL REFERENCES Recipes(id),
+    user_id Integer NOT NULL REFERENCES "User"(id),
     rating INTEGER CHECK (rating >= 1 AND rating <= 5),
     comment TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create InventoryItem table
+-- Table Inventory_Item
 CREATE TABLE Inventory_Item (
     id SERIAL PRIMARY KEY,
-    ingredient_id INT NOT NULL REFERENCES Ingredient(id),
+    ingredient_id INT NOT NULL REFERENCES Ingredients(id),
     quantity INT NOT NULL,
     user_id INT NOT NULL REFERENCES "User"(id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create Notification table
+-- Table Notification
 CREATE TABLE Notification (
     id SERIAL PRIMARY KEY,
-    user_id BIGINT NOT NULL REFERENCES "User"(id),
+    user_id Integer NOT NULL REFERENCES "User"(id),
     message TEXT NOT NULL,
     status VARCHAR(50),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

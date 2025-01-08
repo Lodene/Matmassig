@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
-@EntityScan
+@Entity
 public class IngredientsRecipe {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
