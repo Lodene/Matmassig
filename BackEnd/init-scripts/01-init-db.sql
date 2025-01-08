@@ -24,7 +24,7 @@ CREATE TABLE Recipes (
     description TEXT,
     ingredients_recipe_id Integer,
     instructions TEXT,
-    userId Integer NOT NULL REFERENCES "User"(id),
+    user_id Integer NOT NULL REFERENCES "User"(id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
