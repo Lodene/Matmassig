@@ -1,10 +1,13 @@
 package com.school.matmassig.orchestrator.controller;
 
+import com.school.matmassig.orchestrator.model.Ingredient;
 import com.school.matmassig.orchestrator.model.Recipe;
-import com.school.matmassig.orchestrator.model.Review;
+import com.school.matmassig.orchestrator.model.RecipeMessage;
 import com.school.matmassig.orchestrator.service.RabbitMQPublisherService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static com.school.matmassig.orchestrator.config.RabbitMQConfig.EXCHANGE_NAME;
 
@@ -19,14 +22,16 @@ public class OrchestratorController {
     }
 
     @PostMapping("/recipe")
-    public ResponseEntity<String> sendRecipe(@RequestBody Recipe recipe) {
-        publisherService.publishMessage(EXCHANGE_NAME, "recipe.create", recipe);
-        return ResponseEntity.ok("Recipe sent to RabbitMQ");
-    }
+    public ResponseEntity<String> sendRecipe(
+            @RequestBody Recipe recipe,
+            @RequestParam List<Ingredient> ingredients) {
 
-    @PostMapping("/review")
-    public ResponseEntity<String> sendReview(@RequestBody Review review) {
-        publisherService.publishMessage(EXCHANGE_NAME, "review.create", review);
-        return ResponseEntity.ok("Review sent to RabbitMQ");
+        RecipeMessage message = new RecipeMessage();
+        message.setRecipe(recipe);
+        message.setIngredients(ingredients);
+
+        publisherService.publishMessage(EXCHANGE_NAME, "recipe.create", message);
+
+        return ResponseEntity.ok("Recipe with ingredients sent to RabbitMQ");
     }
 }
