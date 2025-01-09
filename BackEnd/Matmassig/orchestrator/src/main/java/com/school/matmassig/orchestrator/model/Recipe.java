@@ -59,4 +59,15 @@ public class Recipe {
     public void setUserId(Integer userId) {
         this.userId = userId;
     }
+
+    @Override
+    public String toString() {
+        return "Recipe{" +
+                "title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", ingredientsRecipeId=" + ingredientsRecipeId +
+                ", instructions='" + instructions + '\'' +
+                ", userId=" + userId +
+                '}';
+    }
 }
