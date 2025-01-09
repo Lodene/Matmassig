@@ -1,489 +1,281 @@
-# API Documentation - InventoryMicroService
-
-## **Endpoints**
+# API Documentation
 
 <details>
-<summary>### **1. Ajouter un item**</summary>
+<summary>## Table of Contents</summary>
 
-- **Méthode** : `POST`  
-- **URL** : `/api/inventory`  
-- **Body** :  
-  ```json
-  {
-      "ingredientId": 1,
-      "quantity": 100,
-      "userId": 10
-  }
-  ```
-- **Réponse (200 OK)** :  
-  ```json
-  {
-      "id": 1,
-      "ingredientId": 1,
-      "quantity": 100,
-      "userId": 10,
-      "createdAt": "2025-01-01T12:00:00",
-      "updatedAt": "2025-01-01T12:00:00"
-  }
-  ```
+1. <details>
+   <summary>[Orchestrator Controller](#orchestrator-controller)</summary>
+   
+   - [Send Recipe](#1-send-recipe)
+   </details>
+2. <details>
+   <summary>[Recipe Controller](#recipe-controller)</summary>
+
+   - [Add Recipe](#1-add-recipe)
+   - [Update Recipe](#2-update-recipe)
+   - [Delete Recipe](#3-delete-recipe)
+   - [Add Ingredient](#4-add-ingredient)
+   - [Add Ingredient to Recipe](#5-add-ingredient-to-recipe)
+   - [Get Ingredients for Recipe](#6-get-ingredients-for-recipe)
+   - [Get All Ingredients](#7-get-all-ingredients)
+   - [Get Recipes for User](#8-get-recipes-for-user)
+   </details>
+3. <details>
+   <summary>[Review Controller](#review-controller)</summary>
+
+   - [Get Reviews by User](#1-get-reviews-by-user)
+   - [Get Reviews by Recipe](#2-get-reviews-by-recipe)
+   - [Add Review](#3-add-review)
+   - [Update Review](#4-update-review)
+   - [Delete Review](#5-delete-review)
+   </details>
 
 </details>
 
 ---
 
 <details>
-<summary>### **2. Mettre à jour un item**</summary>
+<summary>## Orchestrator Controller</summary>
 
-- **Méthode** : `PUT`  
-- **URL** : `/api/inventory/{id}`  
-- **Body** :  
-  ```json
-  {
-      "ingredientId": 2,
-      "quantity": 150,
-      "userId": 10
-  }
-  ```
-- **Réponse (200 OK)** :  
-  ```json
-  {
-      "id": 1,
-      "ingredientId": 2,
-      "quantity": 150,
-      "userId": 10,
-      "createdAt": "2025-01-01T12:00:00",
-      "updatedAt": "2025-01-01T12:05:00"
-  }
-  ```
+**Base URL:** `/api/orchestrator`
 
-</details>
+### 1. Send Recipe
+**Endpoint:** `POST /recipe`
 
----
+**Description:** Sends a recipe along with its ingredients to RabbitMQ.
 
-<details>
-<summary>### **3. Supprimer un item**</summary>
+**Request Parameters:**
+- `List<Ingredient>` (Request Param): List of ingredients associated with the recipe.
 
-- **Méthode** : `DELETE`  
-- **URL** : `/api/inventory/{id}`  
-- **Réponse (204 No Content)** :  
-  Pas de contenu (supprimé avec succès).
-
-</details>
-
----
-
-<details>
-<summary>### **4. Lister les items d’un utilisateur**</summary>
-
-- **Méthode** : `GET`  
-- **URL** : `/api/inventory/user/{userId}`  
-- **Réponse (200 OK)** :  
-  ```json
-  [
-      {
-          "id": 1,
-          "ingredientId": 1,
-          "quantity": 100,
-          "userId": 10,
-          "createdAt": "2025-01-01T12:00:00",
-          "updatedAt": "2025-01-01T12:00:00"
-      },
-      {
-          "id": 2,
-          "ingredientId": 3,
-          "quantity": 50,
-          "userId": 10,
-          "createdAt": "2025-01-01T13:00:00",
-          "updatedAt": "2025-01-01T13:00:00"
-      }
-  ]
-  ```
-
-</details>
-
-<details>
-<summary>Table des matières</summary>
-
-- [Configuration](#configuration)
-- [Endpoints](#endpoints)
-  - [Ajouter une recette](#ajouter-une-recette)
-  - [Modifier une recette](#modifier-une-recette)
-  - [Supprimer une recette](#supprimer-une-recette)
-</details>
-
----
-
-## Configuration
-
-Pour exécuter ce projet localement :
-
-1. Clonez le dépôt :
-   ```bash
-   git clone https://github.com/example/recipe-service.git
-   ```
-2. Configurez les informations de base de données dans `application.properties` :
-   ```properties
-   spring.datasource.url=jdbc:mysql://localhost:3306/recipe_service
-   spring.datasource.username=root
-   spring.datasource.password=yourpassword
-   spring.jpa.hibernate.ddl-auto=update
-   ```
-3. Lancez l'application Spring Boot.
-
----
-
-<details>
-<summary>Table des matières</summary>
-
-- [Configuration](#configuration)
-- [Endpoints](#endpoints)
-  - [Ajouter une recette](#ajouter-une-recette)
-  - [Modifier une recette](#modifier-une-recette)
-  - [Supprimer une recette](#supprimer-une-recette)
-  - [Ajouter un ingrédient](#ajouter-un-ingrédient)
-  - [Associer un ingrédient à une recette](#associer-un-ingrédient-à-une-recette)
-  - [Lister les ingrédients d'une recette](#lister-les-ingrédients-dune-recette)
-</details>
-
----
-
-## Configuration
-
-Pour exécuter ce projet localement :
-
-1. Clonez le dépôt :
-   ```bash
-   git clone https://github.com/example/recipe-service.git
-   ```
-2. Configurez les informations de base de données dans `application.properties` :
-   ```properties
-   spring.datasource.url=jdbc:mysql://localhost:3306/recipe_service
-   spring.datasource.username=root
-   spring.datasource.password=yourpassword
-   spring.jpa.hibernate.ddl-auto=update
-   ```
-3. Lancez l'application Spring Boot.
-
----
-
-### Ajouter une recette
-
-**POST** `/api/recipes`
-
-Crée une nouvelle recette.
-
-**Corps de la requête (JSON)** :
+**Request Body:**
 ```json
 {
-  "title": "Spaghetti Bolognese",
-  "description": "Une recette classique italienne",
-  "ingredientsRecipeId": 1,
-  "instructions": "Faites cuire les pâtes et mélangez-les avec la sauce",
-  "userId": 123,
-  "listIngredients": [2, 5, 13, 30]
-}
-```
-
-**Réponse (200)** :
-```json
-{
-  "id": 1,
-  "title": "Spaghetti Bolognese",
-  "description": "Une recette classique italienne",
-  "ingredientsRecipeId": 1,
-  "instructions": "Faites cuire les pâtes et mélangez-les avec la sauce",
-  "userId": 123,
-  "createdAt": "2025-01-08T14:45:00",
-  "updatedAt": "2025-01-08T14:45:00"
-}
-```
-
----
-
-### Modifier une recette
-
-**PUT** `/api/recipes/{id}`
-
-Met à jour une recette existante.
-
-**Paramètres d'URL** :
-- `id` : L'identifiant unique de la recette à mettre à jour.
-
-**Corps de la requête (JSON)** :
-```json
-{
-  "title": "Spaghetti Carbonara",
-  "description": "Une autre recette classique italienne",
-  "ingredientsRecipeId": 2,
-  "instructions": "Ajoutez des œufs, du bacon et du fromage",
-  "userId": 123,
-  "listIngredients": [3, 8, 14, 32]
-}
-```
-
-**Réponse (200)** :
-```json
-{
-  "id": 1,
-  "title": "Spaghetti Carbonara",
-  "description": "Une autre recette classique italienne",
-  "ingredientsRecipeId": 2,
-  "instructions": "Ajoutez des œufs, du bacon et du fromage",
-  "userId": 123,
-  "createdAt": "2025-01-08T14:45:00",
-  "updatedAt": "2025-01-08T15:00:00"
-}
-```
-
----
-
-# Recipe-Service API Documentation
-
-Cette documentation décrit les endpoints exposés par le microservice Recipe-Service pour la gestion des recettes et leurs associations avec les ingrédients.
-
----
-
-## Endpoints
-
-### Ajouter une recette
-
-**POST** `/api/recipes`
-
-Crée une nouvelle recette.
-
-**Corps de la requête (JSON)** :
-```json
-{
-  "title": "Spaghetti Bolognese",
-  "description": "Une recette classique italienne",
-  "ingredientsRecipeId": 1,
-  "instructions": "Faites cuire les pâtes et mélangez-les avec la sauce",
-  "userId": 123,
-  "listIngredients": [2, 5, 13, 30]
-}
-```
-
-**Réponse (200)** :
-```json
-{
-  "id": 1,
-  "title": "Spaghetti Bolognese",
-  "description": "Une recette classique italienne",
-  "ingredientsRecipeId": 1,
-  "instructions": "Faites cuire les pâtes et mélangez-les avec la sauce",
-  "userId": 123,
-  "createdAt": "2025-01-08T14:45:00",
-  "updatedAt": "2025-01-08T14:45:00"
-}
-```
-
----
-
-### Modifier une recette
-
-**PUT** `/api/recipes/{id}`
-
-Met à jour une recette existante.
-
-**Paramètres d'URL** :
-- `id` : L'identifiant unique de la recette à mettre à jour.
-
-**Corps de la requête (JSON)** :
-```json
-{
-  "title": "Spaghetti Carbonara",
-  "description": "Une autre recette classique italienne",
-  "ingredientsRecipeId": 2,
-  "instructions": "Ajoutez des œufs, du bacon et du fromage",
-  "userId": 123,
-  "listIngredients": [3, 8, 14, 32]
-}
-```
-
-**Réponse (200)** :
-```json
-{
-  "id": 1,
-  "title": "Spaghetti Carbonara",
-  "description": "Une autre recette classique italienne",
-  "ingredientsRecipeId": 2,
-  "instructions": "Ajoutez des œufs, du bacon et du fromage",
-  "userId": 123,
-  "createdAt": "2025-01-08T14:45:00",
-  "updatedAt": "2025-01-08T15:00:00"
-}
-```
-
----
-
-### Supprimer une recette
-
-**DELETE** `/api/recipes/{id}`
-
-Supprime une recette existante.
-
-**Paramètres d'URL** :
-- `id` : L'identifiant unique de la recette à supprimer.
-
-**Réponse (204)** :
-Aucune donnée renvoyée.
-
----
-
-### Ajouter un ingrédient
-
-**POST** `/api/recipes/ingredients`
-
-Ajoute un nouvel ingrédient.
-
-**Corps de la requête (JSON)** :
-```json
-{
-  "name": "Tomates"
-}
-```
-
-**Réponse (200)** :
-```json
-{
-  "id": 1,
-  "name": "Tomates"
-}
-```
-
----
-
-### Lister tous les ingrédients
-
-**GET** `/api/recipes/ingredients`
-
-Récupère la liste de tous les ingrédients disponibles.
-
-**Réponse (200)** :
-```json
-[
-  {
+  "recipe": {
     "id": 1,
-    "name": "Tomates"
-  },
-  {
-    "id": 2,
-    "name": "Oignons"
+    "title": "Recipe Title",
+    "description": "Recipe Description",
+    "instructions": "Steps to prepare the recipe",
+    "userId": 1
   }
-]
+}
 ```
+
+**Response:**
+- `200 OK`: Recipe with ingredients sent to RabbitMQ.
+
+</details>
 
 ---
 
-### Associer un ingrédient à une recette
+<details>
+<summary>## Recipe Controller</summary>
 
-**POST** `/api/recipes/{recipeId}/ingredients`
+**Base URL:** `/api/recipes`
 
-Associe un ingrédient existant à une recette.
+### 1. Add Recipe
+**Endpoint:** `POST /`
 
-**Paramètres d'URL** :
-- `recipeId` : L'identifiant unique de la recette.
+**Description:** Creates a new recipe along with its ingredients.
 
-**Corps de la requête (JSON)** :
+**Request Body:**
+```json
+{
+  "title": "Recipe Title",
+  "description": "Recipe Description",
+  "ingredientsRecipeId": 1,
+  "instructions": "Steps to prepare the recipe",
+  "userId": 1,
+  "listIngredients": [1, 2, 3]
+}
+```
+
+**Response:**
+- `200 OK`: The created recipe object.
+
+---
+
+### 2. Update Recipe
+**Endpoint:** `PUT /{id}`
+
+**Description:** Updates an existing recipe.
+
+**Path Parameter:**
+- `id` (Integer): Recipe ID to update.
+
+**Request Body:** Same as Add Recipe.
+
+**Response:**
+- `200 OK`: The updated recipe object.
+
+---
+
+### 3. Delete Recipe
+**Endpoint:** `DELETE /{id}`
+
+**Description:** Deletes a recipe by its ID.
+
+**Path Parameter:**
+- `id` (Integer): Recipe ID to delete.
+
+**Response:**
+- `204 No Content`: Recipe deleted.
+
+---
+
+### 4. Add Ingredient
+**Endpoint:** `POST /ingredients`
+
+**Description:** Adds a new ingredient.
+
+**Request Body:**
+```json
+{
+  "name": "Ingredient Name",
+  "quantity": "100g"
+}
+```
+
+**Response:**
+- `200 OK`: The created ingredient object.
+
+---
+
+### 5. Add Ingredient to Recipe
+**Endpoint:** `POST /{recipeId}/ingredients`
+
+**Description:** Links an ingredient to a recipe.
+
+**Path Parameter:**
+- `recipeId` (Integer): Recipe ID.
+
+**Request Body:**
 ```json
 {
   "ingredientId": 1,
-  "quantity": 3
+  "quantity": "200g"
 }
 ```
 
-**Réponse (200)** :
+**Response:**
+- `200 OK`: The linked ingredient object.
+
+---
+
+### 6. Get Ingredients for Recipe
+**Endpoint:** `GET /{recipeId}/ingredients`
+
+**Description:** Retrieves all ingredients linked to a specific recipe.
+
+**Path Parameter:**
+- `recipeId` (Integer): Recipe ID.
+
+**Response:**
+- `200 OK`: List of ingredients for the recipe.
+
+---
+
+### 7. Get All Ingredients
+**Endpoint:** `GET /ingredients`
+
+**Description:** Retrieves all available ingredients.
+
+**Response:**
+- `200 OK`: List of all ingredients.
+
+---
+
+### 8. Get Recipes for User
+**Endpoint:** `GET /user/{userId}`
+
+**Description:** Retrieves all recipes created by a specific user.
+
+**Path Parameter:**
+- `userId` (Integer): User ID.
+
+**Response:**
+- `200 OK`: List of recipes created by the user.
+
+</details>
+
+---
+
+<details>
+<summary>## Review Controller</summary>
+
+**Base URL:** `/api/reviews`
+
+### 1. Get Reviews by User
+**Endpoint:** `GET /user/{userId}`
+
+**Description:** Retrieves all reviews written by a specific user.
+
+**Path Parameter:**
+- `userId` (Integer): User ID.
+
+**Response:**
+- `200 OK`: List of reviews by the user.
+
+---
+
+### 2. Get Reviews by Recipe
+**Endpoint:** `GET /recipe/{recipeId}`
+
+**Description:** Retrieves all reviews for a specific recipe.
+
+**Path Parameter:**
+- `recipeId` (Integer): Recipe ID.
+
+**Response:**
+- `200 OK`: List of reviews for the recipe.
+
+---
+
+### 3. Add Review
+**Endpoint:** `POST /`
+
+**Description:** Adds a new review.
+
+**Request Body:**
 ```json
 {
-  "id": 1,
-  "ingredientId": 1,
-  "quantity": 3,
-  "recipeId": 1
+  "userId": 1,
+  "recipeId": 1,
+  "rating": 5,
+  "comment": "Excellent recipe!",
+  "createdAt": "2024-01-01T10:00:00"
 }
 ```
 
----
-
-### Lister les ingrédients d'une recette
-
-**GET** `/api/recipes/{recipeId}/ingredients`
-
-Récupère les ingrédients associés à une recette spécifique.
-
-**Paramètres d'URL** :
-- `recipeId` : L'identifiant unique de la recette.
-
-**Réponse (200)** :
-```json
-[
-  {
-    "id": 1,
-    "ingredientId": 1,
-    "quantity": 3,
-    "recipeId": 1
-  },
-  {
-    "id": 2,
-    "ingredientId": 2,
-    "quantity": 2,
-    "recipeId": 1
-  }
-]
-```
+**Response:**
+- `201 Created`: The created review object.
 
 ---
 
-### Lister toutes les recettes et leurs ingrédients pour un utilisateur
+### 4. Update Review
+**Endpoint:** `PUT /{id}`
 
-**GET** `/api/recipes/user/{userId}`
+**Description:** Updates an existing review.
 
-Récupère toutes les recettes d'un utilisateur spécifique avec les ingrédients associés.
+**Path Parameter:**
+- `id` (Integer): Review ID to update.
 
-**Paramètres d'URL** :
-- `userId` : L'identifiant unique de l'utilisateur.
+**Request Body:** Same as Add Review.
 
-**Réponse (200)** :
-```json
-[
-  {
-    "id": 1,
-    "title": "Spaghetti Bolognese",
-    "description": "Une recette classique italienne",
-    "instructions": "Faites cuire les pâtes et mélangez-les avec la sauce",
-    "createdAt": "2025-01-08T14:45:00",
-    "updatedAt": "2025-01-08T14:45:00",
-    "ingredients": [
-      {
-        "id": 2,
-        "name": "Oignons",
-        "quantity": 3
-      },
-      {
-        "id": 5,
-        "name": "Carottes",
-        "quantity": 2
-      }
-    ]
-  },
-  {
-    "id": 2,
-    "title": "Salade César",
-    "description": "Une salade classique",
-    "instructions": "Mélangez tous les ingrédients et servez frais",
-    "createdAt": "2025-01-07T10:00:00",
-    "updatedAt": "2025-01-07T10:30:00",
-    "ingredients": [
-      {
-        "id": 8,
-        "name": "Laitue",
-        "quantity": 1
-      },
-      {
-        "id": 9,
-        "name": "Croutons",
-        "quantity": 5
-      }
-    ]
-  }
-]
-```
+**Response:**
+- `200 OK`: The updated review object.
+
+---
+
+### 5. Delete Review
+**Endpoint:** `DELETE /{id}`
+
+**Description:** Deletes a review by its ID.
+
+**Path Parameter:**
+- `id` (Integer): Review ID to delete.
+
+**Response:**
+- `204 No Content`: Review deleted.
+
+</details>
+
