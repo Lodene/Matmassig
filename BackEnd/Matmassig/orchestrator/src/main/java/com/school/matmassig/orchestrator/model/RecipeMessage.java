@@ -23,4 +23,12 @@ public class RecipeMessage {
     public void setIngredients(List<Ingredient> ingredients) {
         this.ingredients = ingredients;
     }
+
+    @Override
+    public String toString() {
+        return "RecipeMessage{" +
+                "recipe=" + recipe +
+                ", ingredients=" + ingredients +
+                '}';
+    }
 }
