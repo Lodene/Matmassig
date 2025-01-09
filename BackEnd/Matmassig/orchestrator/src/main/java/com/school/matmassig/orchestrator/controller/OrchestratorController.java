@@ -22,16 +22,12 @@ public class OrchestratorController {
     }
 
     @PostMapping("/recipe")
-    public ResponseEntity<String> sendRecipe(
-            @RequestBody Recipe recipe,
-            @RequestParam List<Ingredient> ingredients) {
+    public ResponseEntity<String> sendRecipe(@RequestBody RecipeMessage recipeMessage) {
+        System.out.println("Received RecipeMessage: " + recipeMessage);
+        System.out.println("Recipe: " + recipeMessage.getRecipe());
+        System.out.println("Ingredients: " + recipeMessage.getIngredients());
 
-        RecipeMessage message = new RecipeMessage();
-        message.setRecipe(recipe);
-        message.setIngredients(ingredients);
-
-        publisherService.publishMessage(EXCHANGE_NAME, "recipe.create", message);
-
+        publisherService.publishMessage(EXCHANGE_NAME, "recipe.create", recipeMessage);
         return ResponseEntity.ok("Recipe with ingredients sent to RabbitMQ");
     }
 }

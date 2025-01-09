@@ -1,14 +1,23 @@
 package com.school.matmassig.orchestrator.model;
 
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Recipe {
+
+    @JsonProperty("title")
     private String title;
+
+    @JsonProperty("description")
     private String description;
+
+    @JsonProperty("ingredientsRecipeId")
     private Integer ingredientsRecipeId;
+
+    @JsonProperty("instructions")
     private String instructions;
+
+    @JsonProperty("userId")
     private Integer userId;
-    private List<Integer> listIngredients;
 
     // Getters et Setters
     public String getTitle() {
@@ -49,13 +58,5 @@ public class Recipe {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
-    }
-
-    public List<Integer> getListIngredients() {
-        return listIngredients;
-    }
-
-    public void setListIngredients(List<Integer> listIngredients) {
-        this.listIngredients = listIngredients;
     }
 }

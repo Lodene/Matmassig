@@ -1,9 +1,16 @@
 package com.school.matmassig.orchestrator.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Ingredient {
 
+    @JsonProperty("id")
     private Integer id;
+
+    @JsonProperty("name")
     private String name;
+
+    @JsonProperty("quantity")
     private String quantity;
 
     // Getters et Setters
