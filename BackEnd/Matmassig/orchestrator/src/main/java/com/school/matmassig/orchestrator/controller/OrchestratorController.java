@@ -2,6 +2,7 @@ package com.school.matmassig.orchestrator.controller;
 
 import com.school.matmassig.orchestrator.model.Ingredient;
 import com.school.matmassig.orchestrator.model.Recipe;
+import com.school.matmassig.orchestrator.model.Review;
 import com.school.matmassig.orchestrator.model.RecipeMessage;
 import com.school.matmassig.orchestrator.service.RabbitMQPublisherService;
 import org.springframework.http.ResponseEntity;
@@ -30,5 +31,12 @@ public class OrchestratorController {
 
         publisherService.publishMessage(EXCHANGE_NAME, "recipe.create", recipeMessage);
         return ResponseEntity.ok("Recipe with ingredients sent to RabbitMQ");
+    }
+
+    @PostMapping("/review")
+    public ResponseEntity<String> sendReview(@RequestBody Review review) {
+        System.out.println("DEBUG: Review received: " + review);
+        publisherService.publishMessage(EXCHANGE_NAME, "review.create", review);
+        return ResponseEntity.ok("Review sent to RabbitMQ");
     }
 }

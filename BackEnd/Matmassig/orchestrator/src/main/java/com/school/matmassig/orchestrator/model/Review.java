@@ -1,19 +1,28 @@
 package com.school.matmassig.orchestrator.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Review {
-    private Integer id;
-    private Integer recipeId;
+
+    @JsonProperty("userId")
     private Integer userId;
+
+    @JsonProperty("recipeId")
+    private Integer recipeId;
+
+    @JsonProperty("rating")
     private Integer rating;
+
+    @JsonProperty("comment")
     private String comment;
 
     // Getters et Setters
-    public Integer getId() {
-        return id;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     public Integer getRecipeId() {
@@ -22,14 +31,6 @@ public class Review {
 
     public void setRecipeId(Integer recipeId) {
         this.recipeId = recipeId;
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
     }
 
     public Integer getRating() {
@@ -46,5 +47,15 @@ public class Review {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    @Override
+    public String toString() {
+        return "Review{" +
+                "userId=" + userId +
+                ", recipeId=" + recipeId +
+                ", rating=" + rating +
+                ", comment='" + comment + '\'' +
+                '}';
     }
 }
