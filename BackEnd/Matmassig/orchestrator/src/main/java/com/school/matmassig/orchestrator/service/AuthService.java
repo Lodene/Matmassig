@@ -19,5 +19,6 @@ public class AuthService {
 
     public LoginResponse login(LoginRequest loginRequest) {
         return restTemplate.postForObject(authServiceUrl, loginRequest, LoginResponse.class);
+        //return new LoginResponse("fake-jwt-token", 1L, new String[]{"ROLE_USER"});
     }
 }

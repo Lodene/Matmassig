@@ -85,6 +85,25 @@ services:
     restart: always
     networks:
       - app-network
+  authentification-service:
+    build:
+      context: ./Matmassig/authentication-service
+      dockerfile: Dockerfile
+    container_name: authentification-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres_matmassig:5432/matmassig
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: admin
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+    depends_on:
+      - postgres
+      - rabbitmq
+    ports:
+      - "8083:8083" # Port exposé pour le service orchestrator
+    restart: always
+    networks:
+      - app-network
 
 networks:
   app-network:

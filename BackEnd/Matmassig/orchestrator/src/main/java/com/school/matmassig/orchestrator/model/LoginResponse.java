@@ -5,6 +5,12 @@ public class LoginResponse {
     private Long userId;
     private String[] roles;
 
+    public LoginResponse(String token, Long userId, String[] roles) {
+        this.token = token;
+        this.userId = userId;
+        this.roles = roles;
+    }
+
     // Getters and Setters
     public String getToken() {
         return token;
