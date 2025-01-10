@@ -1,4 +1,4 @@
-package com.school.matmassig.notificationservice.Service;
+package com.school.matmassig.notificationservice.service;
 
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Value;
