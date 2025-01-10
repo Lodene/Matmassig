@@ -6,8 +6,10 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitMQConfig {
+
     @Bean
-    public Queue queue() {
-        return new Queue("my-queue", true);
+    public Queue esbQueue() {
+        return new Queue("esb-queue", true); // Queue durable
     }
+
 }

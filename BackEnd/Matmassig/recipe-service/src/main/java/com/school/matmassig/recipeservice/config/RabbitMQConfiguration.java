@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.handler.annotation.support.DefaultMessageHandlerMethodFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rabbitmq.client.ConnectionFactory;
 import com.school.matmassig.recipeservice.model.RecipeMessage;
 import com.school.matmassig.recipeservice.service.ListenerSerice;
 
@@ -35,13 +34,6 @@ public class RabbitMQConfiguration implements RabbitListenerConfigurer {
     @Bean
     public Queue recipeQueue() {
         return new Queue("recipe-queue", true); // Durable queue
-    }
-
-    @Bean
-    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
-        RabbitTemplate template = new RabbitTemplate();
-        template.setConnectionFactory((org.springframework.amqp.rabbit.connection.ConnectionFactory) connectionFactory);
-        return template;
     }
 
     @Bean
@@ -97,9 +89,6 @@ public class RabbitMQConfiguration implements RabbitListenerConfigurer {
         }
     }
 
-    /**
-     * Envoie un message à l'ESB via RabbitMQ.
-     */
     public void sendToEsbQueue(String message) {
         try {
             rabbitTemplate.convertAndSend("esb-queue", message);
