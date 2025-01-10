@@ -1,3 +1,5 @@
+version: '3.9'
+
 services:
   postgres:
     image: postgres:15
@@ -37,9 +39,11 @@ services:
       SPRING_DATASOURCE_PASSWORD: admin
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_RABBITMQ_PORT: 5672
+      SPRING_ACTIVEMQ_BROKER_URL: tcp://activemq:61616
     depends_on:
       - postgres
       - rabbitmq
+      - activemq
     ports:
       - "8080:8080" # Port exposé pour le service orchestrator
     restart: always
@@ -57,9 +61,11 @@ services:
       SPRING_DATASOURCE_PASSWORD: admin
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_RABBITMQ_PORT: 5672
+      SPRING_ACTIVEMQ_BROKER_URL: tcp://activemq:61616
     depends_on:
       - postgres
       - rabbitmq
+      - activemq
     ports:
       - "8081:8081" # Port exposé pour le service recipe-service
     restart: always
@@ -77,14 +83,17 @@ services:
       SPRING_DATASOURCE_PASSWORD: admin
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_RABBITMQ_PORT: 5672
+      SPRING_ACTIVEMQ_BROKER_URL: tcp://activemq:61616
     depends_on:
       - postgres
       - rabbitmq
+      - activemq
     ports:
       - "8082:8082" # Port exposé pour le service review-service
     restart: always
     networks:
       - app-network
+
   authentification-service:
     build:
       context: ./Matmassig/authentication-service
@@ -100,7 +109,26 @@ services:
       - postgres
       - rabbitmq
     ports:
-      - "8083:8083" # Port exposé pour le service orchestrator
+      - "8083:8083" # Port exposé pour le service authentification-service
+    restart: always
+    networks:
+      - app-network
+
+  notification-service:
+    build:
+      context: ./Matmassig/notification-service
+      dockerfile: Dockerfile
+    container_name: notification-service
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: admin
+      SPRING_RABBITMQ_PASSWORD: admin
+      TARGET_API_URL: http://localhost:8081/target-service/endpoint
+    depends_on:
+      - rabbitmq
+    ports:
+      - "8084:8083" # Port exposé pour le service notification-service
     restart: always
     networks:
       - app-network

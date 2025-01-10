@@ -18,10 +18,10 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 
 # Copier le fichier JAR généré depuis l'étape précédente
-COPY --from=builder /app/target/recipe-service-*.jar app.jar
+COPY --from=builder /app/target/notification-service-*.jar app.jar
 
 # Exposer le port utilisé par l'application
-EXPOSE 8081
+EXPOSE 8083
 
 # Commande pour démarrer l'application
 ENTRYPOINT ["java", "-jar", "app.jar"]
