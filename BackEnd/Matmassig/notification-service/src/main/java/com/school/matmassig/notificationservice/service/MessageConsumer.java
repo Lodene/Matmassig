@@ -17,7 +17,7 @@ public class MessageConsumer {
         this.restTemplate = restTemplate;
     }
 
-    @RabbitListener(queues = "my-queue")
+    @RabbitListener(queues = "esb-queue")
     public void receiveMessage(String message) {
         System.out.println("Received message from RabbitMQ: " + message);
 
