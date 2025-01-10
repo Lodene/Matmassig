@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "User") // Correspond exactement au nom de la table dans la DB
+@Table(name = "\"User\"") // Utilisation des guillemets pour PostgreSQL
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
