@@ -1,7 +1,8 @@
-packagecom. import org.springframework.amqp.core.Queue;
-import org.springframework.context.annotation.Bean;
+package com.school.matmassig.notificationservice.config;
 
-import rg.springframework.context.annotation.Configuration;
+import org.springframework.amqp.core.Queue;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitMQConfig {
@@ -11,6 +12,3 @@ public class RabbitMQConfig {
         return new Queue("my-queue", true);
     }
 }
-
-
-    
