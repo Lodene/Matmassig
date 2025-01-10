@@ -1,8 +1,5 @@
-package com.school.matmassig.notificationservice.controller;
-
-import org.springframework.web.bind.annotation.*;
-
-@RestController
+packagecom. import org.springframework.web.bind.annotation.*;
+@RestCotroller
 @RequestMapping("/target-service")
 public class TargetController {
 
