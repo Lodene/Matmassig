@@ -1,4 +1,4 @@
-package com.school.matmassig.notificationservice.Config;
+package com.school.matmassig.notificationservice.config;
 
 import org.springframework.amqp.core.Queue;
 import org.springframework.context.annotation.Bean;
@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMQConfig {
 
     @Bean
-    public Queue queue() {
-        return new Queue("my-queue", true);
+    public Queue esbQueue() {
+        return new Queue("esb-queue", true); // File durable
     }
 }

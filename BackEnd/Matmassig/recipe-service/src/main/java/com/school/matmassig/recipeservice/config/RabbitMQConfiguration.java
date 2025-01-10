@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.handler.annotation.support.DefaultMessageHandlerMethodFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rabbitmq.client.ConnectionFactory;
 import com.school.matmassig.recipeservice.model.RecipeMessage;
 import com.school.matmassig.recipeservice.service.ListenerSerice;
 
@@ -38,20 +37,13 @@ public class RabbitMQConfiguration implements RabbitListenerConfigurer {
     }
 
     @Bean
-    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
-        RabbitTemplate template = new RabbitTemplate();
-        template.setConnectionFactory((org.springframework.amqp.rabbit.connection.ConnectionFactory) connectionFactory);
-        return template;
+    public Binding recipeBinding(Queue recipeQueue, TopicExchange topicExchange) {
+        return BindingBuilder.bind(recipeQueue).to(topicExchange).with("recipe.#");
     }
 
     @Bean
     public Queue esbQueue() {
-        return new Queue("esb-queue", true); // Queue pour l'ESB
-    }
-
-    @Bean
-    public Binding recipeBinding(Queue recipeQueue, TopicExchange topicExchange) {
-        return BindingBuilder.bind(recipeQueue).to(topicExchange).with("recipe.#");
+        return new Queue("esb-queue", true); // Durable queue
     }
 
     @Bean
@@ -89,23 +81,11 @@ public class RabbitMQConfiguration implements RabbitListenerConfigurer {
             System.out.println("Recipe and ingredients are saved!");
 
             // Envoyer le message à l'ESB
-            rabbitTemplate.convertAndSend("esb-queue", message);
+            rabbitTemplate.convertAndSend("app-exchange", "esb.recipe", message);
             System.out.println("Message forwarded to ESB queue!");
         } catch (Exception e) {
             System.err.println("Failed to process and forward message: " + message);
             e.printStackTrace();
-        }
-    }
-
-    /**
-     * Envoie un message à l'ESB via RabbitMQ.
-     */
-    public void sendToEsbQueue(String message) {
-        try {
-            rabbitTemplate.convertAndSend("esb-queue", message);
-            System.out.println("Message forwarded to ESB queue: " + message);
-        } catch (Exception e) {
-            System.err.println("Failed to send message to ESB: " + e.getMessage());
         }
     }
 }

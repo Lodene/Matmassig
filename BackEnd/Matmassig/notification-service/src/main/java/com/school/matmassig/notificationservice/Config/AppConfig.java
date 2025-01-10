@@ -1,4 +1,4 @@
-package com.school.matmassig.notificationservice.Config;
+package com.school.matmassig.notificationservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,4 +1,4 @@
-package com.school.matmassig.notificationservice.Controller;
+package com.school.matmassig.notificationservice.controller;
 
 import org.springframework.web.bind.annotation.*;
 
