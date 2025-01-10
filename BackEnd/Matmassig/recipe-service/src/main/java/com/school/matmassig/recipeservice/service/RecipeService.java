@@ -1,6 +1,6 @@
 package com.school.matmassig.recipeservice.service;
 
-import com.school.matmassig.recipeservice.model.Ingredients;
+import com.school.matmassig.recipeservice.model.Ingredient;
 import com.school.matmassig.recipeservice.model.IngredientsRecipe;
 import com.school.matmassig.recipeservice.model.Recipe;
 import com.school.matmassig.recipeservice.model.dto.RecipeWithIngredients;
@@ -85,11 +85,11 @@ public class RecipeService {
         recipeRepository.deleteById(id);
     }
 
-    public Ingredients addIngredient(Ingredients ingredient) {
+    public Ingredient addIngredient(Ingredient ingredient) {
         return ingredientRepository.save(ingredient);
     }
 
-    public List<Ingredients> getAllIngredients() {
+    public List<Ingredient> getAllIngredients() {
         return ingredientRepository.findAll();
     }
 
@@ -115,17 +115,16 @@ public class RecipeService {
         if (userRecipes.isEmpty()) {
             throw new RuntimeException("No recipes found for user with ID " + userId);
         }
-    
+
         return userRecipes.stream().map(recipe -> {
             List<IngredientsRecipe> ingredientsRecipes = ingredientsRecipeRepository.findByRecipeId(recipe.getId());
             List<IngredientDetails> ingredientDetails = ingredientsRecipes.stream().map(ingredientsRecipe -> {
-                Ingredients ingredient = ingredientRepository.findById(ingredientsRecipe.getIngredientId())
-                    .orElseThrow(() -> new RuntimeException("Ingredient not found"));
+                Ingredient ingredient = ingredientRepository.findById(ingredientsRecipe.getIngredientId())
+                        .orElseThrow(() -> new RuntimeException("Ingredient not found"));
                 return new IngredientDetails(ingredient.getId(), ingredient.getName(), ingredientsRecipe.getQuantity());
             }).collect(Collectors.toList());
             return new RecipeWithIngredients(recipe, ingredientDetails);
         }).collect(Collectors.toList());
     }
-    
 
 }

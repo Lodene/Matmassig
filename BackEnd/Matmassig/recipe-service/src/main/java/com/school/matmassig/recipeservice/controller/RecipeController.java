@@ -7,10 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.school.matmassig.recipeservice.model.Ingredients;
+import com.school.matmassig.recipeservice.model.Ingredient;
 import com.school.matmassig.recipeservice.model.IngredientsRecipe;
 import com.school.matmassig.recipeservice.model.Recipe;
 import com.school.matmassig.recipeservice.model.dto.RecipeWithIngredients;
+import com.school.matmassig.recipeservice.model.dto.RecipeRequest;
 import com.school.matmassig.recipeservice.service.RecipeService;
 
 @RestController
@@ -20,6 +21,8 @@ public class RecipeController {
     @Autowired
     private RecipeService recipeService;
 
+    public RecipeRequest recipeRequest;
+
     @PostMapping
     public ResponseEntity<Recipe> addRecipe(@RequestBody RecipeRequest recipeRequest) {
         Recipe recipe = new Recipe();
@@ -28,8 +31,8 @@ public class RecipeController {
         recipe.setIngredientsRecipeId(recipeRequest.getIngredientsRecipeId());
         recipe.setInstructions(recipeRequest.getInstructions());
         recipe.setUserId(recipeRequest.getUserId()); // Assurez-vous que cette ligne est correcte
-        recipe.setCreatedAt(LocalDateTime.now());
-        recipe.setUpdatedAt(LocalDateTime.now());
+        recipe.setCreatedAt(java.sql.Timestamp.valueOf(LocalDateTime.now()));
+        recipe.setUpdatedAt(java.sql.Timestamp.valueOf(LocalDateTime.now()));
 
         Recipe createdRecipe = recipeService.addRecipe(recipe, recipeRequest.getListIngredients());
         return ResponseEntity.ok(createdRecipe);
@@ -43,7 +46,7 @@ public class RecipeController {
         recipe.setIngredientsRecipeId(recipeRequest.getIngredientsRecipeId());
         recipe.setInstructions(recipeRequest.getInstructions());
         recipe.setUserId(recipeRequest.getUserId());
-        recipe.setUpdatedAt(LocalDateTime.now());
+        recipe.setUpdatedAt(java.sql.Timestamp.valueOf(LocalDateTime.now()));
 
         Recipe updatedRecipe = recipeService.updateRecipe(id, recipe, recipeRequest.getListIngredients());
         return ResponseEntity.ok(updatedRecipe);
@@ -56,8 +59,8 @@ public class RecipeController {
     }
 
     @PostMapping("/ingredients")
-    public ResponseEntity<Ingredients> addIngredient(@RequestBody Ingredients ingredient) {
-        Ingredients createdIngredient = recipeService.addIngredient(ingredient);
+    public ResponseEntity<Ingredient> addIngredient(@RequestBody Ingredient ingredient) {
+        Ingredient createdIngredient = recipeService.addIngredient(ingredient);
         return ResponseEntity.ok(createdIngredient);
     }
 
@@ -75,8 +78,8 @@ public class RecipeController {
     }
 
     @GetMapping("/ingredients")
-    public ResponseEntity<List<Ingredients>> getAllIngredients() {
-        List<Ingredients> ingredients = recipeService.getAllIngredients();
+    public ResponseEntity<List<Ingredient>> getAllIngredients() {
+        List<Ingredient> ingredients = recipeService.getAllIngredients();
         return ResponseEntity.ok(ingredients);
     }
 
@@ -84,65 +87,5 @@ public class RecipeController {
     public ResponseEntity<List<RecipeWithIngredients>> getRecipesForUser(@PathVariable Integer userId) {
         List<RecipeWithIngredients> recipes = recipeService.getRecipesForUser(userId);
         return ResponseEntity.ok(recipes);
-    }
-}
-
-// DTO Class for Recipe Request
-class RecipeRequest {
-    private String title;
-    private String description;
-    private Integer ingredientsRecipeId;
-    private String instructions;
-    private Integer userId;
-    private List<Integer> listIngredients;
-
-    // Getters and Setters
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Integer getIngredientsRecipeId() {
-        return ingredientsRecipeId;
-    }
-
-    public void setIngredientsRecipeId(Integer ingredientsRecipeId) {
-        this.ingredientsRecipeId = ingredientsRecipeId;
-    }
-
-    public String getInstructions() {
-        return instructions;
-    }
-
-    public void setInstructions(String instructions) {
-        this.instructions = instructions;
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    public List<Integer> getListIngredients() {
-        return listIngredients;
-    }
-
-    public void setListIngredients(List<Integer> listIngredients) {
-        this.listIngredients = listIngredients;
     }
 }

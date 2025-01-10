@@ -11,9 +11,22 @@ public class IngredientsRecipe {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    private String name;
     private Integer ingredientId;
     private Integer quantity;
     private Integer recipeId;
+
+    // toString
+    @Override
+    public String toString() {
+        return "IngredientsRecipe{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", ingredientId=" + ingredientId +
+                ", quantity=" + quantity +
+                ", recipeId=" + recipeId +
+                '}';
+    }
 
     // constructor
     public IngredientsRecipe() {
@@ -34,6 +47,14 @@ public class IngredientsRecipe {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Integer getIngredientId() {
