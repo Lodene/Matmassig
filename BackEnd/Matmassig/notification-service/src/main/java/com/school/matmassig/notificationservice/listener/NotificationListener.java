@@ -5,6 +5,8 @@ import org.springframework.stereotype.Component;
 
 import com.school.matmassig.notificationservice.service.NotificationService;
 
+//Change Package Name
+
 @Component
 public class NotificationListener {
 

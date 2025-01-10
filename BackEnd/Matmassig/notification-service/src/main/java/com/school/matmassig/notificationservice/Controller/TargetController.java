@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 
+// Change package name
+
 @RequestMapping("/target-service")
 public class TargetController {
 
