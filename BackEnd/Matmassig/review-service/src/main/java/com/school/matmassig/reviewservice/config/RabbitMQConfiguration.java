@@ -1,18 +1,20 @@
-package com.school.matmassig.recipeservice.config;
+package com.school.matmassig.reviewservice.config;
 
-import org.springframework.amqp.core.*;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.amqp.rabbit.annotation.RabbitListenerConfigurer;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistrar;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.TopicExchange;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.handler.annotation.support.DefaultMessageHandlerMethodFactory;
+import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.school.matmassig.recipeservice.model.NotificationMessage;
-import com.school.matmassig.recipeservice.model.RecipeMessage;
-import com.school.matmassig.recipeservice.service.ListenerSerice;
+import com.school.matmassig.reviewservice.model.Review;
+import com.school.matmassig.reviewservice.service.ListenerSerice;
 
 @Configuration
 public class RabbitMQConfiguration implements RabbitListenerConfigurer {
@@ -33,8 +35,8 @@ public class RabbitMQConfiguration implements RabbitListenerConfigurer {
     }
 
     @Bean
-    public Queue recipeQueue() {
-        return new Queue("recipe-queue", false); // Durable queue
+    public Queue reviewQueue() {
+        return new Queue("review-queue", true); // Durable queue
     }
 
     @Bean
@@ -43,8 +45,8 @@ public class RabbitMQConfiguration implements RabbitListenerConfigurer {
     }
 
     @Bean
-    public Binding recipeBinding(Queue recipeQueue, TopicExchange topicExchange) {
-        return BindingBuilder.bind(recipeQueue).to(topicExchange).with("recipe.create");
+    public Binding reviewBinding(Queue reviewQueue, TopicExchange topicExchange) {
+        return BindingBuilder.bind(reviewQueue).to(topicExchange).with("review.#");
     }
 
     @Bean
@@ -71,31 +73,31 @@ public class RabbitMQConfiguration implements RabbitListenerConfigurer {
         registrar.setMessageHandlerMethodFactory(handlerMethodFactory());
     }
 
-    @RabbitListener(queues = "recipe-queue")
-    public void listen(String message) {
+    @RabbitListener(queues = "review-queue")
+    public void listenAndForward(String message) {
         try {
             // Convertir le message en objet
-            RecipeMessage recipeMessage = objectMapper.readValue(message, RecipeMessage.class);
+            Review reviewMessage = objectMapper.readValue(message, Review.class);
 
             // Sauvegarder dans la base de données
-            service.saveRecipeAndIngredients(recipeMessage.getRecipe(), recipeMessage.getIngredients());
-            System.out.println("Recipe and ingredients are saved!");
+            service.saveReview(reviewMessage);
+            System.out.println("review and ingredients are saved!");
 
             // Envoyer le message à l'ESB
-            // Récupérer le userId
-            int userId = recipeMessage.getRecipe().getUserId();
-
-            // Construire le NotificationMessage
-            NotificationMessage notification = new NotificationMessage(
-                    userId,
-                    "Le plat a été créé",
-                    200);
-            rabbitTemplate.convertAndSend("esb-queue", notification.toString());
-            System.out.println("Message forwarded to ESB queue: " + notification.toString());
+            rabbitTemplate.convertAndSend("esb-queue", message);
+            System.out.println("Message forwarded to ESB queue!");
         } catch (Exception e) {
             System.err.println("Failed to process and forward message: " + message);
             e.printStackTrace();
         }
     }
 
+    public void sendToEsbQueue(String message) {
+        try {
+            rabbitTemplate.convertAndSend("esb-queue", message);
+            System.out.println("Message forwarded to ESB queue: " + message);
+        } catch (Exception e) {
+            System.err.println("Failed to send message to ESB: " + e.getMessage());
+        }
+    }
 }
