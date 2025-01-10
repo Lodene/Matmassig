@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 @Entity
-public class Ingredients {
+public class Ingredient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -14,12 +14,20 @@ public class Ingredients {
     private String name;
 
     // constructor
-    public Ingredients() {
+    public Ingredient() {
         // Default constructor required by JPA
     }
 
-    public Ingredients(String name) {
+    public Ingredient(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "Ingredient{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 
     // Getters and Setters
@@ -39,4 +47,5 @@ public class Ingredients {
     public void setName(String name) {
         this.name = name;
     }
+
 }

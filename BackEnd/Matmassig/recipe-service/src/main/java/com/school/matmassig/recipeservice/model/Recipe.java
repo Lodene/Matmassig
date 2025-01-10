@@ -1,7 +1,8 @@
 package com.school.matmassig.recipeservice.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Table(name = "Recipes")
@@ -9,38 +10,65 @@ public class Recipe {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty("id")
     private Integer id;
 
+    @JsonProperty("title")
     private String title;
+
+    @JsonProperty("description")
     private String description;
 
     @Column(name = "ingredients_recipe_id")
-    private Integer ingredientsRecipeId;
+    @JsonProperty("ingredientsRecipeId")
+    private int ingredientsRecipeId;
 
+    @JsonProperty("instructions")
     private String instructions;
 
     @Column(name = "user_id", nullable = false)
-    private Integer userId;
+    @JsonProperty("userId")
+    private int userId;
 
     @Column(name = "created_at")
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @JsonProperty("createdAt")
+    private Date createdAt = new Date();
 
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt = LocalDateTime.now();
+    @JsonProperty("updatedAt")
+    private Date updatedAt = new Date();
 
     // Constructeur par défaut requis par JPA
     public Recipe() {
     }
 
-    public Recipe(String title, String description, Integer ingredientsRecipeId, String instructions,
-            Integer userId) {
+    public Recipe(
+            @JsonProperty("title") String title,
+            @JsonProperty("description") String description,
+            @JsonProperty("ingredientsRecipeId") int ingredientsRecipeId,
+            @JsonProperty("instructions") String instructions,
+            @JsonProperty("userId") int userId) {
         this.title = title;
         this.description = description;
         this.ingredientsRecipeId = ingredientsRecipeId;
         this.instructions = instructions;
         this.userId = userId;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
+        this.createdAt = new Date();
+        this.updatedAt = new Date();
+    }
+
+    @Override
+    public String toString() {
+        return "Recipe{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", ingredientsRecipeId=" + ingredientsRecipeId +
+                ", instructions='" + instructions + '\'' +
+                ", userId=" + userId +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
     }
 
     // Getters et Setters
@@ -68,11 +96,11 @@ public class Recipe {
         this.description = description;
     }
 
-    public Integer getIngredientsRecipeId() {
+    public int getIngredientsRecipeId() {
         return ingredientsRecipeId;
     }
 
-    public void setIngredientsRecipeId(Integer ingredientsRecipeId) {
+    public void setIngredientsRecipeId(int ingredientsRecipeId) {
         this.ingredientsRecipeId = ingredientsRecipeId;
     }
 
@@ -84,27 +112,27 @@ public class Recipe {
         this.instructions = instructions;
     }
 
-    public Integer getUserId() {
+    public int getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(int userId) {
         this.userId = userId;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public Date getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
-    public LocalDateTime getUpdatedAt() {
+    public Date getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(LocalDateTime updatedAt) {
+    public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
 }
