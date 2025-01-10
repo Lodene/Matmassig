@@ -19,13 +19,16 @@ public class AuthService {
     }
 
     public String login(String name, String password) {
+        // Vérifie si l'utilisateur existe
         User user = userRepository.findByName(name)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException("Invalid username")); // Message pour utilisateur inexistant
 
+        // Vérifie si le mot de passe est correct
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new RuntimeException("Invalid credentials");
+            throw new RuntimeException("Invalid password"); // Message pour mot de passe incorrect
         }
 
+        // Génère un token JWT si tout est correct
         return jwtUtils.generateToken(user);
     }
 
