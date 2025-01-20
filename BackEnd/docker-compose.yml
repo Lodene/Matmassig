@@ -86,6 +86,26 @@ services:
     networks:
       - app-network
 
+  inventory-service:
+    build:
+      context: ./Matmassig/inventory-service
+      dockerfile: Dockerfile
+    container_name: inventory-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres_matmassig:5432/matmassig
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: admin
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+    depends_on:
+      - postgres
+      - rabbitmq
+    ports:
+      - "8085:8082" # Port exposé pour le service inventory-service
+    restart: always
+    networks:
+      - app-network
+
   authentification-service:
     build:
       context: ./Matmassig/authentication-service

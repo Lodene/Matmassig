@@ -21,7 +21,7 @@ WORKDIR /app
 COPY --from=builder /app/target/inventory-service-*.jar app.jar
 
 # Exposer le port utilisé par l'application
-EXPOSE 8084
+EXPOSE 8085
 
 # Commande pour démarrer l'application
 ENTRYPOINT ["java", "-jar", "app.jar"]
