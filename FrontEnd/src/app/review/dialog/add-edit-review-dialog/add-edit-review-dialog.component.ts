@@ -41,10 +41,18 @@ export class AddEditReviewDialogComponent  implements OnInit, AfterViewInit {
   starColorG:StarRatingColor = StarRatingColor.golden;
 
   protected recipes: any[] = [
-  'Recette 1',
-  'Recette 2',
-  'Recette 3',
-  'Recette 4'
+    {
+      id: 1, name : 'Recette 1'
+    },
+    {
+      id: 2, name: 'Recette 2'
+    },
+    {
+      id: 3, name : 'Recette 3'
+    },
+    {
+      id: 4, name: 'Recette 4'
+    },
   ];
 
   public RecipeFormControl: FormControl<any> = new FormControl<any>(null);
@@ -104,7 +112,6 @@ export class AddEditReviewDialogComponent  implements OnInit, AfterViewInit {
     }
     // get the search keyword
     let search = this.RecipeFilterCtrl.value;
-    console.log(search);
     if (!search) {
       this.filteredRecipes.next(this.recipes.slice());
       return;
@@ -113,20 +120,8 @@ export class AddEditReviewDialogComponent  implements OnInit, AfterViewInit {
     }
     // filter the banks
     this.filteredRecipes.next(
-      this.recipes.filter(recipe => recipe.toLowerCase().indexOf(search) > -1)
+      this.recipes.filter(recipe => recipe.name.toLowerCase().indexOf(search) > -1)
     );
-  }
-
-  
-  onKey(value: any) { 
-    this.selectedRecipes = this.search(value.target.value as string);
-  }
-
-  triggerEvent(event: any) {
-    console.log(event);
-    if (this.selectedRecipes.length === 0) {
-      this.selectedRecipes = [...this.recipes];
-    }
   }
 
   search(value: string) {
@@ -145,9 +140,11 @@ export class AddEditReviewDialogComponent  implements OnInit, AfterViewInit {
   onSubmit() {
     if (this.form.valid) {
       this.dialogRef.close({
-        recipe: this.form.get('recipeControl')?.value,
-        rating: this.form.get('ratingControl')?.value,
-        description: this.form.get('descriptionControl')?.value
+        id: -1,
+        userId: 123,
+        recipeId: Number(this.form.get('recipeControl')?.value),
+        rating: Number(this.form.get('ratingControl')?.value),
+        comment: this.form.get('descriptionControl')?.value
       } as ReviewFormModel)
     }
   }

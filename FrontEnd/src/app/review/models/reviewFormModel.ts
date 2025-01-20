@@ -1,6 +1,8 @@
 export interface ReviewFormModel {
-    recipe: string,
-    rating: string,
-    description: string
+    id?: number,
+    userId?: number,
+    recipeId: number,
+    rating: number,
+    comment: string
 
 }
