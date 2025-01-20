@@ -10,13 +10,15 @@ import {
   MatDialogTitle,
 } from '@angular/material/dialog';
 import {MatSelect, MatSelectModule} from '@angular/material/select';
-import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import { CommonModule } from '@angular/common';
 import { ReplaySubject, Subject, take, takeUntil } from 'rxjs';
+import { StarRatingColor, StarReviewComponent } from 'src/app/generic-component/star-review/star-review.component';
+
 
 
 
@@ -25,11 +27,18 @@ import { ReplaySubject, Subject, take, takeUntil } from 'rxjs';
   selector: 'app-add-edit-review-dialog',
   templateUrl: './add-edit-review-dialog.component.html',
   styleUrls: ['./add-edit-review-dialog.component.scss'],
-  imports: [ReactiveFormsModule, NgxMatSelectSearchModule, CommonModule, FormsModule, MatDialogModule, MatSelectModule, MatButtonModule, MatFormFieldModule, MatInputModule]
+  imports: [StarReviewComponent, ReactiveFormsModule, NgxMatSelectSearchModule, CommonModule, FormsModule, MatDialogModule, MatSelectModule, MatButtonModule, MatFormFieldModule, MatInputModule]
 })
 export class AddEditReviewDialogComponent  implements OnInit, AfterViewInit {
 
-  /** list of banks */
+  // star rating config
+  rating:number = 2;
+  starCount:number = 5;
+  starColor:StarRatingColor = StarRatingColor.accent;
+  starColorP:StarRatingColor = StarRatingColor.primary;
+  starColorW:StarRatingColor = StarRatingColor.warn;
+  starColorG:StarRatingColor = StarRatingColor.golden;
+
   protected recipes: any[] = [
   'Recette 1',
   'Recette 2',
@@ -37,14 +46,18 @@ export class AddEditReviewDialogComponent  implements OnInit, AfterViewInit {
   'Recette 4'
   ];
 
-  /** control for the selected bank */
   public RecipeFormControl: FormControl<any> = new FormControl<any>(null);
-
-  /** control for the MatSelect filter keyword */
   public RecipeFilterCtrl: FormControl<any> = new FormControl<string>('');
-
-  /** list of banks filtered by search keyword */
   public filteredRecipes: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+
+  ratingControl = new FormControl('');
+  descriptionControl = new FormControl('');
+
+  form = new FormGroup({
+    recipeControl: this.RecipeFormControl,
+    ratingControl: this.ratingControl,
+    descriptionControl: this.descriptionControl,    
+});
 
   @ViewChild('singleSelect', { static: true })
   singleSelect!: MatSelect;
@@ -55,10 +68,11 @@ export class AddEditReviewDialogComponent  implements OnInit, AfterViewInit {
 
   selectedRecipes = [...this.recipes];
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: {name: string}) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: {name: string},
+  private dialogRef: MatDialogRef<AddEditReviewDialogComponent>) { }
 
   ngOnInit() {
-    this.RecipeFormControl.setValue(this.recipes);
+    this.RecipeFormControl.setValue('');
     this.filteredRecipes.next(this.recipes.slice());
     this.RecipeFilterCtrl.valueChanges
     .pipe(takeUntil(this._onDestroy))
@@ -84,7 +98,6 @@ export class AddEditReviewDialogComponent  implements OnInit, AfterViewInit {
   }
 
   protected filterRecipe() {
-    console.log('filtering...')
     if (!this.recipes) {
       return;
     }
@@ -119,4 +132,23 @@ export class AddEditReviewDialogComponent  implements OnInit, AfterViewInit {
     let filter = value.toLowerCase();
   return this.recipes.filter(option => option.toLowerCase().includes(filter));
   }
+
+  onRatingChanged(rating: number){
+    this.rating = rating;
+    this.form.get('ratingControl')?.setValue(String(rating))
+  }
+
+  // //     recipeControl: this.RecipeFormControl,
+  //   ratingControl: this.ratingControl,
+  //   descriptionControl: this.descriptionControl,  
+  onSubmit() {
+    if (this.form.valid) {
+      this.dialogRef.close({
+        recipe: this.form.get('recipeControl')?.value,
+        rating: this.form.get('ratingControl')?.value,
+        description: this.form.get('descriptionControl')?.value
+      })
+    }
+  }
+
 }

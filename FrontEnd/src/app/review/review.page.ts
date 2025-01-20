@@ -85,7 +85,7 @@ export class ReviewPage implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
       if (result !== undefined) {
-        // this.animal.set(result);
+        console.log(result);
       }
     });
   }
