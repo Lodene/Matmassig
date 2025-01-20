@@ -1,13 +1,13 @@
 package com.school.matmassig.orchestrator.model;
 
-public class DeleteRecipeRequest {
+public class DeleteReviewRequest {
 
-    private Integer id; // Recipe ID
+    private Integer id; // Review ID
     private Integer userId;
 
-    public DeleteRecipeRequest() {}
+    public DeleteReviewRequest() {}
 
-    public DeleteRecipeRequest(Integer id, Integer userId) {
+    public DeleteReviewRequest(Integer id, Integer userId) {
         this.id = id;
         this.userId = userId;
     }
@@ -30,7 +30,7 @@ public class DeleteRecipeRequest {
 
     @Override
     public String toString() {
-        return "DeleteRecipeRequest{" +
+        return "DeleteReviewRequest{" +
                 "id=" + id +
                 ", userId=" + userId +
                 '}';

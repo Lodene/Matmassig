@@ -39,11 +39,8 @@ public class RecipeController {
 
     // Endpoint: Suppression d'une recette
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteRecipe(@RequestBody DeleteRecipeRequest deleteRequest) {
-        System.out.println("DEBUG: Delete recipe request received: " + deleteRequest);
-
-        // Publier l'objet contenant uniquement l'id
-        publisherService.publishMessage(EXCHANGE_NAME, "recipe.delete", deleteRequest);
+    public ResponseEntity<String> deleteRecipe(@RequestBody DeleteRecipeRequest deleteRecipeRequest) {
+        publisherService.publishMessage(EXCHANGE_NAME, "recipe.delete", deleteRecipeRequest);
         return ResponseEntity.ok("Recipe delete request sent to RabbitMQ");
     }
 
