@@ -1,27 +1,50 @@
 package com.school.matmassig.reviewservice.service;
 
+import com.school.matmassig.reviewservice.model.Review;
+import com.school.matmassig.reviewservice.repository.ReviewRepository;
+import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.school.matmassig.reviewservice.model.Review;
-import com.school.matmassig.reviewservice.repository.ReviewRepository;
-
 @Service
 public class ListenerSerice {
 
-    @Autowired
-    private ReviewRepository reviewRepository;
+    private final ReviewRepository reviewRepository;
+
+    public ListenerSerice(ReviewRepository reviewRepository) {
+        this.reviewRepository = reviewRepository;
+    }
 
     @Transactional
     public void saveReview(Review review) {
-        // Sauvegarder la recette
-        Review savedReview = reviewRepository.save(review);
-        System.out.println("Recipe saved successfully!" + review);
+        reviewRepository.save(review);
+        System.out.println("Review saved: " + review);
+    }
 
-        System.out.println("Recipe and ingredients saved successfully!");
+    @Transactional
+    public void deleteReview(Integer id) {
+        reviewRepository.deleteById(id);
+        System.out.println("Review deleted with ID: " + id);
+    }
+
+    @Transactional
+    public void updateReview(Integer id, Review updatedReview) {
+        Review review = reviewRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Review not found with ID: " + id));
+        review.setRecipeId(updatedReview.getRecipeId());
+        review.setUserId(updatedReview.getUserId());
+        review.setRating(updatedReview.getRating());
+        review.setComment(updatedReview.getComment());
+        reviewRepository.save(review);
+        System.out.println("Review updated: " + review);
+    }
+
+    public List<Review> getReviewsByUserId(Integer userId) {
+        return reviewRepository.findByUserId(userId);
+    }
+
+    public List<Review> getReviewsByRecipeId(Integer recipeId) {
+        return reviewRepository.findByRecipeId(recipeId);
     }
 }
