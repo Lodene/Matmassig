@@ -1,0 +1,22 @@
+.recipe-description {
+    overflow: hidden;
+    text-wrap: nowrap;
+    text-overflow: ellipsis;
+}
+
+.button-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+}
+
+.footer-md {
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important
+}
+
+.title-wrapper {
+    display: flex;
+    align-items: center;
+}
