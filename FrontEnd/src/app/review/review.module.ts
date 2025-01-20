@@ -6,6 +6,8 @@ import { ReviewPage } from './review.page';
 import { ExploreContainerComponentModule } from '../explore-container/explore-container.module';
 
 import { ReviewPageRoutingModule } from './review-routing.module';
+import { MatDialogModule } from '@angular/material/dialog';
+import { AddEditReviewDialogComponent } from './dialog/add-edit-review-dialog/add-edit-review-dialog.component';
 
 @NgModule({
   imports: [
@@ -13,7 +15,7 @@ import { ReviewPageRoutingModule } from './review-routing.module';
     CommonModule,
     FormsModule,
     ExploreContainerComponentModule,
-    ReviewPageRoutingModule
+    ReviewPageRoutingModule 
   ],
   declarations: [ReviewPage]
 })
