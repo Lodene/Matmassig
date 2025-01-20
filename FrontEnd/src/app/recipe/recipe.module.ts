@@ -9,6 +9,7 @@ import { RecipePageRoutingModule } from './recipe-routing.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
+import { AddRecipeModalComponent } from './modal/add-recipe-modal/add-recipe-modal.component';
 
 @NgModule({
   imports: [
@@ -20,6 +21,7 @@ import { MatButtonModule } from '@angular/material/button';
     MatIconModule,
     MatMenuModule,
     MatButtonModule,
+    AddRecipeModalComponent
   ],
   declarations: [RecipePage]
 })
