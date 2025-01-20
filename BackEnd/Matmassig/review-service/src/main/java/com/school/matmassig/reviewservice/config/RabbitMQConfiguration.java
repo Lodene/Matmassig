@@ -37,11 +37,11 @@ public class RabbitMQConfiguration {
 
     @Bean
     public Binding reviewGetUserBinding(Queue reviewQueue, TopicExchange topicExchange) {
-        return BindingBuilder.bind(reviewQueue).to(topicExchange).with("review.getUser");
+        return BindingBuilder.bind(reviewQueue).to(topicExchange).with("review.getbyuser");
     }
 
     @Bean
     public Binding reviewGetRecipeBinding(Queue reviewQueue, TopicExchange topicExchange) {
-        return BindingBuilder.bind(reviewQueue).to(topicExchange).with("review.getRecipe");
+        return BindingBuilder.bind(reviewQueue).to(topicExchange).with("review.getbyrecipe");
     }
 }
