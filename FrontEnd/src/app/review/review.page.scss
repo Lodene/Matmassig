@@ -1,3 +1,15 @@
 .filters-wrapper {
     display: flex;
 }
+
+.button-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+}
+
+.footer-md {
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important
+}

@@ -1,5 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { Reviews } from 'src/models/review';
+import { BottomSheetComponent } from '../generic-component/bottom-sheet/bottom-sheet.component';
+import { MatDialog } from '@angular/material/dialog';
+import { AddEditReviewDialogComponent } from './dialog/add-edit-review-dialog/add-edit-review-dialog.component';
 
 @Component({
   selector: 'app-review',
@@ -14,6 +18,10 @@ export class ReviewPage implements OnInit {
   results: Reviews[] = [];
   starRating: number = 0;
   nameQuery: string = '';
+  readonly dialog = inject(MatDialog);
+  private _bottomSheet = inject(MatBottomSheet);
+
+
   constructor() {}
   ngOnInit(): void {
     this.mockUpReviews();
@@ -56,5 +64,30 @@ export class ReviewPage implements OnInit {
       ]
   }
 
+  openBottomSheet() {
+    this._bottomSheet.open(BottomSheetComponent, {
+          data: [{
+            name: 'Add a review',
+            description: 'Add your a review for a recipe',
+            url: '/tabs/recipe/add'
+          }]
+        }).afterDismissed().subscribe((data: any ) => {
+          // redirect ou modale
+          console.log(data);
+          this.openDialog();
+        });
+  }
+
+  openDialog(): void {
+    const dialogRef = this.dialog.open(AddEditReviewDialogComponent, {
+      data: {name: ""},
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      if (result !== undefined) {
+        // this.animal.set(result);
+      }
+    });
+  }
 
 }
