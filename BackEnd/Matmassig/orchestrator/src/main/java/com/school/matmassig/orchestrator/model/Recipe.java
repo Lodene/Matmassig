@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Recipe {
 
+    @JsonProperty("id")
+    private Integer id;
+
     @JsonProperty("title")
     private String title;
 
@@ -20,6 +23,13 @@ public class Recipe {
     private Integer userId;
 
     // Getters et Setters
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
     public String getTitle() {
         return title;
     }
