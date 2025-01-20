@@ -1,5 +1,5 @@
 # Utiliser une image de base contenant Maven et OpenJDK
-FROM maven:3.9.4-eclipse-temurin-17 as builder
+FROM maven:3.9.4-eclipse-temurin-17 as build
 
 # Définir le répertoire de travail pour la compilation
 WORKDIR /app
@@ -18,7 +18,7 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 
 # Copier le fichier jar de l'application dans le conteneur
-COPY target/review-service-*.jar app.jar
+COPY --from=build app/target/review-service-*.jar app.jar
 
 # Exposer le port utilisé par l'application
 EXPOSE 8082
