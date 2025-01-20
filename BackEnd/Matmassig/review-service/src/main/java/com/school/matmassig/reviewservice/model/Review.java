@@ -15,6 +15,19 @@ public class Review {
     private String comment;
     private LocalDateTime createdAt;
 
+    // toString
+    @Override
+    public String toString() {
+        return "Review{" +
+                "id=" + id +
+                ", recipeId=" + recipeId +
+                ", userId=" + userId +
+                ", rating=" + rating +
+                ", comment='" + comment + '\'' +
+                ", createdAt=" + createdAt +
+                '}';
+    }
+
     // contstructor
     public Review() {
         // Default constructor required by JPA
