@@ -1,6 +1,7 @@
 package com.school.matmassig.orchestrator.controller;
 
 import com.school.matmassig.orchestrator.model.Review;
+import com.school.matmassig.orchestrator.model.DeleteReviewRequest;
 import com.school.matmassig.orchestrator.service.RabbitMQPublisherService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,8 +34,8 @@ public class ReviewController {
 
     // Endpoint: Suppression d'une review
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteReview(@RequestBody Review review) {
-        publisherService.publishMessage(EXCHANGE_NAME, "review.delete", review);
+    public ResponseEntity<String> deleteReview(@RequestBody DeleteReviewRequest deleteReviewRequest) {
+        publisherService.publishMessage(EXCHANGE_NAME, "review.delete", deleteReviewRequest);
         return ResponseEntity.ok("Review delete request sent to RabbitMQ");
     }
 

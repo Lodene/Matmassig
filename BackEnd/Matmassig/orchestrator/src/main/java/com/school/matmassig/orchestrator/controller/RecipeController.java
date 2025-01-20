@@ -2,6 +2,7 @@ package com.school.matmassig.orchestrator.controller;
 
 import com.school.matmassig.orchestrator.model.RecipeMessage;
 import com.school.matmassig.orchestrator.model.PaginationRequest;
+import com.school.matmassig.orchestrator.model.DeleteRecipeRequest;
 import com.school.matmassig.orchestrator.service.RabbitMQPublisherService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,10 +39,8 @@ public class RecipeController {
 
     // Endpoint: Suppression d'une recette
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteRecipe(@RequestBody RecipeMessage recipeMessage) {
-        System.out.println("DEBUG: Recipe delete request received");
-        System.out.println("DEBUG: Recipe ID: " + recipeMessage.getRecipe().getId());
-        publisherService.publishMessage(EXCHANGE_NAME, "recipe.delete", recipeMessage.getRecipe().getId());
+    public ResponseEntity<String> deleteRecipe(@RequestBody DeleteRecipeRequest deleteRecipeRequest) {
+        publisherService.publishMessage(EXCHANGE_NAME, "recipe.delete", deleteRecipeRequest);
         return ResponseEntity.ok("Recipe delete request sent to RabbitMQ");
     }
 
