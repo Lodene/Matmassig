@@ -9,6 +9,8 @@ import {
 import {MatListModule} from '@angular/material/list';
 import {MatButtonModule} from '@angular/material/button';
 import { BottomSheetComponent } from '../generic-component/bottom-sheet/bottom-sheet.component';
+import { AddRecipeModalComponent } from './modal/add-recipe-modal/add-recipe-modal.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-recipe',
@@ -23,6 +25,7 @@ export class RecipePage implements OnInit {
   nameQuery: string = '';
 
   private _bottomSheet = inject(MatBottomSheet);
+  private readonly dialogAdd = inject(MatDialog);
 
   
   constructor() {
@@ -59,10 +62,29 @@ export class RecipePage implements OnInit {
       data: [{
         name: 'Add a recipe',
         description: 'Add your favorite new recipe',
-        url: '/tabs/recipe/add'
+        url: 'recipe/add'
       }]
     }).afterDismissed().subscribe((data: any ) => {
-      // redirect ou modale
+      if (data !== undefined) {
+        switch (data) {
+          case "recipe/add":
+            this.openDialogAdd();
+            break;
+          default:
+            console.log("nothing");
+        }
+      }
+    });
+  }
+
+  openDialogAdd(): void {
+    const dialogRef = this.dialogAdd.open(AddRecipeModalComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      if (result !== undefined) {
+        console.log(result);
+      }
     });
   }
 
