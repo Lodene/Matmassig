@@ -11,6 +11,8 @@ public class RabbitMQConfig {
     public static final String RECIPE_QUEUE = "recipe-queue";
     public static final String REVIEW_QUEUE = "review-queue";
 
+    public static final String ITEM_QUEUE = "item-queue";
+
     @Bean
     public TopicExchange topicExchange() {
         return new TopicExchange(EXCHANGE_NAME);
@@ -27,6 +29,11 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    public Queue itemQueue() {
+        return new Queue(ITEM_QUEUE, false);
+    }
+
+    @Bean
     public Binding recipeBinding(Queue recipeQueue, TopicExchange exchange) {
         return BindingBuilder.bind(recipeQueue).to(exchange).with("recipe.#");
     }
@@ -34,5 +41,10 @@ public class RabbitMQConfig {
     @Bean
     public Binding reviewBinding(Queue reviewQueue, TopicExchange exchange) {
         return BindingBuilder.bind(reviewQueue).to(exchange).with("review.#");
+    }
+
+    @Bean
+    public Binding itemBinding(Queue itemQueue, TopicExchange exchange) {
+        return BindingBuilder.bind(itemQueue).to(exchange).with("item.#");
     }
 }
