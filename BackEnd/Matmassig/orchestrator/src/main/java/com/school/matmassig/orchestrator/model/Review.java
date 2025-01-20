@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Review {
 
+    @JsonProperty("id")
+    private Integer id;
+
     @JsonProperty("userId")
     private Integer userId;
 
@@ -17,6 +20,13 @@ public class Review {
     private String comment;
 
     // Getters et Setters
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
     public Integer getUserId() {
         return userId;
     }
