@@ -18,6 +18,7 @@ import {MatInputModule} from '@angular/material/input';
 import { CommonModule } from '@angular/common';
 import { ReplaySubject, Subject, take, takeUntil } from 'rxjs';
 import { StarRatingColor, StarReviewComponent } from 'src/app/generic-component/star-review/star-review.component';
+import { ReviewFormModel } from '../../models/reviewFormModel';
 
 
 
@@ -147,7 +148,7 @@ export class AddEditReviewDialogComponent  implements OnInit, AfterViewInit {
         recipe: this.form.get('recipeControl')?.value,
         rating: this.form.get('ratingControl')?.value,
         description: this.form.get('descriptionControl')?.value
-      })
+      } as ReviewFormModel)
     }
   }
 
