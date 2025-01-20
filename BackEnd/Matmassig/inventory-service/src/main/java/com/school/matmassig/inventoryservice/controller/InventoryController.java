@@ -1,6 +1,7 @@
 package com.school.matmassig.inventoryservice.controller;
 
 import com.school.matmassig.inventoryservice.model.InventoryItem;
+import com.school.matmassig.inventoryservice.service.InventoryProducer;
 import com.school.matmassig.inventoryservice.service.InventoryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,9 +13,11 @@ import java.util.List;
 public class InventoryController {
 
     private final InventoryService service;
+    private final InventoryProducer producer;
 
-    public InventoryController(InventoryService service) {
+    public InventoryController(InventoryService service, InventoryProducer producer) {
         this.service = service;
+        this.producer = producer;
     }
 
     @PostMapping
@@ -36,5 +39,11 @@ public class InventoryController {
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<InventoryItem>> getItemsByUserId(@PathVariable Integer userId) {
         return ResponseEntity.ok(service.getItemsByUserId(userId));
+    }
+
+    @GetMapping("/send")
+    public String sendMessage(@RequestParam String message) {
+        producer.sendMessage(message);
+        return "Message envoyé: " + message;
     }
 }
