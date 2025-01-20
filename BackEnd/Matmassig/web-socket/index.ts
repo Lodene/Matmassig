@@ -2,7 +2,7 @@ import * as WebSocket from 'ws';
 import * as http from 'http';
 
 // Création d'un serveur HTTP
-const server = http.createServer((req, res) => {
+const server: http.Server = http.createServer((req: http.IncomingMessage, res: http.ServerResponse) => {
   res.writeHead(200, { 'Content-Type': 'text/plain' });
   res.end('WebSocket server is running\n');
 });
@@ -14,7 +14,7 @@ const wss = new WebSocket.Server({ server });
 const emailToClients: Map<string, WebSocket[]> = new Map();
 
 // Gestion des connexions clients
-wss.on('connection', (ws: WebSocket, req) => {
+wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
   const params = new URLSearchParams(req.url?.split('?')[1] || '');
   const email = params.get('email');
 
@@ -32,14 +32,25 @@ wss.on('connection', (ws: WebSocket, req) => {
   emailToClients.get(email)?.push(ws);
 
   // Gestion des messages entrants
-  ws.on('message', (message: string) => {
-    console.log(`Message reçu de ${email}:`, message);
+  ws.on('message', (message: Buffer) => {
+    // Convertir le Buffer en chaîne de caractères
+    const textMessage = message.toString();
 
-    // Exemple : envoyer un message uniquement au propriétaire du canal
+    console.log(`Message reçu de ${email}:`, textMessage);
+
+    // Si le message est un JSON, parsez-le
+    try {
+      const parsedMessage = JSON.parse(textMessage);
+      console.log('Message JSON interprété :', parsedMessage);
+    } catch (e) {
+      console.log('Le message n’est pas un JSON valide.');
+    }
+
+    // Répondre au client
     const clients = emailToClients.get(email) || [];
     clients.forEach(client => {
       if (client.readyState === WebSocket.OPEN) {
-        client.send(`Message privé pour ${email}: ${message}`);
+        client.send(`Message privé pour ${email}: ${textMessage}`);
       }
     });
   });
