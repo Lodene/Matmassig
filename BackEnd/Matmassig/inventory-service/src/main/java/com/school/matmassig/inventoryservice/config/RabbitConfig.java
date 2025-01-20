@@ -10,12 +10,12 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitConfig {
 
     public static final String QUEUE_NAME = "esb-queue";
-    public static final String EXCHANGE_NAME = "inventory-esb";
+    public static final String EXCHANGE_NAME = "item-esb";
 
-    public static final String ROUTING_KEY_ADD = "add-item";
-    public static final String ROUTING_KEY_DELETE = "delete-item";
-    public static final String ROUTING_KEY_UPDATE = "update-item";
-    public static final String ROUTING_KEY_GET = "get-items";
+    public static final String ROUTING_KEY_ADD = "item.create";
+    public static final String ROUTING_KEY_DELETE = "item.delete";
+    public static final String ROUTING_KEY_UPDATE = "item.update";
+    public static final String ROUTING_KEY_GET = "item.getbyuser";
 
     @Bean
     public Queue queue() {
