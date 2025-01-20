@@ -4,6 +4,8 @@ import { Reviews } from 'src/models/review';
 import { BottomSheetComponent } from '../generic-component/bottom-sheet/bottom-sheet.component';
 import { MatDialog } from '@angular/material/dialog';
 import { AddEditReviewDialogComponent } from './dialog/add-edit-review-dialog/add-edit-review-dialog.component';
+import { ReviewFormModel } from './models/reviewFormModel';
+import { HttpClientService } from '../services/http-client.service';
 
 @Component({
   selector: 'app-review',
@@ -22,7 +24,7 @@ export class ReviewPage implements OnInit {
   private _bottomSheet = inject(MatBottomSheet);
 
 
-  constructor() {}
+  constructor(private httpClientService: HttpClientService) {}
   ngOnInit(): void {
     this.mockUpReviews();
     this.results = [...this.reviews];
@@ -82,10 +84,12 @@ export class ReviewPage implements OnInit {
     const dialogRef = this.dialog.open(AddEditReviewDialogComponent, {
       data: {name: ""},
     });
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result: ReviewFormModel | undefined) => {
       console.log('The dialog was closed');
       if (result !== undefined) {
-        console.log(result);
+        this.httpClientService.postReview(result).subscribe((result: unknown) => {
+          console.log(result);
+        })
       }
     });
   }
