@@ -8,6 +8,7 @@ import { ExploreContainerComponentModule } from '../explore-container/explore-co
 import { ReviewPageRoutingModule } from './review-routing.module';
 import { MatDialogModule } from '@angular/material/dialog';
 import { AddEditReviewDialogComponent } from './dialog/add-edit-review-dialog/add-edit-review-dialog.component';
+import { StarReviewComponent } from '../generic-component/star-review/star-review.component';
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import { AddEditReviewDialogComponent } from './dialog/add-edit-review-dialog/ad
     CommonModule,
     FormsModule,
     ExploreContainerComponentModule,
-    ReviewPageRoutingModule 
+    ReviewPageRoutingModule,
+    StarReviewComponent
   ],
   declarations: [ReviewPage]
 })
