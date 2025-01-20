@@ -6,6 +6,8 @@ import com.school.matmassig.authenticationservice.util.JwtUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class AuthService {
     private final UserRepository userRepository;
@@ -18,29 +20,29 @@ public class AuthService {
         this.jwtUtils = jwtUtils;
     }
 
-    public String login(String name, String password) {
-        // Vérifie si l'utilisateur existe
-        User user = userRepository.findByName(name)
-                .orElseThrow(() -> new RuntimeException("Invalid username")); // Message pour utilisateur inexistant
+    public String login(String email, String password) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Invalid email"));
 
-        // Vérifie si le mot de passe est correct
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new RuntimeException("Invalid password"); // Message pour mot de passe incorrect
+            throw new RuntimeException("Invalid password");
         }
 
-        // Génère un token JWT si tout est correct
         return jwtUtils.generateToken(user);
     }
 
-    public void signup(String name, String email, String password) {
-        if (userRepository.existsByName(name) || userRepository.existsByEmail(email)) {
-            throw new RuntimeException("Name or email already exists");
+    public void signup(String email, String name, String password) {
+        if (userRepository.existsByEmail(email)) {
+            throw new RuntimeException("Email already in use");
         }
 
         User user = new User();
-        user.setName(name);
         user.setEmail(email);
+        user.setName(name);
         user.setPassword(passwordEncoder.encode(password));
+        user.setRole("USER");
+        user.setCreatedAt(LocalDateTime.now());
+        user.setUpdatedAt(LocalDateTime.now());
 
         userRepository.save(user);
     }
