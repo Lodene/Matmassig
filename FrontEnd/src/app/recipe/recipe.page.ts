@@ -1,0 +1,69 @@
+import { Component, inject, OnInit } from '@angular/core';
+import { Ingredient } from 'src/models/ingredient';
+import { Recipe } from 'src/models/recipe';
+import {
+  MatBottomSheet,
+  MatBottomSheetModule,
+  MatBottomSheetRef,
+} from '@angular/material/bottom-sheet';
+import {MatListModule} from '@angular/material/list';
+import {MatButtonModule} from '@angular/material/button';
+import { BottomSheetComponent } from '../generic-component/bottom-sheet/bottom-sheet.component';
+
+@Component({
+  selector: 'app-recipe',
+  templateUrl: 'recipe.page.html',
+  styleUrls: ['recipe.page.scss'],
+  standalone: false,
+})
+export class RecipePage implements OnInit {
+
+  results: Recipe[] = [];
+  recipes: Recipe[] = [];
+  nameQuery: string = '';
+
+  private _bottomSheet = inject(MatBottomSheet);
+
+  
+  constructor() {
+  }
+  ngOnInit(): void {
+    this.mockUpRecipe();
+  }
+
+  mockUpRecipe(): void {
+    this.recipes = [
+      new Recipe(0, "Pâtes à la bolognaisePâtes à la bolognaisePâtes à la bolognaise 1", "I'm a very long recipe, look at how long I am. In fact, i'm so long that i'm starting to fall. Actually, I'm not that long and i'm starting to have no idea what to write to make this text any longer", [new Ingredient(0, "carrot", 2, "https://minecraft.wiki/images/Carrot_JE3_BE2.png?5e9c8"),
+        new Ingredient(1, "potato", 5, "https://minecraft.wiki/images/Potato_JE3_BE2.png?27685")], 90, 4.2),
+      new Recipe(0, "Recipe 1", "I'm a very long recipe, look at how long I am. In fact, i'm so long that i'm starting to fall. Actually, I'm not that long and i'm starting to have no idea what to write to make this text any longer", [new Ingredient(0, "carrot", 2, "https://minecraft.wiki/images/Carrot_JE3_BE2.png?5e9c8"),
+        new Ingredient(1, "potato", 5, "https://minecraft.wiki/images/Potato_JE3_BE2.png?27685")], 90, 4.2)];
+    this.results = [...this.recipes];
+  }
+
+  handleInput(event: Event): void {
+    const target = event.target as HTMLIonSearchbarElement;
+    this.nameQuery = target.value?.toLowerCase() || '';
+    this.filterReviews(this.nameQuery);
+  }
+
+  filterReviews(nameQuery: string) {
+    this.results = this.recipes.filter((r) => 
+      r.title.toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu, '').includes(nameQuery.toLowerCase()) ||
+      r.title.toLowerCase().includes(nameQuery.toLowerCase())
+    );
+  }
+
+
+  openBottomSheet(): void {
+    this._bottomSheet.open(BottomSheetComponent, {
+      data: [{
+        name: 'Add a recipe',
+        description: 'Add your favorite new recipe',
+        url: '/tabs/recipe/add'
+      }]
+    }).afterDismissed().subscribe((data: any ) => {
+      // redirect ou modale
+    });
+  }
+
+}

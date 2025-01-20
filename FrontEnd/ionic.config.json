@@ -1,0 +1,7 @@
+{
+  "name": "matmassig-app",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
