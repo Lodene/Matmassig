@@ -11,8 +11,8 @@
             placeholderLabel="Search recipes..." 
             [formControl]="RecipeFilterCtrl"></ngx-mat-select-search>
           </mat-option>
-          <mat-option *ngFor="let recipe of filteredRecipes | async" [value]="recipe">
-            {{recipe}}
+          <mat-option *ngFor="let recipe of filteredRecipes | async" [value]="recipe.id">
+            {{recipe.name}}
           </mat-option>
         </mat-select>
       </mat-form-field>
