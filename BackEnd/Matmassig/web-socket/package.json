@@ -1,0 +1,19 @@
+{
+  "name": "websocket-service",
+  "version": "1.0.0",
+  "description": "Serveur WebSocket",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "websocket-service": "file:",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.7",
+    "@types/ws": "^8.5.13",
+    "typescript": "^5.7.3"
+  }
+}
