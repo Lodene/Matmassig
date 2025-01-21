@@ -2,8 +2,11 @@ package com.school.matmassig.orchestrator.model;
 
 public class DeleteRecipeRequest {
 
+    private String email;
+
     private Integer id; // Recipe ID
     private Integer userId;
+
 
     public DeleteRecipeRequest() {}
 
@@ -12,6 +15,14 @@ public class DeleteRecipeRequest {
         this.userId = userId;
     }
 
+    // Getters et Setters
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
     public Integer getId() {
         return id;
     }
