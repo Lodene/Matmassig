@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { Reviews } from 'src/models/review';
 import { BottomSheetComponent } from '../generic-component/bottom-sheet/bottom-sheet.component';
@@ -6,14 +6,19 @@ import { MatDialog } from '@angular/material/dialog';
 import { AddEditReviewDialogComponent } from './dialog/add-edit-review-dialog/add-edit-review-dialog.component';
 import { ReviewFormModel } from './models/reviewFormModel';
 import { HttpClientService } from '../services/http-client.service';
+import { MatIcon, MatIconModule } from '@angular/material/icon';
+import { Recipe } from 'src/models/recipe';
 
 @Component({
   selector: 'app-review',
   templateUrl: 'review.page.html',
   styleUrls: ['review.page.scss'],
-  standalone: false,
+  standalone: false
 })
 export class ReviewPage implements OnInit {
+
+
+  @Input() deleteMode: boolean = false;
 
   reviews: Reviews[] = [];
   //  query result
@@ -22,7 +27,7 @@ export class ReviewPage implements OnInit {
   nameQuery: string = '';
   readonly dialog = inject(MatDialog);
   private _bottomSheet = inject(MatBottomSheet);
-
+  selectedRecipeForDelete: Reviews[] = []
 
   constructor(private httpClientService: HttpClientService) {}
   ngOnInit(): void {
@@ -60,9 +65,9 @@ export class ReviewPage implements OnInit {
 
   private mockUpReviews(): void {
       this.reviews = [
-        new Reviews("review1", "content1", 5),
-        new Reviews("review2", "content2", 2),
-        new Reviews("review3", "content3", 3),
+        new Reviews(0, "review1", "content1", 5),
+        new Reviews(1, "review2", "content2", 2),
+        new Reviews(2, "review3", "content3", 3),
       ]
   }
 
@@ -93,5 +98,28 @@ export class ReviewPage implements OnInit {
       }
     });
   }
+  deleteModeActivation(): void {
+    this.selectedRecipeForDelete = [];
+    this.deleteMode = !this.deleteMode;
+  }
+  getDeleteIcon() : string {
+    return this.deleteMode ? 'cancel' : 'delete';
+  }
 
+  checkedRecipeDelete(review: Reviews) {
+    if(!this.selectedRecipeForDelete.includes(review)) 
+    {
+      this.selectedRecipeForDelete.push(review);
+    } else {
+      this.selectedRecipeForDelete = this.selectedRecipeForDelete.filter(
+        r => r.id !== review.id);
+    }
+    console.log(this.selectedRecipeForDelete)
+
+  }
+
+
+  deleteSelectedReviews():void {
+    console.log(this.selectedRecipeForDelete);
+  }
 }
