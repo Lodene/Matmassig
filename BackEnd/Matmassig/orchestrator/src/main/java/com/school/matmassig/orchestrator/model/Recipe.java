@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Recipe {
 
+    @JsonProperty("email")
+    private String email;
+
     @JsonProperty("id")
     private Integer id;
 
@@ -23,6 +26,14 @@ public class Recipe {
     private Integer userId;
 
     // Getters et Setters
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public Integer getId() {
         return id;
     }

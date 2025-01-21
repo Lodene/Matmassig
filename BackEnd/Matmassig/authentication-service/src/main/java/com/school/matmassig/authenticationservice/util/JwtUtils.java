@@ -29,6 +29,7 @@ public class JwtUtils implements InitializingBean {
         return Jwts.builder()
                 .setSubject(user.getEmail())
                 .claim("roles", user.getRole())
+                .claim("userId", user.getId())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 3600000)) // Expire après 1 heure
                 .signWith(secretKey, SignatureAlgorithm.HS512)
