@@ -1,9 +1,13 @@
 package com.school.matmassig.reviewservice.model;
 
 import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
 
 @Entity
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -57,63 +57,87 @@ public class RabbitMQMessageProcessor {
         }
     }
 
-    private Review processCreateReview(String message) throws Exception {
+    private Map<String, Object> processCreateReview(String message) throws Exception {
+        Map<String, Object> result = new HashMap<>();
         Review review = objectMapper.readValue(message, Review.class);
         listenerService.saveReview(review);
+        result.put("email", extractEmail(message));
+        result.put("review", review);
         System.out.println("Review created: " + review);
-        return review;
+        return result;
     }
 
-    private Map<String, Integer> processDeleteReview(String message) throws Exception {
-        // Désérialisez le message JSON en un objet Review
+    private Map<String, Object> processDeleteReview(String message) throws Exception {
+        Map<String, Object> result = new HashMap<>();
         Review review = objectMapper.readValue(message, Review.class);
 
-        // Assurez-vous que l'ID n'est pas null
         if (review.getId() == null) {
             throw new IllegalArgumentException("ID is required for deleting a review.");
         }
 
-        // Retournez une Map contenant l'ID et l'userId
-        Map<String, Integer> response = new HashMap<>();
-        response.put("id", review.getId());
-        response.put("userId", review.getUserId());
-
-        // Supprimez la review en utilisant l'ID
         listenerService.deleteReview(review.getId());
+        result.put("email", extractEmail(message));
+        result.put("id", review.getId());
+        result.put("userId", review.getUserId());
         System.out.println("Review deleted with ID: " + review.getId() + " and user ID: " + review.getUserId());
 
-        return response;
+        return result;
     }
 
-    private Review processUpdateReview(String message) throws Exception {
+    private Map<String, Object> processUpdateReview(String message) throws Exception {
+        Map<String, Object> result = new HashMap<>();
         Review updatedReview = objectMapper.readValue(message, Review.class);
         listenerService.updateReview(updatedReview.getId(), updatedReview);
+        result.put("email", extractEmail(message));
+        result.put("review", updatedReview);
         System.out.println("Review updated: " + updatedReview);
-        return updatedReview;
+        return result;
     }
 
-    private List<Review> processGetUserReviews(String message) {
+    private Map<String, Object> processGetUserReviews(String message) {
+        Map<String, Object> result = new HashMap<>();
         Integer userId = Integer.parseInt(message);
         List<Review> reviews = listenerService.getReviewsByUserId(userId);
+        result.put("email", extractEmail(message));
+        result.put("reviews", reviews);
         System.out.println("Reviews for user " + userId + ": " + reviews);
-        return reviews;
+        return result;
     }
 
-    private List<Review> processGetRecipeReviews(String message) {
+    private Map<String, Object> processGetRecipeReviews(String message) {
+        Map<String, Object> result = new HashMap<>();
         Integer recipeId = Integer.parseInt(message);
         List<Review> reviews = listenerService.getReviewsByRecipeId(recipeId);
+        result.put("email", extractEmail(message));
+        result.put("reviews", reviews);
         System.out.println("Reviews for recipe " + recipeId + ": " + reviews);
-        return reviews;
+        return result;
     }
 
     private void sendToEsbQueue(Object result) {
         try {
             String resultMessage = objectMapper.writeValueAsString(result);
+
+            if (resultMessage == null || resultMessage.isEmpty()) {
+                System.err.println("Result message is null or empty. Skipping send.");
+                return;
+            }
+
             rabbitTemplate.convertAndSend("esb-queue", resultMessage);
             System.out.println("Result sent to ESB queue: " + resultMessage);
         } catch (Exception e) {
             System.err.println("Failed to send result to ESB queue: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    private String extractEmail(String message) {
+        try {
+            Map<String, Object> jsonMap = objectMapper.readValue(message, Map.class);
+            return (String) jsonMap.get("email");
+        } catch (Exception e) {
+            System.err.println("Failed to extract email from message: " + e.getMessage());
+            return null;
         }
     }
 }
