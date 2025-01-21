@@ -94,8 +94,9 @@ public class ReviewController {
     @GetMapping("/getbyrecipe/{recipeId}")
     public ResponseEntity<String> getReviewsByRecipe(@PathVariable Integer recipeId, @RequestHeader("Authorization") String authHeader) {
         String email = extractEmailFromToken(authHeader);
-        System.out.println("Request by email: " + email);
-        publisherService.publishMessage(EXCHANGE_NAME, "review.getbyrecipe", recipeId);
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("recipeId", recipeId);
+        publisherService.publishMessageWithAdditionalData(EXCHANGE_NAME, "review.getbyrecipe", payload, email);
         return ResponseEntity.ok("Get reviews by recipe request sent to RabbitMQ");
     }
 
