@@ -1,37 +1,21 @@
 package com.school.matmassig.recipeservice.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 public class RecipeMessage {
-
-    @JsonProperty("recipe")
+    private String email;
     private Recipe recipe;
-
-    @JsonProperty("ingredients")
     private List<IngredientsRecipe> ingredients;
 
-    // Constructeur par défaut
-    public RecipeMessage() {
+    // Getters and setters
+    public String getEmail() {
+        return email;
     }
 
-    // Constructeur avec paramètres
-    public RecipeMessage(
-            @JsonProperty("recipe") Recipe recipe,
-            @JsonProperty("ingredients") List<IngredientsRecipe> ingredients) {
-        this.recipe = recipe;
-        this.ingredients = ingredients;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    @Override
-    public String toString() {
-        return "RecipeMessage{" +
-                "recipe=" + recipe +
-                ", ingredients=" + ingredients +
-                '}';
-    }
-
-    // Getters et Setters
     public Recipe getRecipe() {
         return recipe;
     }
@@ -46,5 +30,14 @@ public class RecipeMessage {
 
     public void setIngredients(List<IngredientsRecipe> ingredients) {
         this.ingredients = ingredients;
+    }
+
+    @Override
+    public String toString() {
+        return "RecipeMessage{" +
+                "email='" + email + '\'' +
+                ", recipe=" + recipe +
+                ", ingredients=" + ingredients +
+                '}';
     }
 }

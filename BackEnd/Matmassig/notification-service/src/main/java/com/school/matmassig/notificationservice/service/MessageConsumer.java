@@ -8,14 +8,15 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class MessageConsumer {
 
-    private final RestTemplate restTemplate;
+    private final NotificationService notificationService;
 
-    public MessageConsumer(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
+    public MessageConsumer(NotificationService notificationService) {
+        this.notificationService = notificationService;
     }
 
     @RabbitListener(queues = "esb-queue")
     public void receiveMessage(String message) {
         System.out.println("Received message from RabbitMQ: " + message);
+        notificationService.connectAndSend(message);
     }
 }

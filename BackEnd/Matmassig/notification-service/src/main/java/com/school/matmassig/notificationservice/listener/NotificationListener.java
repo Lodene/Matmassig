@@ -24,7 +24,6 @@ public class NotificationListener {
         }
         System.out.println("Message reçu depuis esb-queue : " + message);
         // Traitez le message ici
-        message = "email:test@test.test;message:test message";
         notificationService.connectAndSend(message);
 
     }
