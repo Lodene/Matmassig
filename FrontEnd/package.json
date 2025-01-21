@@ -34,6 +34,7 @@
     "@ionic/angular": "^8.0.0",
     "@ionic/pwa-elements": "^3.3.0",
     "ionicons": "^7.0.0",
+    "matmassig-app": "file:",
     "ngx-mat-select-search": "^7.0.9",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
