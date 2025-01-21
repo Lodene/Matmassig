@@ -1,6 +1,7 @@
 package com.school.matmassig.reviewservice.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.school.matmassig.reviewservice.model.MessageReview;
 import com.school.matmassig.reviewservice.model.Review;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -27,22 +28,24 @@ public class RabbitMQMessageProcessor {
     public void processMessage(String message, String routingKey) {
         try {
             Object result = null;
+            MessageReview reviewMessage = objectMapper.readValue(message,
+                    MessageReview.class);
 
             switch (routingKey) {
                 case "review.create":
-                    result = processCreateReview(message);
+                    result = processCreateReview(reviewMessage);
                     break;
                 case "review.delete":
-                    result = processDeleteReview(message);
+                    result = processDeleteReview(reviewMessage);
                     break;
                 case "review.update":
-                    result = processUpdateReview(message);
+                    result = processUpdateReview(reviewMessage);
                     break;
                 case "review.getbyuser":
-                    result = processGetUserReviews(message);
+                    result = processGetUserReviews(reviewMessage);
                     break;
                 case "review.getbyrecipe":
-                    result = processGetRecipeReviews(message);
+                    result = processGetRecipeReviews(reviewMessage);
                     break;
                 default:
                     System.err.println("Unknown routing key: " + routingKey);
@@ -67,71 +70,103 @@ public class RabbitMQMessageProcessor {
         }
     }
 
-    private Map<String, Object> processCreateReview(String message) throws Exception {
-        Map<String, Object> result = new HashMap<>();
-        Review review = objectMapper.readValue(message, Review.class);
+    private Map<String, Object> processCreateReview(MessageReview message) throws Exception {
 
-        if (review.getRecipeId() == null || review.getRecipeId() <= 0) {
-            sendErrorToEsb(extractEmail(message), "Invalid recipe ID: " + review.getRecipeId());
+        if (message.getRecipeId() == null || message.getRecipeId() <= 0) {
+            sendErrorToEsb(message.getEmail(), "Invalid recipe ID: " + message.getRecipeId());
             throw new IllegalArgumentException("Invalid recipe ID.");
         }
 
+        Review review = new Review();
+        review.setRecipeId(message.getRecipeId());
+        review.setUserId(message.getUserId());
+        review.setRating(message.getRating());
+        review.setComment(message.getComment());
+        review.setCreatedAt(message.getCreatedAt());
+
         listenerService.saveReview(review);
-        result.put("email", extractEmail(message));
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("email", message.getEmail());
         result.put("message", "your review has been created");
         System.out.println("Review created: " + review);
         return result;
     }
 
-    private Map<String, Object> processDeleteReview(String message) throws Exception {
-        Map<String, Object> result = new HashMap<>();
-        Review review = objectMapper.readValue(message, Review.class);
-
-        if (review.getId() == null) {
+    private Map<String, Object> processDeleteReview(MessageReview message) throws Exception {
+        if (message.getId() == null) {
             throw new IllegalArgumentException("ID is required for deleting a review.");
         }
 
-        listenerService.deleteReview(review.getId());
-        result.put("email", extractEmail(message));
+        listenerService.deleteReview(message.getId());
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("email", message.getEmail());
         result.put("message", "your review has been deleted");
-        System.out.println("Review deleted with ID: " + review.getId() + " and user ID: " + review.getUserId());
+        System.out.println("Review deleted with ID: " + message.getId() + " and user ID: " + message.getUserId());
 
         return result;
     }
 
-    private Map<String, Object> processUpdateReview(String message) throws Exception {
-        Map<String, Object> result = new HashMap<>();
-        Review updatedReview = objectMapper.readValue(message, Review.class);
-
-        if (updatedReview.getRecipeId() == null || updatedReview.getRecipeId() <= 0) {
-            sendErrorToEsb(extractEmail(message), "Invalid recipe ID: " + updatedReview.getRecipeId());
+    private Map<String, Object> processUpdateReview(MessageReview message) throws Exception {
+        if (message.getRecipeId() == null || message.getRecipeId() <= 0) {
+            sendErrorToEsb(message.getEmail(), "Invalid recipe ID: " + message.getRecipeId());
             throw new IllegalArgumentException("Invalid recipe ID.");
         }
 
-        listenerService.updateReview(updatedReview.getId(), updatedReview);
-        result.put("email", extractEmail(message));
-        result.put("message", updatedReview);
-        System.out.println("Review updated: " + updatedReview);
+        Review review = new Review();
+        review.setRecipeId(message.getRecipeId());
+        review.setUserId(message.getUserId());
+        review.setRating(message.getRating());
+        review.setComment(message.getComment());
+        review.setCreatedAt(message.getCreatedAt());
+        listenerService.updateReview(message.getId(), review);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("email", message.getEmail());
+        result.put("message", "Review updated successfully");
+        System.out.println("Review updated: " + message.getId());
         return result;
     }
 
-    private Map<String, Object> processGetUserReviews(String message) {
-        Map<String, Object> result = new HashMap<>();
-        Integer userId = Integer.parseInt(message);
+    private Map<String, Object> processGetUserReviews(MessageReview message) {
+        Integer userId = message.getUserId();
         List<Review> reviews = listenerService.getReviewsByUserId(userId);
-        result.put("email", extractEmail(message));
-        result.put("message", reviews);
-        System.out.println("Reviews for user " + userId + ": " + reviews);
+
+        // Convertir la liste des reviews en une structure sérialisable
+        String reviewsJson;
+        try {
+            reviewsJson = objectMapper.writeValueAsString(reviews);
+        } catch (Exception e) {
+            System.err.println(
+                    "Erreur lors de la sérialisation des reviews pour l'utilisateur " + userId + ": " + e.getMessage());
+            reviewsJson = "[]"; // Liste vide en cas d'erreur
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("email", message.getEmail());
+        result.put("message", reviewsJson); // Insérer le JSON au lieu de la liste brute
+        System.out.println("Reviews for user " + userId + ": " + reviewsJson);
         return result;
     }
 
-    private Map<String, Object> processGetRecipeReviews(String message) {
+    private Map<String, Object> processGetRecipeReviews(MessageReview message) {
+        List<Review> reviews = listenerService.getReviewsByRecipeId(message.getRecipeId());
+
+        // Convertir la liste des reviews en une structure sérialisable
+        String reviewsJson;
+        try {
+            reviewsJson = objectMapper.writeValueAsString(reviews);
+        } catch (Exception e) {
+            System.err.println("Erreur lors de la sérialisation des reviews pour la recette " + message.getRecipeId()
+                    + ": " + e.getMessage());
+            reviewsJson = "[]"; // Liste vide en cas d'erreur
+        }
+
         Map<String, Object> result = new HashMap<>();
-        Integer recipeId = Integer.parseInt(message);
-        List<Review> reviews = listenerService.getReviewsByRecipeId(recipeId);
-        result.put("email", extractEmail(message));
-        result.put("message", reviews);
-        System.out.println("Reviews for recipe " + recipeId + ": " + reviews);
+        result.put("email", message.getEmail());
+        result.put("message", reviewsJson); // Insérer le JSON au lieu de la liste brute
+        System.out.println("Reviews for recipe " + message.getRecipeId() + ": " + reviewsJson);
         return result;
     }
 
