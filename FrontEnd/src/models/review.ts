@@ -1,12 +1,17 @@
-export class Reviews {
+export class Review {
     id: number;
-    title: string;
-    content: string;
+    email: string;
+    comment: string;
     rating: number;
-    constructor(id: number, title: string, content: string, rating: number) {
+    recipeId: number;
+    userId: number;
+
+    constructor(id: number, email: string, title: string, comment: string, rating: number, recipeId: number, userId: number) {
         this.id = id;
-        this.title = title;
-        this.content = content;
+        this.email = email;
+        this.comment = comment;
         this.rating = rating;
+        this.recipeId = recipeId;
+        this.userId = userId;
     }
 }
