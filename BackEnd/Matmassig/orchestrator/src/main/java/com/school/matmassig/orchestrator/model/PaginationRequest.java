@@ -1,6 +1,10 @@
 package com.school.matmassig.orchestrator.model;
 
+import org.springframework.web.bind.annotation.RequestHeader;
+
 public class PaginationRequest {
+
+    private String email;
 
     private int page;
     private int size;
@@ -11,6 +15,13 @@ public class PaginationRequest {
     }
 
     // Getters et Setters
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
     public int getPage() {
         return page;
     }
