@@ -2,6 +2,7 @@ package com.school.matmassig.orchestrator.model;
 
 public class DeleteItemRequest {
 
+    private String email;
     private Integer id;
     private Integer userId;
 
@@ -12,6 +13,14 @@ public class DeleteItemRequest {
         this.userId = userId;
     }
 
+    // Getters and Setters
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
     public Integer getId() {
         return id;
     }
