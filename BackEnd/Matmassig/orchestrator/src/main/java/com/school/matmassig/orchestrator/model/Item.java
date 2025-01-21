@@ -3,6 +3,8 @@ package com.school.matmassig.orchestrator.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Item {
+    @JsonProperty("email")
+    private String email;
 
     @JsonProperty("id")
     private Integer id; // Facultatif pour item.create
@@ -25,6 +27,14 @@ public class Item {
         this.userId = userId;
     }
 
+    // Getters et Setters
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
     public Integer getId() {
         return id;
     }
