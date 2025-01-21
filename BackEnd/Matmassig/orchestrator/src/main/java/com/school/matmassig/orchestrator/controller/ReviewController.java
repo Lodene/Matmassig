@@ -47,9 +47,12 @@ public class ReviewController {
             String email = jwtUtils.getEmailFromToken(token);
             System.out.println("Extracted email from token: " + email);
 
+            // Extraction de l'ID utilisateur depuis le token
+            Integer userId = jwtUtils.getUserIdFromToken(token);
+
             // Ajout de l'email au commentaire pour vérification
             review.setEmail(email);
-            System.out.println("Updated review with email: " + review);
+            review.setUserId(userId);
 
             // Publication du message dans RabbitMQ
             publisherService.publishMessage(EXCHANGE_NAME, "review.create", review);
@@ -66,7 +69,9 @@ public class ReviewController {
     @PutMapping("/update")
     public ResponseEntity<String> updateReview(@RequestBody Review review, @RequestHeader("Authorization") String authHeader) {
         String email = extractEmailFromToken(authHeader);
+        Integer userId = extractUserIdFromToken(authHeader);
         review.setEmail(email);
+        review.setUserId(userId);
         publisherService.publishMessage(EXCHANGE_NAME, "review.update", review);
         return ResponseEntity.ok("Review update request sent to RabbitMQ");
     }
@@ -75,7 +80,9 @@ public class ReviewController {
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteReview(@RequestBody Review review, @RequestHeader("Authorization") String authHeader) {
         String email = extractEmailFromToken(authHeader);
+        Integer userId = extractUserIdFromToken(authHeader);
         review.setEmail(email);
+        review.setUserId(userId);
         publisherService.publishMessage(EXCHANGE_NAME, "review.delete", review);
         return ResponseEntity.ok("Review delete request sent to RabbitMQ");
     }
@@ -104,5 +111,10 @@ public class ReviewController {
     private String extractEmailFromToken(String authHeader) {
         String token = authHeader.substring(7); // Suppression du préfixe "Bearer "
         return jwtUtils.getEmailFromToken(token);
+    }
+
+    private Integer extractUserIdFromToken(String authHeader) {
+        String token = authHeader.substring(7); // Suppression du préfixe "Bearer "
+        return jwtUtils.getUserIdFromToken(token);
     }
 }

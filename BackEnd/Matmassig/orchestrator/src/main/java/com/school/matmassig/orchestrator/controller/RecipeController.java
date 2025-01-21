@@ -6,6 +6,10 @@ import com.school.matmassig.orchestrator.model.DeleteRecipeRequest;
 import com.school.matmassig.orchestrator.service.RabbitMQPublisherService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.school.matmassig.orchestrator.util.JwtUtils;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.school.matmassig.orchestrator.config.RabbitMQConfig.EXCHANGE_NAME;
 
@@ -15,15 +19,23 @@ public class RecipeController {
 
     private final RabbitMQPublisherService publisherService;
 
-    public RecipeController(RabbitMQPublisherService publisherService) {
+    private final JwtUtils jwtUtils;
+
+
+    public RecipeController(RabbitMQPublisherService publisherService, JwtUtils jwtUtils) {
         this.publisherService = publisherService;
+        this.jwtUtils = jwtUtils;
     }
 
     // Endpoint: Création d'une recette
     @PostMapping("/create")
-    public ResponseEntity<String> createRecipe(@RequestBody RecipeMessage recipeMessage) {
+    public ResponseEntity<String> createRecipe(@RequestBody RecipeMessage recipeMessage, @RequestHeader("Authorization") String authHeader) {
         System.out.println("DEBUG: Recipe creation request received");
         System.out.println("DEBUG: RecipeMessage: " + recipeMessage);
+        String email = extractEmailFromToken(authHeader);
+        Integer userId = extractUserIdFromToken(authHeader);
+        recipeMessage.getRecipe().setEmail(email);
+        recipeMessage.getRecipe().setUserId(userId);
         publisherService.publishMessage(EXCHANGE_NAME, "recipe.create", recipeMessage);
         return ResponseEntity.ok("Recipe creation request sent to RabbitMQ");
     }
@@ -77,4 +89,15 @@ public class RecipeController {
         publisherService.publishMessage(EXCHANGE_NAME, "recipe.getall", paginationRequest);
         return ResponseEntity.ok("Get all recipes request sent to RabbitMQ with pagination");
     }
+
+    private String extractEmailFromToken(String authHeader) {
+        String token = authHeader.substring(7); // Suppression du préfixe "Bearer "
+        return jwtUtils.getEmailFromToken(token);
+    }
+
+    private Integer extractUserIdFromToken(String authHeader) {
+        String token = authHeader.substring(7); // Suppression du préfixe "Bearer "
+        return jwtUtils.getUserIdFromToken(token);
+    }
 }
+

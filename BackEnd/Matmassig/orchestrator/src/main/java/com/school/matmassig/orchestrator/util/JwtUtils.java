@@ -27,4 +27,12 @@ public class JwtUtils {
                 .getBody()
                 .getSubject();
     }
+    public Integer getUserIdFromToken(String token) {
+        return (Integer) Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("userId");
+    }
 }

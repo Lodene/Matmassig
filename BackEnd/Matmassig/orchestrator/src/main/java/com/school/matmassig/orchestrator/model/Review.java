@@ -9,6 +9,9 @@ public class Review {
     @JsonProperty("id")
     private Integer id;
 
+    @JsonProperty("userId")
+    private Integer userId;
+
     @JsonProperty("recipeId")
     private Integer recipeId;
 
@@ -32,6 +35,14 @@ public class Review {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     public Integer getRecipeId() {
