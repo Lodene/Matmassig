@@ -1,0 +1,18 @@
+<h2 mat-dialog-title>{{title}}</h2>
+  <mat-dialog-content>
+    <div class="form-wrapper">
+    </div>
+    {{question}}
+    <mat-list role="list" *ngIf="deleteList.length > 0">
+      @for (review of deleteList; track review) { 
+      <mat-list-item role="listitem">{{review.email}}</mat-list-item>
+    }
+    </mat-list>
+    <!-- list of reviews to delete -->
+  </mat-dialog-content>
+  <!-- Buttons -->
+  <mat-dialog-actions>
+    <button mat-button mat-dialog-close>Cancel</button>
+    <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
+    <button color={{color}} mat-button (click)="validate()">OK</button>
+  </mat-dialog-actions>
