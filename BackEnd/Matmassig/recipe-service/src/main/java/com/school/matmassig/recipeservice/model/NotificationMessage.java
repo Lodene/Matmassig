@@ -4,11 +4,10 @@ public class NotificationMessage {
     private String email;
     private String message;
 
-    // tostring
     @Override
     public String toString() {
         return "NotificationMessage{" +
-                "userId=" + email +
+                "email='" + email + '\'' +
                 ", message='" + message + '\'' +
                 '}';
     }
@@ -21,12 +20,12 @@ public class NotificationMessage {
         this.message = message;
     }
 
-    // Getters and Setters
-    public String getUserId() {
+    // Utiliser "email" au lieu de "userId"
+    public String getEmail() {
         return email;
     }
 
-    public void setUserId(String email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 

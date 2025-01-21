@@ -66,13 +66,6 @@ function sendPrivateNotification(email: string, notification: string) {
   });
 }
 
-// Exemple : Envoi d'une notification privée toutes les 10 secondes
-setInterval(() => {
-  emailToClients.forEach((_, email) => {
-    sendPrivateNotification(email, `Hello ${email}, voici une notification privée!`);
-  });
-}, 10000);
-
 // Démarrer le serveur
 const PORT = 8089;
 server.listen(PORT, () => {

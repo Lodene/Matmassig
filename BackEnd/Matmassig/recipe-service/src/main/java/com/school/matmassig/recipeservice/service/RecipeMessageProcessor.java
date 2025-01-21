@@ -1,11 +1,15 @@
 package com.school.matmassig.recipeservice.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.school.matmassig.recipeservice.model.DeleteRecipeMessage;
 import com.school.matmassig.recipeservice.model.NotificationMessage;
+import com.school.matmassig.recipeservice.model.Recipe;
 import com.school.matmassig.recipeservice.model.RecipeMessage;
 import com.school.matmassig.recipeservice.repository.RecipeRepository;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class RecipeMessageProcessor {
@@ -23,48 +27,76 @@ public class RecipeMessageProcessor {
         this.recipeRepository = recipeRepository;
     }
 
-    public void processRecipeMessage(RecipeMessage recipeMessage) {
-        try {
-            System.out.println("Processing recipe: " + recipeMessage.getRecipe().getTitle());
-            System.out.println("User email: " + recipeMessage.getEmail());
-            System.out.println("Ingredients: " + recipeMessage.getIngredients());
-
-            // Vérification que le recipe_id existe
-            Integer recipeId = recipeMessage.getRecipe().getId();
-            if (recipeId != null && !recipeRepository.existsById(recipeId)) {
-                sendErrorToEsb(recipeMessage.getEmail(), "Le recipe avec ID " + recipeId + " n'existe pas.");
-                return;
-            }
-
-            // Sauvegarder la recette et les ingrédients
-            service.saveRecipeAndIngredients(recipeMessage.getRecipe(), recipeMessage.getIngredients());
-            System.out.println("Recipe and ingredients saved successfully!");
-
-            // Envoyer une notification à l'ESB
-            sendNotificationToEsb(recipeMessage.getEmail());
-        } catch (Exception e) {
-            System.err.println("Error while processing recipe message: " + e.getMessage());
-            e.printStackTrace();
+    public void handleCreateRecipe(RecipeMessage recipeMessage) {
+        Integer recipeId = recipeMessage.getRecipe().getId();
+        if (recipeId != null && recipeRepository.existsById(recipeId)) {
+            sendErrorToEsb(recipeMessage.getEmail(), "Recipe with ID " + recipeId + " already exists.");
+            return;
         }
+
+        service.saveRecipeAndIngredients(recipeMessage.getRecipe(), recipeMessage.getIngredients());
+        sendNotificationToEsb(recipeMessage.getEmail(), "Recipe created successfully!");
     }
 
-    private void sendNotificationToEsb(String email) {
+    public void handleDeleteRecipe(DeleteRecipeMessage deleteMessage) {
+        Integer recipeId = deleteMessage.getid();
+        if (recipeId == null || !recipeRepository.existsById(recipeId)) {
+            sendErrorToEsb(deleteMessage.getEmail(), "Recipe with ID " + recipeId + " does not exist.");
+            return;
+        }
+
+        service.deleteRecipe(recipeId);
+        sendNotificationToEsb(deleteMessage.getEmail(), "Recipe deleted successfully!");
+    }
+
+    public void handleUpdateRecipe(RecipeMessage recipeMessage) {
+        Recipe updatedRecipe = recipeMessage.getRecipe();
+        Integer recipeId = updatedRecipe.getId();
+        if (recipeId == null || !recipeRepository.existsById(recipeId)) {
+            sendErrorToEsb(recipeMessage.getEmail(), "Recipe with ID " + recipeId + " does not exist.");
+            return;
+        }
+
+        service.updateRecipe(recipeId, updatedRecipe, recipeMessage.getIngredients());
+        sendNotificationToEsb(recipeMessage.getEmail(), "Recipe updated successfully!");
+    }
+
+    public void handleGetRecipesByUser(DeleteRecipeMessage recipeMessage) {
+        Integer userId = recipeMessage.getUserId();
+        if (userId == null) {
+            sendErrorToEsb(recipeMessage.getEmail(), "User ID is missing.");
+            return;
+        }
+
+        List<Recipe> userRecipes = recipeRepository.findByUserId(userId);
+        sendNotificationToEsb(recipeMessage.getEmail(), "User recipes fetched successfully: " + userRecipes);
+    }
+
+    public void handleGetRecipeDetails(DeleteRecipeMessage recipeMessagegetByRecipe) {
+        Integer recipeId = recipeMessagegetByRecipe.getRecipeId();
+        if (recipeId == null) {
+            sendErrorToEsb(recipeMessagegetByRecipe.getEmail(), "Recipe ID is missing.");
+            return;
+        }
+
+        Recipe recipe = recipeRepository.findById(recipeId)
+                .orElseThrow(() -> new RuntimeException("Recipe not found with ID " + recipeId));
+        sendNotificationToEsb(recipeMessagegetByRecipe.getEmail(), "Recipe details: " + recipe);
+    }
+
+    public void handleGetAllRecipes(DeleteRecipeMessage recipeMessage) {
+        List<Recipe> allRecipes = recipeRepository.findAll();
+        sendNotificationToEsb(recipeMessage.getEmail(), "All recipes fetched successfully: " + allRecipes);
+    }
+
+    private void sendNotificationToEsb(String email, String message) {
         if (email == null || email.isEmpty()) {
             System.err.println("Email is null or empty. Skipping notification.");
             return;
         }
 
-        NotificationMessage notification = new NotificationMessage(
-                email,
-                "Le plat a été créé");
-
-        try {
-            rabbitTemplate.convertAndSend("esb-queue", objectMapper.writeValueAsString(notification));
-            System.out.println("Notification sent to ESB queue: " + notification);
-        } catch (Exception e) {
-            System.err.println("Failed to send notification to ESB queue: " + e.getMessage());
-            e.printStackTrace();
-        }
+        NotificationMessage notification = new NotificationMessage(email, message);
+        sendMessageToQueue(notification);
     }
 
     private void sendErrorToEsb(String email, String errorMessage) {
@@ -73,16 +105,25 @@ public class RecipeMessageProcessor {
             return;
         }
 
-        NotificationMessage errorNotification = new NotificationMessage(
-                email,
-                errorMessage);
+        NotificationMessage errorNotification = new NotificationMessage(email, errorMessage);
+        sendMessageToQueue(errorNotification);
+    }
 
+    private void sendMessageToQueue(NotificationMessage message) {
         try {
-            rabbitTemplate.convertAndSend("esb-queue", objectMapper.writeValueAsString(errorNotification));
-            System.out.println("Error notification sent to ESB queue: " + errorNotification);
+            rabbitTemplate.convertAndSend("esb-queue", objectMapper.writeValueAsString(message));
+            System.out.println("Message sent to ESB queue: " + message);
         } catch (Exception e) {
-            System.err.println("Failed to send error notification to ESB queue: " + e.getMessage());
+            System.err.println("Failed to send message to ESB queue: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    private void handleProcessingError(RecipeMessage recipeMessage, String topic, Exception e) {
+        System.err.println("Error processing message for topic [" + topic + "]: " + e.getMessage());
+        if (recipeMessage != null && recipeMessage.getEmail() != null) {
+            sendErrorToEsb(recipeMessage.getEmail(), "Error processing recipe message: " + e.getMessage());
+        }
+        e.printStackTrace();
     }
 }
