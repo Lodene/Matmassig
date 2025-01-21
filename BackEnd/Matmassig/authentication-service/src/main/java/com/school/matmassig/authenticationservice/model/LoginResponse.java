@@ -1,4 +1,4 @@
-package com.school.matmassig.orchestrator.model;
+package com.school.matmassig.authenticationservice.model;
 
 public class LoginResponse {
     private String token;
@@ -7,8 +7,9 @@ public class LoginResponse {
         this.token = token;
     }
 
+    // Getters and Setters
     public String getToken() {
         return token;
     }
-    // Getters and Setters
 }
+

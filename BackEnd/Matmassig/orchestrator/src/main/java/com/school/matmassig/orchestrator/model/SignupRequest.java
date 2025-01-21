@@ -1,11 +1,13 @@
 package com.school.matmassig.orchestrator.model;
 
-public class LoginRequest {
+public class SignupRequest {
     private String email;
+    private String name;
     private String password;
 
-    public LoginRequest(String email, String password) {
+    public SignupRequest(String email, String name, String password) {
         this.email = email;
+        this.name = name;
         this.password = password;
     }
 
@@ -16,6 +18,14 @@ public class LoginRequest {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getPassword() {
