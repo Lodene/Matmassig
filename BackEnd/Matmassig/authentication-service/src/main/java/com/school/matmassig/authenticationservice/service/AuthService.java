@@ -21,18 +21,34 @@ public class AuthService {
     }
 
     public String login(String email, String password) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Invalid email"));
+        System.out.println("Login request received for email: " + email);
 
+        // Vérification de l'email
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> {
+                    System.err.println("Email not found: " + email);
+                    return new IllegalArgumentException("Invalid email");
+                });
+
+        System.out.println("User found: " + user);
+
+        // Vérification du mot de passe
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new RuntimeException("Invalid password");
+            System.err.println("Password mismatch for email: " + email);
+            throw new IllegalArgumentException("Invalid password");
         }
 
-        return jwtUtils.generateToken(user);
+        System.out.println("Password verified for email: " + email);
+
+        // Génération du token
+        String token = jwtUtils.generateToken(user);
+        System.out.println("Generated JWT token for email: " + email);
+        return token;
     }
 
     public void signup(String email, String name, String password) {
         if (userRepository.existsByEmail(email)) {
+            System.err.println("Email already in use: " + email);
             throw new RuntimeException("Email already in use");
         }
 
@@ -44,6 +60,9 @@ public class AuthService {
         user.setCreatedAt(LocalDateTime.now());
         user.setUpdatedAt(LocalDateTime.now());
 
+        System.out.println("Attempting to save user: " + user);
         userRepository.save(user);
+        System.out.println("User successfully saved: " + user);
     }
+
 }

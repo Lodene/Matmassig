@@ -20,15 +20,22 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        System.out.println("Received login API call with email: " + request.getEmail());
         try {
             String token = authService.login(request.getEmail(), request.getPassword());
+            System.out.println("Login successful for email: " + request.getEmail());
             return ResponseEntity.ok(new LoginResponse(token));
-        } catch (RuntimeException e) {
+        } catch (IllegalArgumentException e) {
+            System.err.println("Login failed: " + e.getMessage());
             if (e.getMessage().equals("Invalid email")) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email not found");
             } else if (e.getMessage().equals("Invalid password")) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect password");
             }
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bad request");
+        } catch (Exception e) {
+            System.err.println("Unexpected error during login: " + e.getMessage());
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred");
         }
     }

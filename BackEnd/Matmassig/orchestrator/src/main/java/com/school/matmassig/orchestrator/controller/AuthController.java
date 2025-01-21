@@ -18,7 +18,10 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        return authService.login(request);
+        System.out.println("Received login request for email: " + request.getEmail());
+        ResponseEntity<?> response = authService.login(request.getEmail(), request.getPassword());
+        System.out.println("Response sent to client: " + response.getStatusCode());
+        return response;
     }
 
     @PostMapping("/signup")
