@@ -1,3 +1,5 @@
+version: '3.9'
+
 services:
   postgres:
     image: postgres:15
@@ -54,7 +56,7 @@ services:
     ports:
       - "8089:8089" # Port exposé pour le WebSocket
     depends_on:
-      - rabbitmq # Si le WebSocket dépend de RabbitMQ
+      - rabbitmq
     networks:
       - app-network
 
@@ -148,9 +150,10 @@ services:
       SPRING_RABBITMQ_PORT: 5672
       SPRING_RABBITMQ_USERNAME: admin
       SPRING_RABBITMQ_PASSWORD: admin
-      TARGET_API_URL: http://localhost:8081/target-service/endpoint
+      WEBSOCKET_URL: ws://websocket-service:8089 # URL du serveur WebSocket
     depends_on:
       - rabbitmq
+      - websocket-service
     ports:
       - "8084:8083" # Port exposé pour le service notification-service
     restart: always

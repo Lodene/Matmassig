@@ -32,19 +32,9 @@ wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
   emailToClients.get(email)?.push(ws);
 
   // Gestion des messages entrants
-  ws.on('message', (message: Buffer) => {
-    // Convertir le Buffer en chaîne de caractères
-    const textMessage = message.toString();
-
+  ws.on('message', (message: WebSocket.RawData) => {
+    const textMessage = message.toString(); // Conversion explicite en chaîne
     console.log(`Message reçu de ${email}:`, textMessage);
-
-    // Si le message est un JSON, parsez-le
-    try {
-      const parsedMessage = JSON.parse(textMessage);
-      console.log('Message JSON interprété :', parsedMessage);
-    } catch (e) {
-      console.log('Le message n’est pas un JSON valide.');
-    }
 
     // Répondre au client
     const clients = emailToClients.get(email) || [];
@@ -66,12 +56,12 @@ wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
   });
 });
 
-// Fonction simulant l'envoi de notifications privées
+// Fonction pour envoyer une notification privée
 function sendPrivateNotification(email: string, notification: string) {
   const clients = emailToClients.get(email) || [];
   clients.forEach(client => {
     if (client.readyState === WebSocket.OPEN) {
-      client.send(JSON.stringify({ type: 'notification', data: notification }));
+      client.send(`Notification: ${notification}`);
     }
   });
 }
@@ -86,5 +76,5 @@ setInterval(() => {
 // Démarrer le serveur
 const PORT = 8089;
 server.listen(PORT, () => {
-  console.log(`Serveur WebSocket sécurisé en écoute sur le port ${PORT}`);
+  console.log(`Serveur WebSocket en écoute sur le port ${PORT}`);
 });

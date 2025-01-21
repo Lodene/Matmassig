@@ -10,9 +10,6 @@ public class MessageConsumer {
 
     private final RestTemplate restTemplate;
 
-    @Value("${target.api.url}")
-    private String targetApiUrl;
-
     public MessageConsumer(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
@@ -20,13 +17,5 @@ public class MessageConsumer {
     @RabbitListener(queues = "esb-queue")
     public void receiveMessage(String message) {
         System.out.println("Received message from RabbitMQ: " + message);
-
-        // Transmettre le message à une API cible
-        try {
-            String response = restTemplate.postForObject(targetApiUrl, message, String.class);
-            System.out.println("API Response: " + response);
-        } catch (Exception e) {
-            System.err.println("Failed to call target API: " + e.getMessage());
-        }
     }
 }
