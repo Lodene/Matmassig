@@ -13,3 +13,16 @@
     -webkit-box-shadow: none !important;
     box-shadow: none !important
 }
+
+.title-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.title-wrapper {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center;
+
+}

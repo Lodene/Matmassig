@@ -9,6 +9,8 @@ import { ReviewPageRoutingModule } from './review-routing.module';
 import { MatDialogModule } from '@angular/material/dialog';
 import { AddEditReviewDialogComponent } from './dialog/add-edit-review-dialog/add-edit-review-dialog.component';
 import { StarReviewComponent } from '../generic-component/star-review/star-review.component';
+import { MatIcon, MatIconModule } from '@angular/material/icon';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
   imports: [
@@ -17,7 +19,10 @@ import { StarReviewComponent } from '../generic-component/star-review/star-revie
     FormsModule,
     ExploreContainerComponentModule,
     ReviewPageRoutingModule,
-    StarReviewComponent
+    StarReviewComponent,
+    MatIcon,
+    MatIconModule,
+    MatCheckboxModule
   ],
   declarations: [ReviewPage]
 })
