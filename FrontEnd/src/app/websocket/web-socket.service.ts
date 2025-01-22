@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WebSocketService {
-  private webSocket: Socket;
-  constructor() {
+  constructor(private webSocket: Socket) {
     this.webSocket = new Socket({
-      url: '',
+      url: 'http://localhost:3000/',
       options: {}
     });
 
@@ -26,6 +26,10 @@ export class WebSocketService {
   // this method is used to end web socket connection
   disconnectSocket() {
     this.webSocket.disconnect();
+  }
+
+  getReview(): Observable<any> {
+    return this.webSocket.fromEvent('review-created')
   }
 
 

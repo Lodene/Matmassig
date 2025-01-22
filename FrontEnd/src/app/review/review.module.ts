@@ -1,7 +1,7 @@
 import { IonicModule } from '@ionic/angular';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReviewPage } from './review.page';
 import { ExploreContainerComponentModule } from '../explore-container/explore-container.module';
 
@@ -11,6 +11,11 @@ import { AddEditReviewDialogComponent } from './dialog/add-edit-review-dialog/ad
 import { StarReviewComponent } from '../generic-component/star-review/star-review.component';
 import { MatIcon, MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { MatSelectModule } from '@angular/material/select';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @NgModule({
   imports: [
@@ -20,10 +25,16 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     ExploreContainerComponentModule,
     ReviewPageRoutingModule,
     StarReviewComponent,
-    MatIcon,
     MatIconModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    ReactiveFormsModule,
+    NgxMatSelectSearchModule,
+    MatDialogModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule
   ],
-  declarations: [ReviewPage]
+  declarations: [ReviewPage, AddEditReviewDialogComponent]
 })
 export class ReviewPageModule {}
