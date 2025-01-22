@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { UserData } from '../services/auth.service';
 
 @Component({
   selector: 'app-new-account',
@@ -25,7 +26,6 @@ export class NewAccountPage {
       let data: UserData = {
         email: this.email.value,
         password: this.password.value,
-        password2: this.password2.value
       };
 
       this.router.navigate(['tabs/recipe'])
@@ -46,11 +46,4 @@ export class NewAccountPage {
     return this.userForm.get("password2") as FormControl;
   }
 
-}
-
-
-export interface UserData {
-  email: string;
-  password: string;
-  password2: string;
 }

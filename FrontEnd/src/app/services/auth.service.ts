@@ -1,15 +1,25 @@
 import { Injectable } from '@angular/core';
-import { UserData } from '../home/home.page';
+import { HttpClient } from '@angular/common/http';
+import { Observable, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
 
-  login(data: UserData) {
-    localStorage.setItem("auth-user", data.email);
+  login(data: UserData): Observable<boolean> {
+    let subject = new Subject<boolean>();  
+    this.http.post('http://localhost:8080/api/auth/login', data).subscribe(result => {
+      if (!!result) {
+        localStorage.setItem("auth-user", data.email);
+        subject.next(true);
+      } else {
+        subject.next(false);
+      }
+    });
+    return subject.asObservable();
   }
 
   logout() {
@@ -19,4 +29,9 @@ export class AuthService {
   isAuthenticated(): string | null {
     return localStorage.getItem("auth-user");
   }
+}
+
+export interface UserData {
+  email: string;
+  password: string;
 }
