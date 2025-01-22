@@ -89,9 +89,10 @@ public class ReviewController {
     }
 
     // Endpoint: Récupérer les reviews par userId
-    @GetMapping("/getbyuser/{userId}")
-    public ResponseEntity<String> getReviewsByUser(@PathVariable Integer userId, @RequestHeader("Authorization") String authHeader) {
+    @GetMapping("/getbyuser")
+    public ResponseEntity<String> getReviewsByUser(@RequestHeader("Authorization") String authHeader) {
         String email = extractEmailFromToken(authHeader);
+        Integer userId = extractUserIdFromToken(authHeader);
         Map<String, Object> payload = new HashMap<>();
         payload.put("userId", userId);
         publisherService.publishMessageWithAdditionalData(EXCHANGE_NAME, "review.getbyuser", payload, email);
