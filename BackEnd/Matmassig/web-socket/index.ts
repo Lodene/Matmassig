@@ -3,6 +3,19 @@ import * as http from 'http';
 
 // Création d'un serveur HTTP
 const server: http.Server = http.createServer((req: http.IncomingMessage, res: http.ServerResponse) => {
+  const headers = {
+    'Access-Control-Allow-Origin': '*', /* @dev First, read about security */
+    'Access-Control-Allow-Methods': 'OPTIONS, POST, GET',
+    'Access-Control-Max-Age': 2592000, // 30 days
+    /** add other headers as per requirement */
+};
+res.setHeader('Access-Control-Allow-Origin', '*'); /* @dev First, read about security */
+res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET');
+res.setHeader('Access-Control-Max-Age', 2592000); // 30 days
+// res.setHeader('Access-Control-Allow-Headers', req.headers.origin as string);
+
+res.writeHead(200, { 'Content-Type': 'text/plain' });
+res.end('WebSocket server is running\n');
   res.writeHead(200, { 'Content-Type': 'text/plain' });
   res.end('WebSocket server is running\n');
 });
@@ -69,5 +82,5 @@ function sendPrivateNotification(email: string, notification: string) {
 // Démarrer le serveur
 const PORT = 8089;
 server.listen(PORT, () => {
-  console.log(`Serveur WebSocket en écoute sur le port ${PORT}`);
+  console.log(`Serveur WebSocket en écoute sur le port bizarre ${PORT}`);
 });

@@ -1,11 +1,8 @@
 package com.school.matmassig.orchestrator.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.school.matmassig.orchestrator.service.RabbitMQPublisherService;
 import com.school.matmassig.orchestrator.util.JwtUtils;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -15,6 +12,7 @@ import static com.school.matmassig.orchestrator.config.RabbitMQConfig.EXCHANGE_N
 
 @RestController
 @RequestMapping("/api/orchestrator/recommandation")
+@CrossOrigin(origins = "http://localhost:8100")
 public class RecommandationController {
 
     private final RabbitMQPublisherService publisherService;

@@ -1,0 +1,27 @@
+<mat-nav-list>
+  <!-- <a href="https://keep.google.com/" mat-list-item (click)="openLink($event)">
+    <span matListItemTitle>Google Keep</span>
+    <span matLine>Add to a note</span>
+  </a>
+
+  <a href="https://docs.google.com/" mat-list-item (click)="openLink($event)">
+    <span matListItemTitle>Google Docs</span>
+    <span matLine>Embed in a document</span>
+  </a>
+
+  <a href="https://plus.google.com/" mat-list-item (click)="openLink($event)">
+    <span matListItemTitle>Google Plus</span>
+    <span matLine>Share with your friends</span>
+  </a> -->
+  @for (link of data; track link) {
+    <a href={{link.url}} mat-list-item (click)="openLink($event, link.url)">
+      <span matListItemTitle>{{link.name}}</span>
+      <span matLine>{{link.description}}</span>
+    </a>  
+  }
+  <a mat-list-item>
+    <span matListItemTitle (click)="cancel($event)" class="cancel-button">Cancel</span>
+    <span matLine></span>
+  </a>
+
+</mat-nav-list>

@@ -1,0 +1,45 @@
+<ion-content [fullscreen]="true">
+  <div class="vertical-center">
+    <div class="center">
+      <h1>Sign in to Matmässig</h1>
+      <span> {{ (login$ | async) }}</span>
+      <ion-button color="google" shape="round" expand="block" (click)="signInGoogle()">
+        <ion-icon name="logo-google" color="dark" slot="start"></ion-icon>
+        <span class="google-text">Continue with Google</span>
+      </ion-button>
+
+      <span>or</span>
+
+      <form [formGroup]="userForm" (ngSubmit)="signInEmail()">
+        <ion-item>
+          <ion-input color="dark" type="mail" placeholder="Email address" [formGroup]="userForm" formControlName="email" (blur)="updateErrorMessage()" required="true"/>
+          @if (email.invalid) {
+            <mat-error>{{errorMessage()}}</mat-error>
+          }
+        </ion-item>
+        
+        <ion-item>
+          <ion-input color="dark" type="password" placeholder="Password" [formGroup]="userForm" formControlName="password"></ion-input>
+        </ion-item>
+  
+        <ion-button type="submit" color="primary" shape="round" expand="block">
+          <ion-icon name="mail-outline" slot="start"></ion-icon>
+          Sign In With an Email
+        </ion-button>
+      </form>
+      
+
+      <div>
+        <ion-item lines="none">
+          <ion-button color="dark" slot="end" fill="clear" href="/new-password">Forgotten Password ?</ion-button>
+        </ion-item>
+
+        <ion-item lines="none">
+          <ion-button color="dark" slot="end" fill="clear" href="/new-account">Create an account</ion-button>
+        </ion-item>
+      </div>
+    </div>
+    
+  </div>
+
+</ion-content>

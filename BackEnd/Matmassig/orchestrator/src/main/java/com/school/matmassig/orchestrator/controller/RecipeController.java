@@ -15,6 +15,7 @@ import static com.school.matmassig.orchestrator.config.RabbitMQConfig.EXCHANGE_N
 
 @RestController
 @RequestMapping("/api/orchestrator/recipe")
+@CrossOrigin(origins = "http://localhost:8100")
 public class RecipeController {
 
     private final RabbitMQPublisherService publisherService;

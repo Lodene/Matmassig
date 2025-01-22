@@ -1,0 +1,34 @@
+<h2 mat-dialog-title>Add a recipe review</h2>
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <mat-dialog-content>
+    <div class="form-wrapper">
+      <mat-form-field>
+        <!-- Search recipe -->
+        <mat-select [formControl]="RecipeFormControl" placeholder="Recipe" #singleSelect>
+          <mat-option>
+            <ngx-mat-select-search
+            noEntriesFoundLabel="'No recipe were found'"
+            placeholderLabel="Search recipes..." 
+            [formControl]="RecipeFilterCtrl"></ngx-mat-select-search>
+          </mat-option>
+          <mat-option *ngFor="let recipe of filteredRecipes | async" [value]="recipe.id">
+            {{recipe.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <!-- Star rating -->
+      <app-star-review [rating]="rating" [starCount]="starCount" [color]="starColor" (ratingUpdated)="onRatingChanged($event)"></app-star-review>
+      <!-- Description -->
+      <mat-form-field>
+        <mat-label>Leave a review</mat-label>
+        <textarea [formControl]="descriptionControl" required matInput placeholder="Ex. It was fabulous!"></textarea>
+      </mat-form-field>
+  </div>
+  </mat-dialog-content>
+  <!-- Buttons -->
+  <mat-dialog-actions>
+    <button mat-button mat-dialog-close>Cancel</button>
+    <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
+    <button mat-button type="submit" >Add a review</button>
+  </mat-dialog-actions>
+</form>

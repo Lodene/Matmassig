@@ -1,0 +1,63 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      <div class="title-wrapper">
+        <span>My Reviews</span>
+        <mat-icon (click)="deleteModeActivation()">
+          {{getDeleteIcon()}}
+        </mat-icon>  
+      </div>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Tab 1</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div class="filters-wrapper">
+    <ion-searchbar animated="true" placeholder="Filter by name" (ionInput)="handleInput($event)"></ion-searchbar>
+    <ion-select label="Star rating" fill="solid" label-placement="floating" (ionCancel)="handleRatingCancel()" (ionDismiss)="handleRatingDismiss()" (ionChange)="handleRatingInput($event)">
+      <ion-select-option value="1">⭐</ion-select-option>
+      <ion-select-option value="2">⭐⭐</ion-select-option>
+      <ion-select-option value="3">⭐⭐⭐</ion-select-option>
+      <ion-select-option value="4">⭐⭐⭐⭐</ion-select-option>
+      <ion-select-option value="5">⭐⭐⭐⭐⭐</ion-select-option>
+    </ion-select>
+  </div>
+
+  <h3>Review : {{ (review$ | async)?.name }}</h3>
+
+  <ion-list>
+    @for (result of results; track result) {
+      <ion-card>
+      <ion-card-header>
+        <ion-card-title>
+          <mat-checkbox *ngIf="deleteMode" (click)="checkedRecipeDelete(result)"></mat-checkbox>
+          {{result.email}}
+        </ion-card-title>
+        <ion-card-subtitle>{{result.rating}} *</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        {{result.comment}}
+      </ion-card-content>
+    </ion-card>
+    }
+  </ion-list>
+</ion-content>
+
+<ion-footer>
+  <div class="button-wrapper">
+    <div *ngIf="!deleteMode; else deleteDiv">
+      <mat-icon (click)="openBottomSheet()">add</mat-icon> 
+    </div>
+    <ng-template  #deleteDiv>
+      <div>
+        <mat-icon (click)="deleteSelectedReviews()">delete</mat-icon> 
+      </div>
+    </ng-template>
+  </div>  
+</ion-footer>
