@@ -69,10 +69,10 @@ public class RecipeIAController {
     }
 
     // Endpoint: Récupérer les recettes par userId
-    @GetMapping("/getbyuser/{userId}")
-    public ResponseEntity<String> getRecipesByUser(@PathVariable Integer userId,
-            @RequestHeader("Authorization") String authHeader) {
+    @GetMapping("/getbyuser")
+    public ResponseEntity<String> getRecipesByUser(@RequestHeader("Authorization") String authHeader) {
         System.out.println("DEBUG: Get recipes IA by user request received");
+        Integer userId = extractUserIdFromToken(authHeader);
         System.out.println("DEBUG: User ID: " + userId);
         String email = extractEmailFromToken(authHeader);
         Map<String, Object> payload = new HashMap<>();
