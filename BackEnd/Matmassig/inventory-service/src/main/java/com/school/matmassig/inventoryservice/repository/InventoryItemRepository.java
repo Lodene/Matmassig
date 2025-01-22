@@ -6,4 +6,7 @@ import java.util.List;
 
 public interface InventoryItemRepository extends JpaRepository<InventoryItem, Integer> {
     List<InventoryItem> findByUserId(Integer userId);
+
+    List<InventoryItem> getItemsByUserId(Integer userId);
+
 }
