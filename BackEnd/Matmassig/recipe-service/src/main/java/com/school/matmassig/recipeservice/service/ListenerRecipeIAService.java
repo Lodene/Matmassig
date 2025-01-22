@@ -21,8 +21,8 @@ public class ListenerRecipeIAService {
     }
 
     // delete recipe by id
-    public void deleteRecipe(Integer recipeId, Integer userId) {
-        recipeRepository.deleteByRecipeIdAndUserId(recipeId, userId);
+    public void deleteRecipe(Integer recipeId) {
+        recipeRepository.deleteById(recipeId);
     }
 
     // update

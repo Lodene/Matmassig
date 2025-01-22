@@ -1,19 +1,51 @@
 package com.school.matmassig.recipeservice.model;
 
-public class RecipeIA {
-    private Integer id;
-    private Integer user_id;
-    private Integer recipeIA_id;
-    private Boolean is_Favourite;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
-    // constructeur
-    public RecipeIA(Integer user_id, Integer recipeIA_id, Boolean is_Favourite) {
-        this.user_id = user_id;
-        this.recipeIA_id = recipeIA_id;
-        this.is_Favourite = is_Favourite;
+@Entity
+@Table(name = "UserRecipeIA")
+public class RecipeIA {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @Column(name = "user_id")
+    private Integer userId;
+
+    @Column(name = "recipeIA_id") // Correspond au nom de la colonne dans la base de données
+    private Integer recipeId;
+
+    @Column(name = "is_favourite")
+    private Boolean isFavourite;
+
+    // tostring
+    @Override
+    public String toString() {
+        return "RecipeIA{" +
+                "id=" + id +
+                ", userId=" + userId +
+                ", recipeId=" + recipeId +
+                ", isFavourite=" + isFavourite +
+                '}';
     }
 
-    // getters et setters
+    // Constructeur par défaut requis par JPA
+    public RecipeIA() {
+    }
+
+    public RecipeIA(Integer userId, Integer recipeId, Boolean isFavourite) {
+        this.userId = userId;
+        this.recipeId = recipeId;
+        this.isFavourite = isFavourite;
+    }
+
+    // Getters et setters
     public Integer getId() {
         return id;
     }
@@ -22,28 +54,27 @@ public class RecipeIA {
         this.id = id;
     }
 
-    public Integer getUser_id() {
-        return user_id;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setUser_id(Integer user_id) {
-        this.user_id = user_id;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
-    public Integer getRecipeIA_id() {
-        return recipeIA_id;
+    public Integer getRecipeId() {
+        return recipeId;
     }
 
-    public void setRecipeIA_id(Integer recipeIA_id) {
-        this.recipeIA_id = recipeIA_id;
+    public void setRecipeId(Integer recipeId) {
+        this.recipeId = recipeId;
     }
 
-    public Boolean getIs_Favourite() {
-        return is_Favourite;
+    public Boolean getIsFavourite() {
+        return isFavourite;
     }
 
-    public void setIs_Favourite(Boolean is_Favourite) {
-        this.is_Favourite = is_Favourite;
+    public void setIsFavourite(Boolean isFavourite) {
+        this.isFavourite = isFavourite;
     }
-
 }

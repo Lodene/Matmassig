@@ -31,49 +31,51 @@ public class RecipeIAMessageProcessor {
     }
 
     public void handleCreateRecipe(RecipeIAMessage recipeMessage) {
-        Integer recipeId = recipeMessage.getRecipeIA_id();
-        Integer userId = recipeMessage.getUser_id();
+        Integer recipeId = recipeMessage.getRecipeIAId();
+        Integer userId = recipeMessage.getUserId();
         if (recipeId != null && recipeRepository.existsByRecipeIdAndUserId(recipeId, userId)) {
             sendErrorToEsb(recipeMessage.getEmail(), "Recipe with ID " + recipeId + " already exists.");
             return;
         }
 
-        RecipeIA recipe = new RecipeIA(recipeMessage.getUser_id(), recipeMessage.getRecipeIA_id(),
-                recipeMessage.getIs_Favourite());
+        RecipeIA recipe = new RecipeIA(recipeMessage.getUserId(), recipeMessage.getRecipeIAId(),
+                recipeMessage.getIsFavourite());
         service.addRecipeIA(recipe);
         sendNotificationToEsb(recipeMessage.getEmail(), "Recipe IA created successfully!");
     }
 
     public void handleDeleteRecipe(RecipeIAMessage deleteMessage) {
-        Integer recipeId = deleteMessage.getId();
-        if (recipeId == null || !recipeRepository.existsByRecipeIdAndUserId(recipeId, deleteMessage.getUser_id())) {
-            sendErrorToEsb(deleteMessage.getEmail(), "Recipe with ID " + recipeId + " does not exist.");
+        if (!recipeRepository.existsById(deleteMessage.getId())) {
+            sendErrorToEsb(deleteMessage.getEmail(), "Recipe with ID " + deleteMessage.getId() + " does not exist.");
             return;
         }
 
-        service.deleteRecipe(recipeId, deleteMessage.getUser_id());
+        service.deleteRecipe(deleteMessage.getId());
         sendNotificationToEsb(deleteMessage.getEmail(), "Recipe IA deleted successfully!");
     }
 
     public void handleUpdateRecipe(RecipeIAMessage recipeMessage) {
-        Integer recipeId = recipeMessage.getRecipeIA_id();
-        Integer userId = recipeMessage.getUser_id();
-        if (recipeId == null || !recipeRepository.existsByRecipeIdAndUserId(recipeId, userId)) {
-            sendErrorToEsb(recipeMessage.getEmail(), "Recipe with ID " + recipeId + " does not exist.");
+        Integer id = recipeMessage.getId();
+        if (id == null || !recipeRepository.existsById(id)) {
+            sendErrorToEsb(recipeMessage.getEmail(), "Recipe with ID " + id + " does not exist.");
             return;
         }
 
-        RecipeIA recipe = new RecipeIA(userId, recipeId, recipeMessage.getIs_Favourite());
+        RecipeIA recipe = new RecipeIA();
+        recipe.setId(id);
+        recipe.setUserId(recipeMessage.getUserId());
+        recipe.setRecipeId(recipeMessage.getRecipeIAId());
+        recipe.setIsFavourite(recipeMessage.getIsFavourite());
         service.updateRecipe(recipe);
         sendNotificationToEsb(recipeMessage.getEmail(), "Recipe IA updated successfully!");
     }
 
     public void handleGetRecipesByUser(RecipeIAMessage recipeMessage) {
-        if (recipeMessage.getUser_id() == null) {
+        if (recipeMessage.getUserId() == null) {
             sendErrorToEsb(recipeMessage.getEmail(), "User ID is missing.");
             return;
         }
-        Integer userId = recipeMessage.getUser_id();
+        Integer userId = recipeMessage.getUserId();
 
         List<RecipeIA> userRecipes = recipeRepository.findByUserId(userId);
         sendNotificationToEsb(recipeMessage.getEmail(), "User recipes IA fetched successfully: " + userRecipes);

@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.school.matmassig.orchestrator.util.JwtUtils;
 
-import static com.school.matmassig.orchestrator.config.RabbitMQConfig.RECIPEIA_QUEUE;
+import static com.school.matmassig.orchestrator.config.RabbitMQConfig.EXCHANGE_NAME;
 
 import java.util.HashMap;
 import java.util.Map;;
@@ -37,7 +37,7 @@ public class RecipeIAController {
         Integer userId = extractUserIdFromToken(authHeader);
         recipeMessage.setEmail(email);
         recipeMessage.setUserId(userId);
-        publisherService.publishMessage(RECIPEIA_QUEUE, "recipeIA.create", recipeMessage);
+        publisherService.publishMessage(EXCHANGE_NAME, "recipeIA.create", recipeMessage);
         return ResponseEntity.ok("Recipe creation request sent to RabbitMQ");
     }
 
@@ -50,7 +50,7 @@ public class RecipeIAController {
         Integer userId = extractUserIdFromToken(authHeader);
         recipeMessage.setEmail(email);
         recipeMessage.setUserId(userId);
-        publisherService.publishMessage(RECIPEIA_QUEUE, "recipeIA.update", recipeMessage);
+        publisherService.publishMessage(EXCHANGE_NAME, "recipeIA.update", recipeMessage);
         return ResponseEntity.ok("Recipe update request sent to RabbitMQ");
     }
 
@@ -63,7 +63,7 @@ public class RecipeIAController {
         Integer userId = extractUserIdFromToken(authHeader);
         recipeMessage.setEmail(email);
         recipeMessage.setUserId(userId);
-        publisherService.publishMessage(RECIPEIA_QUEUE, "recipeIA.delete", recipeMessage);
+        publisherService.publishMessage(EXCHANGE_NAME, "recipeIA.delete", recipeMessage);
         return ResponseEntity.ok("Recipe delete request sent to RabbitMQ");
     }
 
@@ -76,7 +76,7 @@ public class RecipeIAController {
         String email = extractEmailFromToken(authHeader);
         Map<String, Object> payload = new HashMap<>();
         payload.put("userId", userId);
-        publisherService.publishMessageWithAdditionalData(RECIPEIA_QUEUE, "recipeIA.getbyuser", payload, email);
+        publisherService.publishMessageWithAdditionalData(EXCHANGE_NAME, "recipeIA.getbyuser", payload, email);
         return ResponseEntity.ok("Get recipes by user request sent to RabbitMQ");
     }
 
