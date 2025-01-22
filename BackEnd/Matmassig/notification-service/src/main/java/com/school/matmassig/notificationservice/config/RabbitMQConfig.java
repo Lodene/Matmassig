@@ -16,9 +16,8 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Queue esbQueue() {
-        return new Queue("esb-queue", true); // Queue durable
-
+    public Queue esbNotificationsQueue() {
+        return new Queue("esb-queue", true); // ESB notification queue
     }
 
     @Bean
