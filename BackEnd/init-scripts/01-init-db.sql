@@ -41,8 +41,8 @@ CREATE TABLE IngredientsRecipe (
 CREATE TABLE UserPreferences (
     id SERIAL PRIMARY KEY,
     user_id Integer NOT NULL REFERENCES "User"(id),
-    note Integer,
-    recipe_id Integer NOT NULL REFERENCES Recipes(id),
+    genre Integer,
+    value VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
