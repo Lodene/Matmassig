@@ -111,12 +111,4 @@ public class RecipeIAMessageProcessor {
             e.printStackTrace();
         }
     }
-
-    private void handleProcessingError(RecipeMessage recipeMessage, String topic, Exception e) {
-        System.err.println("Error processing message for topic [" + topic + "]: " + e.getMessage());
-        if (recipeMessage != null && recipeMessage.getEmail() != null) {
-            sendErrorToEsb(recipeMessage.getEmail(), "Error processing recipe message: " + e.getMessage());
-        }
-        e.printStackTrace();
-    }
 }
