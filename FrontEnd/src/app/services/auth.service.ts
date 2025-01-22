@@ -24,9 +24,8 @@ export class AuthService {
 
   signUp(data: UserData): Observable<boolean> {
     let subject = new Subject<boolean>();
-    this.http.post('http://localhost:8080/auth/signup', data).subscribe((result: any) => {
+    this.http.post('http://localhost:8080/auth/signup', data, {responseType: 'text'}).subscribe((result: any) => {
       if (!!result) {
-        localStorage.setItem("auth-user", result.token);
         subject.next(true);
       } else {
         subject.next(false);

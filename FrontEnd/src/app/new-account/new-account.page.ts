@@ -26,12 +26,13 @@ export class NewAccountPage {
   public async signUp() {
     if (this.userForm.valid && this.password.value === this.password2.value) {
       let data: UserData = {
-        name: this.email.value,
+        name: this.name.value,
         email: this.email.value,
         password: this.password.value,
       };
       
       this.auth.signUp(data).subscribe(result => {
+        console.log("test");
         if (!!result) {
           this.router.navigate(['tabs/recipe']);
         }
@@ -39,6 +40,10 @@ export class NewAccountPage {
     } else {
       console.log("erreur");
     }
+  }
+
+  get name() {
+    return this.userForm.get("name") as FormControl;
   }
 
   get email() {
