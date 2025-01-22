@@ -17,7 +17,7 @@ export class RecipeHttpService {
       }),
     };
     return this.http.get(
-      'http://localhost:8080/api/orchestrator/recipe/getbyuser'
+      'http://localhost:8080/api/orchestrator/recipe/getbyuser/1'
     );
   }
 }
