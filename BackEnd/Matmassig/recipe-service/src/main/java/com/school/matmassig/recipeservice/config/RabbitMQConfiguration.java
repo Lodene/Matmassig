@@ -21,6 +21,11 @@ public class RabbitMQConfiguration {
     }
 
     @Bean
+    public Queue recipeIAQueue() {
+        return new Queue("recipeIA-queue", true); // Shared queue for all recipe topics
+    }
+
+    @Bean
     public Queue esbNotificationsQueue() {
         return new Queue("esb-queue", true); // ESB notification queue
     }
@@ -59,5 +64,26 @@ public class RabbitMQConfiguration {
     @Bean
     public Binding esbNotificationsBinding(Queue esbNotificationsQueue, TopicExchange topicExchange) {
         return BindingBuilder.bind(esbNotificationsQueue).to(topicExchange).with("esb.notifications");
+    }
+
+    // recipeIA
+    @Bean
+    public Binding recipeIACreateBinding(Queue recipeIAQueue, TopicExchange topicExchange) {
+        return BindingBuilder.bind(recipeIAQueue).to(topicExchange).with("recipeIA.create");
+    }
+
+    @Bean
+    public Binding recipeIADeleteBinding(Queue recipeIAQueue, TopicExchange topicExchange) {
+        return BindingBuilder.bind(recipeIAQueue).to(topicExchange).with("recipeIA.delete");
+    }
+
+    @Bean
+    public Binding recipeIAUpdateBinding(Queue recipeIAQueue, TopicExchange topicExchange) {
+        return BindingBuilder.bind(recipeIAQueue).to(topicExchange).with("recipeIA.update");
+    }
+
+    @Bean
+    public Binding recipeIAGetByUserBinding(Queue recipeIAQueue, TopicExchange topicExchange) {
+        return BindingBuilder.bind(recipeIAQueue).to(topicExchange).with("recipeIA.getbyuser");
     }
 }
