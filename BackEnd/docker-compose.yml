@@ -16,6 +16,20 @@ services:
     networks:
       - app-network
 
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container
+    restart: always
+    networks:
+      - app-network
+    ports:
+      - "8888:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@matmassig.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+
   rabbitmq:
     image: rabbitmq:management
     container_name: rabbitmq
@@ -163,3 +177,7 @@ services:
 networks:
   app-network:
     driver: bridge
+
+volumes:
+  pgadmin-data:
+
