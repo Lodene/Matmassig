@@ -3,6 +3,8 @@ package com.school.matmassig.inventoryservice.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.school.matmassig.inventoryservice.config.RabbitConfig;
 import com.school.matmassig.inventoryservice.model.InventoryItem;
+import com.school.matmassig.inventoryservice.model.InventoryItemMessage;
+
 import org.springframework.stereotype.Service;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
@@ -27,24 +29,24 @@ public class MessageHandlerService {
     public void processMessage(String message, String routingKey) {
         try {
             Object result = null;
+            InventoryItemMessage itemMessage = objectMapper.readValue(message, InventoryItemMessage.class);
 
             switch (routingKey) {
                 case RabbitConfig.ROUTING_KEY_ADD:
-                    result = handleAddItem(message);
+                    result = handleAddItem(itemMessage);
                     break;
                 case RabbitConfig.ROUTING_KEY_DELETE:
-                    result = handleDeleteItem(message);
+                    result = handleDeleteItem(itemMessage);
                     break;
                 case RabbitConfig.ROUTING_KEY_UPDATE:
-                    result = handleUpdateItem(message);
+                    result = handleUpdateItem(itemMessage);
                     break;
                 case RabbitConfig.ROUTING_KEY_GET:
-                    result = handleGetItems(message);
+                    result = handleGetItems(itemMessage);
                     break;
                 default:
                     System.err.println("Clé de routage inconnue : " + routingKey);
             }
-
             if (result != null) {
                 sendToEsbQueue(result);
             }
@@ -55,80 +57,83 @@ public class MessageHandlerService {
         }
     }
 
-    private Map<String, Object> handleAddItem(String message) {
+    private Map<String, Object> handleAddItem(InventoryItemMessage message) {
         try {
-            InventoryItem item = parseMessageToInventoryItem(message);
+            InventoryItem item = new InventoryItem(
+                    message.getId(),
+                    message.getUserId(),
+                    message.getQuantity());
             InventoryItem savedItem = inventoryService.addItem(item);
 
             Map<String, Object> result = new HashMap<>();
-            result.put("email", extractEmail(message));
-            result.put("item", savedItem);
+            result.put("email", message.getEmail());
+            result.put("message", "Item ajouté avec succès !");
             System.out.println("Item ajouté avec succès : " + savedItem);
 
             return result;
         } catch (Exception e) {
             System.err.println("Erreur lors de l'ajout d'un item : " + e.getMessage());
+            sendErrorToEsb(message.getEmail(), "Erreur lors de l'ajout de l'item : " + e.getMessage());
             return null;
         }
     }
 
-    private Map<String, Object> handleDeleteItem(String message) {
+    private Map<String, Object> handleDeleteItem(InventoryItemMessage message) {
         try {
-            Integer itemId = Integer.parseInt(message);
-            inventoryService.deleteItem(itemId);
+            inventoryService.deleteItem(message.getId());
 
             Map<String, Object> result = new HashMap<>();
-            result.put("email", extractEmail(message));
-            result.put("itemId", itemId);
-            System.out.println("Item supprimé avec succès, ID : " + itemId);
+            result.put("email", message.getEmail());
+            result.put("message", "Item supprimé avec succès !");
+            System.out.println("Item supprimé avec succès, ID : " + message.getId());
 
             return result;
         } catch (Exception e) {
             System.err.println("Erreur lors de la suppression d'un item : " + e.getMessage());
+            sendErrorToEsb(message.getEmail(), "Erreur lors de la suppression de l'item : " + e.getMessage());
             return null;
         }
     }
 
-    private Map<String, Object> handleUpdateItem(String message) {
+    private Map<String, Object> handleUpdateItem(InventoryItemMessage message) throws Exception {
         try {
-            InventoryItem updatedItem = parseMessageToInventoryItem(message);
-            InventoryItem item = inventoryService.updateItem(updatedItem.getId(), updatedItem);
+            if (message.getId() == null || message.getId() <= 0) {
+                sendErrorToEsb(message.getEmail(), "Invalid item ID: " + message.getId());
+                throw new IllegalArgumentException("Invalid item ID.");
+            }
+
+            InventoryItem item = new InventoryItem(
+                    message.getId(),
+                    message.getUserId(),
+                    message.getQuantity());
+            inventoryService.updateItem(item.getId(), item);
 
             Map<String, Object> result = new HashMap<>();
-            result.put("email", extractEmail(message));
-            result.put("item", item);
-            System.out.println("Item mis à jour avec succès : " + item);
-
+            result.put("email", message.getEmail());
+            result.put("message", "Item mis à jour avec succès !");
+            System.out.println("Item mis à jour : " + message.getId());
             return result;
         } catch (Exception e) {
             System.err.println("Erreur lors de la mise à jour d'un item : " + e.getMessage());
+            sendErrorToEsb(message.getEmail(), "Erreur lors de la mise à jour de l'item : " + e.getMessage());
             return null;
         }
     }
 
-    private Map<String, Object> handleGetItems(String message) {
+    private Map<String, Object> handleGetItems(InventoryItemMessage message) {
         try {
-            Integer userId = Integer.parseInt(message);
-            List<InventoryItem> items = inventoryService.getItemsByUserId(userId);
+            List<InventoryItem> items = inventoryService.getItemsByUserId(message.getUserId());
 
             Map<String, Object> result = new HashMap<>();
-            result.put("email", extractEmail(message));
-            result.put("items", items);
-            System.out.println("Items récupérés pour l'utilisateur " + userId + " : " + items);
+            result.put("email", message.getEmail());
+            result.put("message", "Items récupérés avec succès !");
+            System.out.println("Items récupérés pour l'utilisateur " + message.getUserId());
 
             return result;
         } catch (Exception e) {
             System.err.println("Erreur lors de la récupération des items : " + e.getMessage());
+            sendErrorToEsb(message.getEmail(), "Erreur lors de la récupération des items : " + e.getMessage());
             return null;
-        }
-    }
-
-    private InventoryItem parseMessageToInventoryItem(String message) {
-        try {
-            return objectMapper.readValue(message, InventoryItem.class);
-        } catch (Exception e) {
-            throw new RuntimeException(
-                    "Erreur lors de la conversion du message JSON en InventoryItem : " + e.getMessage(), e);
         }
     }
 
@@ -149,13 +154,18 @@ public class MessageHandlerService {
         }
     }
 
-    private String extractEmail(String message) {
+    private void sendErrorToEsb(String email, String errorMessage) {
         try {
-            Map<String, Object> jsonMap = objectMapper.readValue(message, Map.class);
-            return (String) jsonMap.get("email");
+            System.out.println("Sending error notification to ESB queue: " + errorMessage);
+            Map<String, String> errorPayload = new HashMap<>();
+            errorPayload.put("email", email);
+            errorPayload.put("message", errorMessage);
+
+            String errorMessageJson = objectMapper.writeValueAsString(errorPayload);
+            rabbitTemplate.convertAndSend("esb-queue", errorMessageJson);
+            System.out.println("Error notification sent to ESB queue: " + errorMessageJson);
         } catch (Exception e) {
-            System.err.println("Failed to extract email from message: " + e.getMessage());
-            return null;
+            System.err.println("Failed to send error notification to ESB queue: " + e.getMessage());
         }
     }
 }
