@@ -76,3 +76,14 @@ CREATE TABLE Notification (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     sent_at TIMESTAMP
 );
+
+-- Table UserRecipeIA
+CREATE TABLE UserRecipeIA (
+    id SERIAL PRIMARY KEY,
+    user_id Integer NOT NULL REFERENCES "User"(id),
+    recipeIA_id Integer NOT NULL,
+    status BOOLEAN NOT NULL
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
