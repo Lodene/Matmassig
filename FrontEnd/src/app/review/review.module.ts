@@ -16,6 +16,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { AccountButtonComponent } from '../generic-component/account-button/account-button.component';
 
 @NgModule({
   imports: [
@@ -33,7 +34,8 @@ import { MatInputModule } from '@angular/material/input';
     MatSelectModule,
     MatButtonModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    AccountButtonComponent
   ],
   declarations: [ReviewPage, AddEditReviewDialogComponent]
 })

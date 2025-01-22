@@ -3,9 +3,12 @@
     <ion-title>
       <div class="title-wrapper">
         <span>My Reviews</span>
-        <mat-icon (click)="deleteModeActivation()">
+        <div>
+          <app-account-button></app-account-button>
+          <mat-icon (click)="deleteModeActivation()">
           {{getDeleteIcon()}}
         </mat-icon>  
+        </div>
       </div>
     </ion-title>
   </ion-toolbar>

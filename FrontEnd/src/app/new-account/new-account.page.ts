@@ -32,9 +32,8 @@ export class NewAccountPage {
       };
       
       this.auth.signUp(data).subscribe(result => {
-        console.log("test");
         if (!!result) {
-          this.router.navigate(['tabs/recipe']);
+          this.router.navigate(['/home']);
         }
       });
     } else {
