@@ -28,7 +28,7 @@ import { ReviewFormModel } from '../../models/reviewFormModel';
   selector: 'app-add-edit-review-dialog',
   templateUrl: './add-edit-review-dialog.component.html',
   styleUrls: ['./add-edit-review-dialog.component.scss'],
-  imports: [StarReviewComponent, ReactiveFormsModule, NgxMatSelectSearchModule, CommonModule, FormsModule, MatDialogModule, MatSelectModule, MatButtonModule, MatFormFieldModule, MatInputModule]
+  standalone: false
 })
 export class AddEditReviewDialogComponent  implements OnInit, AfterViewInit {
 

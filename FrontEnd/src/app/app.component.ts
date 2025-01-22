@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 import { Platform } from '@ionic/angular';
 import { environment } from 'src/environments/environment';
+import { WebSocketService } from './websocket/web-socket.service';
 
 @Component({
   selector: 'app-root',
@@ -12,6 +13,7 @@ import { environment } from 'src/environments/environment';
 export class AppComponent {
   constructor(
     private platform: Platform,
+    private webSocketService: WebSocketService
   ) {
     this.initializeApp();
   }
@@ -26,6 +28,9 @@ export class AppComponent {
           grantOfflineAccess: true,
         }
       )
+      // connect to websocket =>
+       this.webSocketService.connectSocket("hello world");
+
     })
   }
 }

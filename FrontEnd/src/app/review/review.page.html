@@ -29,6 +29,8 @@
     </ion-select>
   </div>
 
+  <h3>Review : {{ (review$ | async)?.name }}</h3>
+
   <ion-list>
     @for (result of results; track result) {
       <ion-card>

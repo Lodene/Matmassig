@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, Inject, inject, Input, OnInit } from '@angular/core';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { Review } from 'src/models/review';
 import { BottomSheetComponent } from '../generic-component/bottom-sheet/bottom-sheet.component';
@@ -9,6 +9,8 @@ import { HttpClientService } from '../services/http-client.service';
 import { MatIcon, MatIconModule } from '@angular/material/icon';
 import { Recipe } from 'src/models/recipe';
 import { YesNoDialogComponent } from '../generic-component/yes-no-dialog/yes-no-dialog.component';
+import { WebSocketService } from '../websocket/web-socket.service';
+import { concat, concatMap, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-review',
@@ -20,7 +22,7 @@ export class ReviewPage implements OnInit {
 
 
   @Input() deleteMode: boolean = false;
-
+  
   reviews: Review[] = [];
   //  query result
   results: Review[] = [];
@@ -30,10 +32,17 @@ export class ReviewPage implements OnInit {
   private _bottomSheet = inject(MatBottomSheet);
   selectedReviewForDelete: Review[] = []
 
-  constructor(private reviewHttpService: HttpClientService) {}
+
+  review$: Observable<any> = new Observable;
+
+  constructor(
+    private webSocket: WebSocketService,
+    private reviewHttpService: HttpClientService) {}
   ngOnInit(): void {
     this.mockUpReviews();
     this.results = [...this.reviews];
+    this.review$ = this.webSocket.getReview().pipe()
+    console.log(this.review$);
   }
 
   handleInput(event: Event) {
