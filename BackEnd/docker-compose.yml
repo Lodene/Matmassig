@@ -115,7 +115,7 @@ services:
       - postgres
       - rabbitmq
     ports:
-      - "8085:8082" # Port exposé pour le service inventory-service
+      - "8085:8085" # Port exposé pour le service inventory-service
     restart: always
     networks:
       - app-network
@@ -155,11 +155,28 @@ services:
       - rabbitmq
       - websocket-service
     ports:
-      - "8084:8083" # Port exposé pour le service notification-service
+      - "8084:8084" # Port exposé pour le service notification-service
     restart: always
     networks:
       - app-network
-
+  recommandation-service:
+    build:
+      context: ./Matmassig/recommandation-service
+      dockerfile: Dockerfile
+    container_name: recommandation-service
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: admin
+      SPRING_RABBITMQ_PASSWORD: admin
+      WEBSOCKET_URL: ws://websocket-service:8089 # URL du serveur WebSocket
+    depends_on:
+      - rabbitmq
+    ports:
+      - "8086:8086" # Port exposé pour le service notification-service
+    restart: always
+    networks:
+      - app-network
 networks:
   app-network:
     driver: bridge
