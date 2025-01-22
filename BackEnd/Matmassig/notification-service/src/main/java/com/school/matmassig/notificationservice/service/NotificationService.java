@@ -39,8 +39,17 @@ public class NotificationService {
 
     private NotificationPayload parseMessage(String message) {
         try {
-            // Utilisation de ObjectMapper pour parser le message JSON
+            // Utilisation de ObjectMapper pour parser le message JSON en un Map
             ObjectMapper objectMapper = new ObjectMapper();
+
+            // Détection si le message est encapsulé en tant que chaîne brute
+            if (message.startsWith("\"") && message.endsWith("\"")) {
+                System.out.println("Message encodé détecté, décodage en cours...");
+                // Décodage de la chaîne brute JSON
+                message = objectMapper.readValue(message, String.class);
+            }
+
+            // Désérialisation en Map
             Map<String, String> jsonMap = objectMapper.readValue(message, Map.class);
 
             String email = jsonMap.get("email");
@@ -57,9 +66,26 @@ public class NotificationService {
             }
 
             return new NotificationPayload(email, text);
+
         } catch (Exception e) {
-            System.err.println("Erreur lors du parsing du message JSON : " + e.getMessage());
-            return null;
+            System.err.println("Erreur lors du parsing en Map : " + e.getMessage());
+
+            try {
+                // Tentative de désérialisation directe en NotificationPayload
+                ObjectMapper objectMapper = new ObjectMapper();
+                if (message.startsWith("\"") && message.endsWith("\"")) {
+                    System.out.println("Message encodé détecté, décodage en cours...");
+                    message = objectMapper.readValue(message, String.class);
+                }
+
+                NotificationPayload payload = objectMapper.readValue(message, NotificationPayload.class);
+                return payload;
+
+            } catch (Exception ex) {
+                System.err.println("Erreur lors du parsing en NotificationPayload : " + ex.getMessage());
+                return null;
+            }
         }
     }
+
 }
