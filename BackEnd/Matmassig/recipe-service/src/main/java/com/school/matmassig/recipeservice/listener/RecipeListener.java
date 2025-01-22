@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.school.matmassig.recipeservice.model.DeleteRecipeMessage;
 import com.school.matmassig.recipeservice.model.RecipeMessage;
 import com.school.matmassig.recipeservice.service.RecipeMessageProcessor;
+import com.school.matmassig.recipeservice.service.RecipeService;
+
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Component;
@@ -11,12 +13,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class RecipeListener {
 
+    private final RecipeService service;
     private final RecipeMessageProcessor processingService;
     private final ObjectMapper objectMapper;
 
-    public RecipeListener(RecipeMessageProcessor processingService, ObjectMapper objectMapper) {
+    public RecipeListener(RecipeMessageProcessor processingService, ObjectMapper objectMapper, RecipeService service) {
         this.processingService = processingService;
         this.objectMapper = objectMapper;
+        this.service = service;
     }
 
     @RabbitListener(queues = "recipe-queue")
@@ -27,6 +31,7 @@ public class RecipeListener {
                 case "recipe.create":
                     RecipeMessage recipeMessageCreate = objectMapper.readValue(message, RecipeMessage.class);
                     handleRecipeCreate(recipeMessageCreate);
+                    service.sendToAI(recipeMessageCreate);
                     break;
 
                 case "recipe.update":

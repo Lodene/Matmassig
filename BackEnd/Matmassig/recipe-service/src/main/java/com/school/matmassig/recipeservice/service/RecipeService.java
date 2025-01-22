@@ -3,6 +3,7 @@ package com.school.matmassig.recipeservice.service;
 import com.school.matmassig.recipeservice.model.Ingredient;
 import com.school.matmassig.recipeservice.model.IngredientsRecipe;
 import com.school.matmassig.recipeservice.model.Recipe;
+import com.school.matmassig.recipeservice.model.RecipeMessage;
 import com.school.matmassig.recipeservice.model.dto.RecipeWithIngredients;
 import com.school.matmassig.recipeservice.model.dto.IngredientDetails;
 import com.school.matmassig.recipeservice.repository.IngredientRepository;
@@ -10,14 +11,25 @@ import com.school.matmassig.recipeservice.repository.IngredientsRecipeRepository
 import com.school.matmassig.recipeservice.repository.RecipeRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.client.RestTemplate;
 
+@Slf4j
 @Service
 public class RecipeService {
+
+    private final RestTemplate restTemplate = new RestTemplate();
+
+    @Value("${ai.api.url:http://api.example.com/recommendation}")
+    private String aiApiUrl;
 
     @Autowired
     private RecipeRepository recipeRepository;
@@ -125,6 +137,19 @@ public class RecipeService {
             }).collect(Collectors.toList());
             return new RecipeWithIngredients(recipe, ingredientDetails);
         }).collect(Collectors.toList());
+    }
+
+    public void sendToAI(RecipeMessage reviewMessage) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<RecipeMessage> entity = new HttpEntity<>(reviewMessage, headers);
+
+            restTemplate.postForEntity(aiApiUrl, entity, String.class);
+            log.info("Successfully sent review to AI API: {}", reviewMessage);
+        } catch (Exception e) {
+            log.error("Failed to send review to AI API: {}", reviewMessage, e);
+        }
     }
 
 }

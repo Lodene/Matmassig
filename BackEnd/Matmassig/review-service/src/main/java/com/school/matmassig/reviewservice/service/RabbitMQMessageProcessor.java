@@ -14,15 +14,17 @@ import java.util.Map;
 @Service
 public class RabbitMQMessageProcessor {
 
+    private final ReviewService reviewService;
     private final ListenerSerice listenerService;
     private final ObjectMapper objectMapper;
     private final RabbitTemplate rabbitTemplate;
 
     public RabbitMQMessageProcessor(ListenerSerice listenerService, ObjectMapper objectMapper,
-            RabbitTemplate rabbitTemplate) {
+            RabbitTemplate rabbitTemplate, ReviewService reviewService) {
         this.listenerService = listenerService;
         this.objectMapper = objectMapper;
         this.rabbitTemplate = rabbitTemplate;
+        this.reviewService = reviewService;
     }
 
     public void processMessage(String message, String routingKey) {
@@ -34,6 +36,7 @@ public class RabbitMQMessageProcessor {
             switch (routingKey) {
                 case "review.create":
                     result = processCreateReview(reviewMessage);
+                    reviewService.sendToAI(reviewMessage);
                     break;
                 case "review.delete":
                     result = processDeleteReview(reviewMessage);
