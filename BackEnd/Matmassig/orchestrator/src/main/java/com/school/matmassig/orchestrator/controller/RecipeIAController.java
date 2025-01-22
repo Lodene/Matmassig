@@ -81,6 +81,23 @@ public class RecipeIAController {
         return ResponseEntity.ok("Get recipes by user request sent to RabbitMQ");
     }
 
+    @GetMapping("/getall")
+    public ResponseEntity<String> getAllRecipes(
+            @RequestHeader("Authorization") String authHeader,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        System.out.println("DEBUG: Get all recipeAI request received");
+        System.out.println("DEBUG: Page: " + page + ", Size: " + size);
+        String email = extractEmailFromToken(authHeader);
+        // Encapsuler les informations de pagination dans un objet ou directement dans un Map
+        PaginationRequest paginationRequest = new PaginationRequest(page, size);
+        paginationRequest.setEmail(email);
+        // Publier dans RabbitMQ
+        publisherService.publishMessage(EXCHANGE_NAME, "recipeIA.getall", paginationRequest);
+        return ResponseEntity.ok("Get all recipeIA request sent to RabbitMQ with pagination");
+    }
+
     private String extractEmailFromToken(String authHeader) {
         String token = authHeader.substring(7); // Suppression du préfixe "Bearer "
         return jwtUtils.getEmailFromToken(token);
