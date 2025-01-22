@@ -21,6 +21,16 @@ public class RabbitMQConfiguration {
     }
 
     @Bean
+    public Queue esbNotificationsQueue() {
+        return new Queue("esb-queue", true); // ESB notification queue
+    }
+
+    @Bean
+    public Binding esbNotificationsBinding(Queue esbNotificationsQueue, TopicExchange topicExchange) {
+        return BindingBuilder.bind(esbNotificationsQueue).to(topicExchange).with("esb.notifications");
+    }
+
+    @Bean
     public Binding reviewCreateBinding(Queue reviewQueue, TopicExchange topicExchange) {
         return BindingBuilder.bind(reviewQueue).to(topicExchange).with("review.create");
     }

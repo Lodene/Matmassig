@@ -111,7 +111,7 @@ public class RecipeMessageProcessor {
 
     private void sendMessageToQueue(NotificationMessage message) {
         try {
-            rabbitTemplate.convertAndSend("esb-queue", objectMapper.writeValueAsString(message));
+            rabbitTemplate.convertAndSend("app-exchange", "esb.notification", objectMapper.writeValueAsString(message));
             System.out.println("Message sent to ESB queue: " + message);
         } catch (Exception e) {
             System.err.println("Failed to send message to ESB queue: " + e.getMessage());

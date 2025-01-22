@@ -179,7 +179,7 @@ public class RabbitMQMessageProcessor {
                 return;
             }
 
-            rabbitTemplate.convertAndSend("esb-queue", resultMessage);
+            rabbitTemplate.convertAndSend("app-exchange", "esb.notifications", resultMessage);
             System.out.println("Result sent to ESB queue: " + resultMessage);
         } catch (Exception e) {
             System.err.println("Failed to send result to ESB queue: " + e.getMessage());
@@ -195,7 +195,7 @@ public class RabbitMQMessageProcessor {
             errorPayload.put("message", errorMessage);
 
             String errorMessageJson = objectMapper.writeValueAsString(errorPayload);
-            rabbitTemplate.convertAndSend("esb-queue", errorMessageJson);
+            rabbitTemplate.convertAndSend("esb.notification", errorMessageJson);
             System.out.println("Error notification sent to ESB queue: " + errorMessageJson);
         } catch (Exception e) {
             System.err.println("Failed to send error notification to ESB queue: " + e.getMessage());

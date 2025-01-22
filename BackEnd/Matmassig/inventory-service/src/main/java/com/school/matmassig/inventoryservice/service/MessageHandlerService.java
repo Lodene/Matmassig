@@ -162,7 +162,7 @@ public class MessageHandlerService {
             errorPayload.put("message", errorMessage);
 
             String errorMessageJson = objectMapper.writeValueAsString(errorPayload);
-            rabbitTemplate.convertAndSend("esb-queue", errorMessageJson);
+            rabbitTemplate.convertAndSend("app-exchange", "esb.notification", errorMessageJson);
             System.out.println("Error notification sent to ESB queue: " + errorMessageJson);
         } catch (Exception e) {
             System.err.println("Failed to send error notification to ESB queue: " + e.getMessage());
