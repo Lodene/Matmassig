@@ -4,8 +4,21 @@ var WebSocket = require("ws");
 var http = require("http");
 // Création d'un serveur HTTP
 var server = http.createServer(function (req, res) {
+    const headers = {
+        'Access-Control-Allow-Origin': '*', /* @dev First, read about security */
+        'Access-Control-Allow-Methods': 'OPTIONS, POST, GET',
+        'Access-Control-Max-Age': 2592000, // 30 days
+        /** add other headers as per requirement */
+    };
+    res.setHeader('Access-Control-Allow-Origin', '*'); /* @dev First, read about security */
+    res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET');
+    res.setHeader('Access-Control-Max-Age', 2592000); // 30 days
+    // res.setHeader('Access-Control-Allow-Headers', req.headers.origin as string);
+    
     res.writeHead(200, { 'Content-Type': 'text/plain' });
     res.end('WebSocket server is running\n');
+      res.writeHead(200, { 'Content-Type': 'text/plain' });
+      res.end('WebSocket server is running\n');
 });
 // Création d'un serveur WebSocket attaché au serveur HTTP
 var wss = new WebSocket.Server({ server: server });
@@ -62,5 +75,5 @@ setInterval(function () {
 // Démarrer le serveur
 var PORT = 8089;
 server.listen(PORT, function () {
-    console.log("Serveur WebSocket s\u00E9curis\u00E9 en \u00E9coute sur le port ".concat(PORT));
+    console.log("Serveur WebSocket s\u00E9curis\u00E9 en \u00E9coute sur le port bizarre ".concat(PORT));
 });
