@@ -1,14 +1,17 @@
 import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
 import { Observable } from 'rxjs';
+import { AuthService } from '../services/auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WebSocketService {
-  constructor(private webSocket: Socket) {
+  constructor(private webSocket: Socket,
+    private authService: AuthService
+  ) {
     this.webSocket = new Socket({
-      url: 'http://localhost:3000/',
+      url: 'http://localhost:8089/',
       options: {}
     });
 
@@ -30,6 +33,10 @@ export class WebSocketService {
 
   getReview(): Observable<any> {
     return this.webSocket.fromEvent('review-created')
+  }
+
+  getToken(): Observable<any> {
+    return this.webSocket.fromEvent('login-successfully');
   }
 
 

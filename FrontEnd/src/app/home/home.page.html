@@ -2,7 +2,7 @@
   <div class="vertical-center">
     <div class="center">
       <h1>Sign in to Matmässig</h1>
-
+      <span> {{ (login$ | async) }}</span>
       <ion-button color="google" shape="round" expand="block" (click)="signInGoogle()">
         <ion-icon name="logo-google" color="dark" slot="start"></ion-icon>
         <span class="google-text">Continue with Google</span>

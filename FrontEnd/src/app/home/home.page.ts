@@ -3,6 +3,8 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 import { AuthService, UserData } from '../services/auth.service';
 import { Router } from '@angular/router';
+import { WebSocketService } from '../websocket/web-socket.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -12,11 +14,13 @@ import { Router } from '@angular/router';
 })
 export class HomePage {
 
-  constructor(private router: Router) {}
+  constructor(private router: Router,
+    private webSocket: WebSocketService,
+  ) {}
   
     private formBuilder = inject(FormBuilder);
     private auth = inject(AuthService);
-
+    login$: Observable<any> = new Observable<any>();
     errorMessage = signal('');
   
     userForm = this.formBuilder.group({    
@@ -50,7 +54,8 @@ export class HomePage {
         
         this.auth.login(data).subscribe(result => {
           if (!!result) {
-            this.router.navigate(["/tabs/review"]);
+            // this.router.navigate(["/tabs/review"]);
+            this.login$ = this.webSocket.getToken().pipe();
           }
         });
       } else {
@@ -64,6 +69,10 @@ export class HomePage {
 
   get password() {
     return this.userForm.get("password") as FormControl;
+  }
+
+  onTokenResponse(): void {
+    
   }
 
   updateErrorMessage() {
