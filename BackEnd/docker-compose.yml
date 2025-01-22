@@ -177,6 +177,27 @@ services:
     restart: always
     networks:
       - app-network
+
+  userpreferences-service:
+    build:
+      context: ./Matmassig/userpreferences-service
+      dockerfile: Dockerfile
+    container_name: userpreferences-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres_matmassig:5432/matmassig
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: admin
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+    depends_on:
+      - postgres
+      - rabbitmq
+    ports:
+      - "8087:8087" # Port exposé pour le service review-service
+    restart: always
+    networks:
+      - app-network
+
 networks:
   app-network:
     driver: bridge

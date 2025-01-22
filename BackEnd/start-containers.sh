@@ -10,7 +10,7 @@ if [ -z "$ADDITIONAL_SERVICES" ]; then
 fi
 
 # Services de base toujours nécessaires
-BASE_SERVICES="postgres rabbitmq"
+BASE_SERVICES="postgres rabbitmq orchestrator authentification-service"
 
 # Combiner les services de base avec les services supplémentaires
 SERVICES="$BASE_SERVICES $ADDITIONAL_SERVICES"
