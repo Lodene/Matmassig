@@ -59,10 +59,11 @@ public class MessageHandlerService {
 
     private Map<String, Object> handleAddItem(InventoryItemMessage message) {
         try {
-            InventoryItem item = new InventoryItem(
-                    message.getId(),
-                    message.getUserId(),
-                    message.getQuantity());
+
+            InventoryItem item = new InventoryItem();
+            item.setUserId(message.getUserId());
+            item.setQuantity(message.getQuantity());
+            item.setIngredientId(message.getIngredientId());
             InventoryItem savedItem = inventoryService.addItem(item);
 
             Map<String, Object> result = new HashMap<>();
@@ -102,10 +103,9 @@ public class MessageHandlerService {
                 throw new IllegalArgumentException("Invalid item ID.");
             }
 
-            InventoryItem item = new InventoryItem(
-                    message.getId(),
-                    message.getUserId(),
-                    message.getQuantity());
+            InventoryItem item = new InventoryItem();
+            item.setId(message.getId());
+            item.setQuantity(message.getQuantity());
             inventoryService.updateItem(item.getId(), item);
 
             Map<String, Object> result = new HashMap<>();
@@ -146,7 +146,7 @@ public class MessageHandlerService {
                 return;
             }
 
-            rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_NAME, RabbitConfig.QUEUE_NAME, resultMessage);
+            rabbitTemplate.convertAndSend("app-exchange", "esb.notification", resultMessage);
             System.out.println("Result sent to ESB queue: " + resultMessage);
         } catch (Exception e) {
             System.err.println("Failed to send result to ESB queue: " + e.getMessage());

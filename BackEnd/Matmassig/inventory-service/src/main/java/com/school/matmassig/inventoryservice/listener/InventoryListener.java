@@ -16,7 +16,7 @@ public class InventoryListener {
         this.messageHandlerService = messageHandlerService;
     }
 
-    @RabbitListener(queues = RabbitConfig.QUEUE_NAME)
+    @RabbitListener(queues = RabbitConfig.QUEUE_NAME_ITEM)
     public void listen(String message, @Header("amqp_receivedRoutingKey") String routingKey) {
         messageHandlerService.processMessage(message, routingKey);
     }
