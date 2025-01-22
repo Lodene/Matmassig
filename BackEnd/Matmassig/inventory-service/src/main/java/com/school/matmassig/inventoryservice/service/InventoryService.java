@@ -34,9 +34,7 @@ public class InventoryService {
 
     public InventoryItem updateItem(Integer id, InventoryItem updatedItem) {
         return repository.findById(id).map(existingItem -> {
-            existingItem.setIngredientId(updatedItem.getIngredientId());
             existingItem.setQuantity(updatedItem.getQuantity());
-            existingItem.setUserId(updatedItem.getUserId());
             return repository.save(existingItem);
         }).orElseThrow(() -> new RuntimeException("Item not found with id " + id));
     }

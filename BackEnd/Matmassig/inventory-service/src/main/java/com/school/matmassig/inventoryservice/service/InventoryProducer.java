@@ -20,7 +20,7 @@ public class InventoryProducer {
      * @param message Le message à envoyer.
      */
     public void sendMessage(String message) {
-        rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_NAME, RabbitConfig.QUEUE_NAME, message);
+        rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_NAME, RabbitConfig.QUEUE_NAME_ESB, message);
         System.out.println("Message envoyé à la queue `esb-queue` : " + message);
     }
 }
