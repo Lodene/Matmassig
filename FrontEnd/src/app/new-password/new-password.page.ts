@@ -23,7 +23,7 @@ export class NewPasswordPage {
 
   public async sendEmail() {
     if (this.userForm.valid) {
-      let data: UserData = {
+      let data = {
         email: this.email.value,
       };
       this.openDialogOk();
@@ -47,9 +47,4 @@ export class NewPasswordPage {
         this.router.navigate(["home"]);
       });
     }
-}
-
-
-export interface UserData {
-  email: string;
 }

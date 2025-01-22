@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
-import { AuthService } from '../services/auth.service';
+import { AuthService, UserData } from '../services/auth.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -48,10 +48,11 @@ export class HomePage {
           password: this.password.value
         };
         
-        this.auth.login(data);
-        if (this.auth.isAuthenticated()) {
-          this.router.navigate(["/tabs/review"]);
-        }
+        this.auth.login(data).subscribe(result => {
+          if (!!result) {
+            this.router.navigate(["/tabs/review"]);
+          }
+        });
       } else {
         console.log("erreur");
       }
@@ -75,9 +76,4 @@ export class HomePage {
     }
   }
 
-}
-
-export interface UserData {
-  email: string;
-  password: string;
 }
