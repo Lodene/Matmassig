@@ -7,28 +7,19 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitConfig {
 
-    public static final String EXCHANGE_NAME = "app-exchange";
-    public static final String QUEUE_NAME_ITEM = "esb-queue";
-    public static final String QUEUE_NAME_ESB = "item-queue";
-
-    public static final String ROUTING_KEY_ADD = "item.create";
-    public static final String ROUTING_KEY_DELETE = "item.delete";
-    public static final String ROUTING_KEY_UPDATE = "item.update";
-    public static final String ROUTING_KEY_GET = "item.getbyuser";
-
     @Bean
     public TopicExchange topicExchange() {
-        return new TopicExchange(EXCHANGE_NAME);
+        return new TopicExchange("app-exchange");
     }
 
     @Bean
     public Queue itemQueue() {
-        return new Queue(QUEUE_NAME_ITEM, true);
+        return new Queue("item-queue", true);
     }
 
     @Bean
     public Queue esbNotificationsQueue() {
-        return new Queue(QUEUE_NAME_ESB, true);
+        return new Queue("esb-queue", true); // ESB notification queue
     }
 
     @Bean
@@ -38,21 +29,21 @@ public class RabbitConfig {
 
     @Bean
     public Binding bindingAddItem(Queue itemQueue, TopicExchange topicExchange) {
-        return BindingBuilder.bind(itemQueue).to(topicExchange).with(ROUTING_KEY_ADD);
+        return BindingBuilder.bind(itemQueue).to(topicExchange).with("item.create");
     }
 
     @Bean
     public Binding bindingDeleteItem(Queue itemQueue, TopicExchange topicExchange) {
-        return BindingBuilder.bind(itemQueue).to(topicExchange).with(ROUTING_KEY_DELETE);
+        return BindingBuilder.bind(itemQueue).to(topicExchange).with("item.delete");
     }
 
     @Bean
     public Binding bindingUpdateItem(Queue itemQueue, TopicExchange topicExchange) {
-        return BindingBuilder.bind(itemQueue).to(topicExchange).with(ROUTING_KEY_UPDATE);
+        return BindingBuilder.bind(itemQueue).to(topicExchange).with("item.update");
     }
 
     @Bean
     public Binding bindingGetItems(Queue itemQueue, TopicExchange topicExchange) {
-        return BindingBuilder.bind(itemQueue).to(topicExchange).with(ROUTING_KEY_GET);
+        return BindingBuilder.bind(itemQueue).to(topicExchange).with("item.getbyuser");
     }
 }
