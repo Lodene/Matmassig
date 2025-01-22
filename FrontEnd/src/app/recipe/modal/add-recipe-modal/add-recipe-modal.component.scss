@@ -1,0 +1,24 @@
+.horizontal {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.vertical {
+    display: flex;
+    flex-direction: column;
+}
+
+.main-content {
+    text-align: center;
+}
+
+.quantity {
+    margin-left: 1em;
+    max-width: 25%;
+}
+
+mat-form-field {
+    margin: 0;
+    padding: 0;
+}

@@ -1,35 +1,46 @@
 <h2 mat-dialog-title>Add a recipe </h2>
 <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
-<mat-dialog-content>  
+  <mat-dialog-content class="main-content">  
     <mat-label mat-dialog-content for="recipe-name">Recipe Name</mat-label> 
     <mat-form-field [formGroup]="profileForm">   
       <input matInput id="recipe-name" type="text" formControlName="recipeName">  
     </mat-form-field>
-    
+      
     <mat-label mat-dialog-content for="recipe-description">Description</mat-label>  
     <mat-form-field>  
-      <input matInput id="recipe-description" type="text" [formGroup]="profileForm" formControlName="recipeDescription">
+      <textarea matInput id="recipe-description" type="textarea" [formGroup]="profileForm" formControlName="recipeDescription"></textarea>
+    </mat-form-field>
+
+    <mat-label mat-dialog-content for="recipe-cooking">Cooking</mat-label>  
+    <mat-form-field>  
+      <textarea matInput id="recipe-cooking" type="textarea" [formGroup]="profileForm" formControlName="recipeCooking"></textarea>
     </mat-form-field>
 
     <div formArrayName="ingredients"> 
-      <div>  
-        <mat-label mat-dialog-content>Ingredients</mat-label>     
-        <button type="button" (click)="addIngredient()">+</button>
+      <mat-label mat-dialog-content>Ingredients</mat-label>     
+      <div class="vertical">
+        @for (ing of ingredients.controls; track $index) 
+        {
+          <div class="horizontal" [formGroupName]="$index">
+            <mat-form-field>        
+              <input matInput id="ingredient-{{ $index }}" type="text" formControlName="ingredientName" placeholder="Ingredient name">   
+            </mat-form-field>
+            <mat-form-field class="quantity">        
+              <input matInput id="quantity-{{ $index }}" type="number" min="1" formControlName="quantity">   
+            </mat-form-field>
+            <mat-icon class="delete-btn" (click)="deleteIngredient($index)">
+              delete_forever</mat-icon>
+          </div>
+        }
+        <button mat-button type="button" (click)="addIngredient()"><mat-icon>add</mat-icon></button>
       </div>
-      @for (ing of ingredients.controls; track $index) 
-      {
-        <mat-form-field>        
-          <input matInput id="ingredient-{{ $index }}" type="text" [formGroup]="profileForm" [formControlName]="$index">   
-        </mat-form-field> 
-      }
     </div>
+  </mat-dialog-content>
 
-</mat-dialog-content>
-
-<mat-dialog-actions>
-  <button mat-button mat-dialog-close>Cancel</button>
-  <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
-  <button type="submit" mat-button>Add</button>
-</mat-dialog-actions>
+  <mat-dialog-actions>
+    <button mat-button mat-dialog-close>Cancel</button>
+    <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
+    <button type="submit" mat-button>Add</button>
+  </mat-dialog-actions>
 
 </form>

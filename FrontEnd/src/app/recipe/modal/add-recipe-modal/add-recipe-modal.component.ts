@@ -12,7 +12,9 @@ import {
   MatDialogTitle,
 } from '@angular/material/dialog';
 import {MatFormFieldModule} from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
+import { Ingredient } from 'src/models/ingredient';
 
 @Component({
   selector: 'app-add-recipe-modal',
@@ -24,6 +26,7 @@ import {MatInputModule} from '@angular/material/input';
     FormsModule,
     MatButtonModule,
     ReactiveFormsModule,
+    MatIconModule,
     MatDialogTitle,
     MatDialogModule,
     MatDialogContent,
@@ -44,7 +47,8 @@ export class AddRecipeModalComponent implements OnInit {
   profileForm = this.formBuilder.group({    
     recipeName: ['', Validators.required],    
     recipeDescription: [''],
-    ingredients: this.formBuilder.array([]),  
+    recipeCooking: [''],
+    ingredients: this.formBuilder.array([], Validators.required),  
   });
 
   onNoClick(): void {
@@ -56,6 +60,7 @@ export class AddRecipeModalComponent implements OnInit {
       let data: DialogData = {
         recipeName: this.recipeName.value,
         recipeDescription: this.recipeDescription.value,
+        recipeCooking: this.recipeCooking.value,
         ingredients: this.ingredients.value
       };
       this.dialogRef.close(data);
@@ -76,8 +81,20 @@ export class AddRecipeModalComponent implements OnInit {
     return this.profileForm.get('recipeDescription') as FormControl;
   }
 
-  addIngredient() {    
-    this.ingredients.push(this.formBuilder.control(''));
+  get recipeCooking() {
+    return this.profileForm.get('recipeCooking') as FormControl;
+  }
+
+  addIngredient() {
+    const ingredientForm = this.formBuilder.group({
+      ingredientName: ['', Validators.required],
+      quantity: [1, Validators.required]
+    });
+    this.ingredients.push(ingredientForm);
+  }
+
+  deleteIngredient(ingIndex: number) {
+    this.ingredients.removeAt(ingIndex);
   }
 
 }
@@ -85,5 +102,6 @@ export class AddRecipeModalComponent implements OnInit {
 export interface DialogData {
   recipeName: string;
   recipeDescription: string;
-  ingredients: Array<String>
+  recipeCooking: string
+  ingredients: Array<Ingredient>
 }
