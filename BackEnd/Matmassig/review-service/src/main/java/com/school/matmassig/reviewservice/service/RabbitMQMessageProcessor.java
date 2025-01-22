@@ -178,7 +178,7 @@ public class RabbitMQMessageProcessor {
                 System.err.println("Result message is null or empty. Skipping send.");
                 return;
             }
-            rabbitTemplate.convertAndSend("app-exchange", "esb-queue", resultMessage);
+            rabbitTemplate.convertAndSend("app-exchange", "esb.notifications", resultMessage);
             System.out.println("Result sent to ESB queue: " + resultMessage);
         } catch (Exception e) {
             System.err.println("Failed to send result to ESB queue: " + e.getMessage());

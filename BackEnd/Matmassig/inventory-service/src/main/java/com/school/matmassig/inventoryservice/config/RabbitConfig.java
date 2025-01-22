@@ -1,7 +1,5 @@
 package com.school.matmassig.inventoryservice.config;
 
-import org.springframework.amqp.core.Queue;
-
 import org.springframework.amqp.core.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,41 +7,43 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitConfig {
 
-    public static final String QUEUE_NAME = "esb-queue";
-    public static final String EXCHANGE_NAME = "item-esb";
-
-    public static final String ROUTING_KEY_ADD = "item.create";
-    public static final String ROUTING_KEY_DELETE = "item.delete";
-    public static final String ROUTING_KEY_UPDATE = "item.update";
-    public static final String ROUTING_KEY_GET = "item.getbyuser";
-
     @Bean
-    public Queue queue() {
-        return new Queue(QUEUE_NAME, true);
+    public TopicExchange topicExchange() {
+        return new TopicExchange("app-exchange");
     }
 
     @Bean
-    public TopicExchange exchange() {
-        return new TopicExchange(EXCHANGE_NAME);
+    public Queue itemQueue() {
+        return new Queue("item-queue", true);
     }
 
     @Bean
-    public Binding bindingAddItem(Queue queue, TopicExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(ROUTING_KEY_ADD);
+    public Queue esbNotificationsQueue() {
+        return new Queue("esb-queue", true); // ESB notification queue
     }
 
     @Bean
-    public Binding bindingDeleteItem(Queue queue, TopicExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(ROUTING_KEY_DELETE);
+    public Binding esbNotificationsBinding(Queue esbNotificationsQueue, TopicExchange topicExchange) {
+        return BindingBuilder.bind(esbNotificationsQueue).to(topicExchange).with("esb.notifications");
     }
 
     @Bean
-    public Binding bindingUpdateItem(Queue queue, TopicExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(ROUTING_KEY_UPDATE);
+    public Binding bindingAddItem(Queue itemQueue, TopicExchange topicExchange) {
+        return BindingBuilder.bind(itemQueue).to(topicExchange).with("item.create");
     }
 
     @Bean
-    public Binding bindingGetItems(Queue queue, TopicExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(ROUTING_KEY_GET);
+    public Binding bindingDeleteItem(Queue itemQueue, TopicExchange topicExchange) {
+        return BindingBuilder.bind(itemQueue).to(topicExchange).with("item.delete");
+    }
+
+    @Bean
+    public Binding bindingUpdateItem(Queue itemQueue, TopicExchange topicExchange) {
+        return BindingBuilder.bind(itemQueue).to(topicExchange).with("item.update");
+    }
+
+    @Bean
+    public Binding bindingGetItems(Queue itemQueue, TopicExchange topicExchange) {
+        return BindingBuilder.bind(itemQueue).to(topicExchange).with("item.getbyuser");
     }
 }
