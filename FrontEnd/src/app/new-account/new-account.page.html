@@ -1,0 +1,27 @@
+<ion-content [fullscreen]="true">
+  <div class="vertical-center">
+    <div class="center">
+      <h1>Welcome to Matmässig</h1>
+
+      <form [formGroup]="userForm" (ngSubmit)="signUp()">
+        <ion-item >
+          <ion-input color="dark" type="mail" placeholder="Email address" [formGroup]="userForm" formControlName="email"></ion-input>
+        </ion-item>
+        
+        <ion-item>
+          <ion-input color="dark" type="password" placeholder="Password" [formGroup]="userForm" formControlName="password"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input color="dark" type="password" placeholder="Re-enter password" [formGroup]="userForm" formControlName="password2"></ion-input>
+        </ion-item>
+  
+        <ion-button type="submit" color="primary" shape="round" expand="block">
+          Create an account
+        </ion-button>
+      </form>
+    </div>
+    
+  </div>
+
+</ion-content>
