@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { NewPasswordPageRoutingModule } from './new-password-routing.module';
 
 import { NewPasswordPage } from './new-password.page';
-import { OkModalComponent } from '../ok-modal/ok-modal.component';
+import { OkModalComponent } from '../generic-component/ok-modal/ok-modal.component';
 
 @NgModule({
   imports: [

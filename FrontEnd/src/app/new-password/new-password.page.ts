@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { OkModalComponent } from '../ok-modal/ok-modal.component';
+import { OkModalComponent } from '../generic-component/ok-modal/ok-modal.component';
 import { Router } from '@angular/router';
 
 @Component({
@@ -37,7 +37,11 @@ export class NewPasswordPage {
   }
 
   openDialogOk(): void {
-      const dialogRef = this.dialogOk.open(OkModalComponent);
+      const dialogRef = this.dialogOk.open(OkModalComponent, {
+        data: {
+          message: "An email has been sent to the requested address."
+        }
+      });
   
       dialogRef.afterClosed().subscribe(result => {
         this.router.navigate(["home"]);

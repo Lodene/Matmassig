@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { UserData } from '../home/home.page';
 
 @Injectable({
   providedIn: 'root'
@@ -7,17 +8,15 @@ export class AuthService {
 
   constructor() { }
 
-  private authenticated = false;
-
-  login() {
-    this.authenticated = true;
+  login(data: UserData) {
+    localStorage.setItem("auth-user", data.email);
   }
 
   logout() {
-    this.authenticated = false;
+    localStorage.removeItem("auth-user")
   }
 
-  isAuthenticated(): boolean {
-    return this.authenticated;
+  isAuthenticated(): string | null {
+    return localStorage.getItem("auth-user");
   }
 }

@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogTitle, MatDialogModule, MatDialogContent, MatDialogActions, MatDialogClose } from '@angular/material/dialog';
+import { MatDialogTitle, MatDialogModule, MatDialogContent, MatDialogActions, MatDialogClose, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
@@ -16,7 +16,6 @@ import { MatInputModule } from '@angular/material/input';
       FormsModule,
       MatButtonModule,
       ReactiveFormsModule,
-      MatDialogTitle,
       MatDialogModule,
       MatDialogContent,
       MatDialogActions,
@@ -24,8 +23,17 @@ import { MatInputModule } from '@angular/material/input';
 })
 export class OkModalComponent  implements OnInit {
 
+
+
   constructor() { }
 
-  ngOnInit() {}
+  message: string = 'Modal-message';
+
+  readonly dialogRef = inject(MatDialogRef<OkModalComponent>);
+  readonly data = inject<any>(MAT_DIALOG_DATA);
+
+  ngOnInit() {
+    this.message = this.data.message;
+  }
 
 }

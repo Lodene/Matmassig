@@ -26,11 +26,18 @@ export class HomePage {
 
   public async signInGoogle(){
     let googleUser = await GoogleAuth.signIn();
+    if (googleUser.email !== null) {
+      this.auth.login({
+        email: googleUser.email,
+        password: ""
+      });
+    }
     console.log(googleUser.email);
   }
 
   public signOutGoogle(){
     GoogleAuth.signOut();
+    this.auth.logout();
   }
 
   public async signInEmail(){
@@ -41,7 +48,7 @@ export class HomePage {
           password: this.password.value
         };
         
-        this.auth.login();
+        this.auth.login(data);
         if (this.auth.isAuthenticated()) {
           this.router.navigate(["/tabs/review"]);
         }
