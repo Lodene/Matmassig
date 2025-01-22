@@ -54,8 +54,8 @@ export class HomePage {
         
         this.auth.login(data).subscribe(result => {
           if (!!result) {
-            // this.router.navigate(["/tabs/review"]);
-            this.login$ = this.webSocket.getToken().pipe();
+            this.router.navigate(["/tabs/review"]);
+            // this.login$ = this.webSocket.getToken().pipe();
           }
         });
       } else {

@@ -11,9 +11,9 @@ export class AuthService {
 
   login(data: UserData): Observable<boolean> {
     let subject = new Subject<boolean>();  
-    this.http.post('http://localhost:8080/auth/login', data).subscribe(result => {
+    this.http.post('http://localhost:8080/auth/login', data).subscribe((result: any) => {
       if (!!result) {
-        localStorage.setItem("auth-user", data.email);
+        localStorage.setItem("auth-user", result.token);
         subject.next(true);
       } else {
         subject.next(false);
@@ -24,9 +24,9 @@ export class AuthService {
 
   signUp(data: UserData): Observable<boolean> {
     let subject = new Subject<boolean>();
-    this.http.post('http://localhost:8080/auth/signup', data).subscribe(result => {
+    this.http.post('http://localhost:8080/auth/signup', data).subscribe((result: any) => {
       if (!!result) {
-        localStorage.setItem("auth-user", data.email);
+        localStorage.setItem("auth-user", result.token);
         subject.next(true);
       } else {
         subject.next(false);

@@ -30,8 +30,12 @@ export class NewAccountPage {
         email: this.email.value,
         password: this.password.value,
       };
-
-      this.router.navigate(['tabs/recipe'])
+      
+      this.auth.signUp(data).subscribe(result => {
+        if (!!result) {
+          this.router.navigate(['tabs/recipe']);
+        }
+      });
     } else {
       console.log("erreur");
     }

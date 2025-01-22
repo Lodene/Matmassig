@@ -5,6 +5,10 @@
 
       <form [formGroup]="userForm" (ngSubmit)="signUp()">
         <ion-item >
+          <ion-input color="dark" type="text" placeholder="Name" [formGroup]="userForm" formControlName="name"></ion-input>
+        </ion-item>
+
+        <ion-item >
           <ion-input color="dark" type="mail" placeholder="Email address" [formGroup]="userForm" formControlName="email"></ion-input>
         </ion-item>
         
