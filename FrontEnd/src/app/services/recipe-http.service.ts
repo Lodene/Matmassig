@@ -13,11 +13,11 @@ export class RecipeHttpService {
     const options = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       }),
     };
     return this.http.get(
-      'http://localhost:8080/api/orchestrator/recipe/getbyuser/' + userId
+      'http://localhost:8080/api/orchestrator/recipe/getbyuser/1'
     );
   }
 }
