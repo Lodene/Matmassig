@@ -116,7 +116,6 @@ public class MessageHandlerService {
 
     private void sendToEsbQueue(Object result) {
         try {
-            System.out.println("TA MERE LA PUTE MARCHE");
             String resultMessage = objectMapper.writeValueAsString(result);
 
             if (resultMessage == null || resultMessage.isEmpty()) {
