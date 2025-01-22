@@ -42,6 +42,11 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    public Queue recipeIAQueue() {
+        return new Queue(RECIPEIA_QUEUE, true);
+    }
+
+    @Bean
     public Binding recipeBinding(Queue recipeQueue, TopicExchange exchange) {
         return BindingBuilder.bind(recipeQueue).to(exchange).with("recipe.#");
     }
