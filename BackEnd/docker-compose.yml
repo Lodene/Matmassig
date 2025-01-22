@@ -64,7 +64,7 @@ services:
 
   websocket-service:
     build:
-      context: ./Matmassig/web-socket
+      context: ./Matmassig/web-socket-with-express
       dockerfile: Dockerfile
     container_name: websocket-service
     ports:
