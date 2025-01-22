@@ -14,6 +14,7 @@ import static com.school.matmassig.orchestrator.config.RabbitMQConfig.EXCHANGE_N
 
 @RestController
 @RequestMapping("/api/orchestrator/inventory")
+@CrossOrigin(origins = "http://localhost:8100")
 public class InventoryController {
 
     private final JwtUtils jwtUtils;

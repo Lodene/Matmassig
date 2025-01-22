@@ -16,6 +16,7 @@ import java.util.Map;;
 
 @RestController
 @RequestMapping("/api/orchestrator/recipeIA")
+@CrossOrigin(origins = "http://localhost:8100")
 public class RecipeIAController {
 
     private final RabbitMQPublisherService publisherService;
