@@ -11,11 +11,12 @@ public class RecipeIA {
     public RecipeIA() {
     }
 
-    public RecipeIA(Integer id, String email, Integer userId, Boolean isFavourite) {
+    public RecipeIA(Integer id, String email, Integer userId, Integer recipeIAId, Boolean isFavourite) {
         this.id = id;
         this.email = email;
         this.userId = userId;
         this.isFavourite = isFavourite;
+        this.recipeIAId = recipeIAId;
     }
 
     // Getters et Setters
@@ -55,7 +56,4 @@ public class RecipeIA {
         return isFavourite;
     }
 
-    public void setIsFavourite(Boolean isFavourite) {
-        this.isFavourite = isFavourite;
-    }
 }
