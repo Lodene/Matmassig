@@ -202,7 +202,3 @@ VALUES
     (199, 'Huile d’avocat'),
     (200, 'Huile de pépins de raisin');
 
-
---add user
-INSERT INTO "User" (id, name, email, password, role, created_at, updated_at)
-    VALUES (123, 'John Doe', 'johndoe@example.com', 'password123', 'admin', NOW(), NOW());
