@@ -7,6 +7,8 @@ import com.school.matmassig.inventoryservice.model.InventoryItemMessage;
 import com.school.matmassig.inventoryservice.repository.InventoryItemRepository;
 
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 import java.util.HashMap;
@@ -16,6 +18,7 @@ import java.util.Map;
 @Service
 public class MessageHandlerService {
 
+    private static final Logger logger = LoggerFactory.getLogger(MessageHandlerService.class);
     private final RabbitTemplate rabbitTemplate;
     private final ObjectMapper objectMapper;
     private final InventoryItemRepository inventoryItemRepository;
@@ -67,14 +70,15 @@ public class MessageHandlerService {
         }
     }
 
-    @SuppressWarnings("deprecation")
     public Map<String, Object> handleUpdateItem(InventoryItemMessage message) throws Exception {
         try {
             if (message.getId() == null || message.getId() <= 0) {
                 sendErrorToEsb(message.getEmail(), "Invalid item ID: " + message.getId());
                 throw new IllegalArgumentException("Invalid item ID.");
             }
-            InventoryItem item = inventoryItemRepository.getById(message.getId());
+            InventoryItem item = inventoryItemRepository.findById(message.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("Item not found with ID: " + message.getId()));
+
             item.setQuantity(message.getQuantity());
             inventoryItemRepository.save(item);
 
@@ -96,9 +100,10 @@ public class MessageHandlerService {
             // Utilisation de la méthode findByUserId
             List<InventoryItem> items = inventoryItemRepository.findByUserId(message.getUserId());
 
+            String itemsJson = objectMapper.writeValueAsString(items);
             Map<String, Object> result = new HashMap<>();
             result.put("email", message.getEmail());
-            result.put("message", items);
+            result.put("message", itemsJson);
             System.out.println("Items récupérés pour l'utilisateur " + message.getUserId());
             sendToEsbQueue(result);
             return result;
@@ -111,14 +116,13 @@ public class MessageHandlerService {
 
     private void sendToEsbQueue(Object result) {
         try {
-            System.out.println("TA MERE LA PUTE MARCHE");
             String resultMessage = objectMapper.writeValueAsString(result);
 
             if (resultMessage == null || resultMessage.isEmpty()) {
                 System.err.println("Result message is null or empty. Skipping send.");
                 return;
             }
-            rabbitTemplate.convertAndSend("app-exchange", "esb.notification", resultMessage);
+            rabbitTemplate.convertAndSend("app-exchange", "esb.notifications", resultMessage);
             System.out.println("Result sent to ESB queue: " + resultMessage);
         } catch (Exception e) {
             System.err.println("Failed to send result to ESB queue: " + e.getMessage());
@@ -134,8 +138,7 @@ public class MessageHandlerService {
             errorPayload.put("message", errorMessage);
 
             String errorMessageJson = objectMapper.writeValueAsString(errorPayload);
-            rabbitTemplate.convertAndSend("app-exchange", "esb.notification", errorMessageJson);
-            System.out.println("Error notification sent to ESB queue: " + errorMessageJson);
+            rabbitTemplate.convertAndSend("app-exchange", "esb.notifications", errorMessageJson);
         } catch (Exception e) {
             System.err.println("Failed to send error notification to ESB queue: " + e.getMessage());
         }
