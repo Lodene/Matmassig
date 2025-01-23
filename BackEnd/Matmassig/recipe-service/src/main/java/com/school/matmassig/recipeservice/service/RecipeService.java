@@ -48,7 +48,7 @@ public class RecipeService {
                 IngredientsRecipe ingredientsRecipe = new IngredientsRecipe();
                 ingredientsRecipe.setRecipeId(savedRecipe.getId());
                 ingredientsRecipe.setIngredientId(ingredientId);
-                ingredientsRecipe.setQuantity(1); // Default quantity, can be customized
+                ingredientsRecipe.setQuantity(1);
                 return ingredientsRecipe;
             }).collect(Collectors.toList());
 
