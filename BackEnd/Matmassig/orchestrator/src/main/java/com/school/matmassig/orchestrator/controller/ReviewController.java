@@ -110,6 +110,15 @@ public class ReviewController {
         return ResponseEntity.ok("Get reviews by recipe request sent to RabbitMQ");
     }
 
+    @GetMapping("/getbyreviewbyrecipeIA/{recipeId}")
+    public ResponseEntity<String> getReviewsByRecipeIA(@PathVariable String recipeId, @RequestHeader("Authorization") String authHeader) {
+        String email = extractEmailFromToken(authHeader);
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("recipeIAId", recipeId);
+        publisherService.publishMessageWithAdditionalData(EXCHANGE_NAME, "review.getbyrecipeIA", payload, email);
+        return ResponseEntity.ok("Get reviews by recipe request sent to RabbitMQ");
+    }
+
     // Méthode pour extraire l'email du token
     private String extractEmailFromToken(String authHeader) {
         String token = authHeader.substring(7); // Suppression du préfixe "Bearer "
