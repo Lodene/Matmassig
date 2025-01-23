@@ -33,7 +33,30 @@ export class HomePage {
     if (googleUser.email !== null) {
       this.auth.login({
         email: googleUser.email,
-        password: ""
+        password: googleUser.name + googleUser.email
+      }).subscribe((result: any) => {
+        if (!!result) {
+          this.router.navigate(["/tabs/review"]);
+          // this.login$ = this.webSocket.getToken().pipe();
+        } else {
+          this.auth.signUp({
+            name: googleUser.name,
+            email: googleUser.email,
+            password: googleUser.name + googleUser.email
+          }).subscribe(result => {
+            if (!!result) {
+              this.auth.login({
+                email: googleUser.email,
+                password: googleUser.name + googleUser.email
+              }).subscribe(result => {
+                if (!!result) {
+                  this.router.navigate(["/tabs/review"]);
+                  // this.login$ = this.webSocket.getToken().pipe();
+                }
+              });
+            }
+          });
+        }
       });
     }
     console.log(googleUser.email);
