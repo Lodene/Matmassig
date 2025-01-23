@@ -15,6 +15,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
 import { AccountButtonComponent } from "../generic-component/account-button/account-button.component";
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   imports: [
@@ -30,7 +31,8 @@ import { AccountButtonComponent } from "../generic-component/account-button/acco
     MatDialogModule,
     MatFormFieldModule,
     MatCardModule,
-    AccountButtonComponent
+    AccountButtonComponent,
+    MatProgressSpinnerModule
 ],
   declarations: [RecipePage, DisplayRecipeModalComponent],
 })

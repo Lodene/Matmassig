@@ -9,7 +9,7 @@ import { Recipe } from 'src/models/recipe';
 export class RecipeHttpService {
   constructor(private http: HttpClient) {}
 
-  getRecipeByUser(userId: string): Observable<unknown> {
+  getRecipeByUser(): Observable<unknown> {
     const token = localStorage.getItem('auth-user');
     const options = {
       headers: new HttpHeaders({

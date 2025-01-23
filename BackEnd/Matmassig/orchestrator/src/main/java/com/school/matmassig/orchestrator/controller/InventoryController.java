@@ -1,5 +1,6 @@
 package com.school.matmassig.orchestrator.controller;
 
+import com.school.matmassig.orchestrator.model.GenericResponse;
 import com.school.matmassig.orchestrator.model.Item;
 import com.school.matmassig.orchestrator.model.DeleteItemRequest;
 import com.school.matmassig.orchestrator.service.RabbitMQPublisherService;
@@ -26,13 +27,13 @@ public class InventoryController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<String> createItem(@RequestBody Item item, @RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<GenericResponse> createItem(@RequestBody Item item, @RequestHeader("Authorization") String authHeader) {
         String email = extractEmailFromToken(authHeader);
         Integer userId = extractUserIdFromToken(authHeader);
         item.setEmail(email);
         item.setUserId(userId);
         publisherService.publishMessage(EXCHANGE_NAME, "item.create", item);
-        return ResponseEntity.ok("Item creation request sent to RabbitMQ");
+        return ResponseEntity.ok(new GenericResponse("Item creation request sent to RabbitMQ"));
     }
 
     @PutMapping("/update")

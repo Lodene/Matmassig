@@ -139,7 +139,7 @@ public class RabbitMQMessageProcessor {
         // Convertir la liste des reviews en une structure sérialisable
         String reviewsJson;
         try {
-            reviewsJson = objectMapper.writeValueAsString(reviews);
+            reviewsJson = "Reviews retrieved successfully! " + objectMapper.writeValueAsString(reviews);
         } catch (Exception e) {
             System.err.println(
                     "Erreur lors de la sérialisation des reviews pour l'utilisateur " + userId + ": " + e.getMessage());

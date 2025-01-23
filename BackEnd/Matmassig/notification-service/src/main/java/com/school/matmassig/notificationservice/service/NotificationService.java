@@ -39,7 +39,18 @@ public class NotificationService {
             } else if (payload.getMessage().startsWith("your review has been created")) {
                 ResponseEntity<String> response = restTemplate.postForEntity("http://websocket-service:8089/reviewCreated", me, String.class);
 
-            } else {
+            } else if (payload.getMessage().startsWith("Recipe created successfully!")) {
+                ResponseEntity<String> response = restTemplate.postForEntity("http://websocket-service:8089/recipeCreated", me, String.class);
+            } else if (payload.getMessage().startsWith("Item ajouté avec succès")) {
+                ResponseEntity<String> response = restTemplate.postForEntity("http://websocket-service:8089/ItemCreated", me, String.class);
+            } else if (payload.getMessage().startsWith("Reviews retrieved successfully!")) {
+                me.setMessage((payload.getMessage()).replace("Reviews retrieved successfully!", "{\"list\": ").concat("}"));
+                ResponseEntity<String> response = restTemplate.postForEntity("http://websocket-service:8089/reviewByUser", me, String.class);
+            } else if (payload.getMessage().startsWith("your review has been deleted")) {
+                ResponseEntity<String> response = restTemplate.postForEntity("http://websocket-service:8089/reviewDeleted", me, String.class);
+            }
+
+            else {
 
             }
 

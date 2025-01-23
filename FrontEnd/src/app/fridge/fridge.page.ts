@@ -4,6 +4,7 @@ import { Ingredient } from 'src/models/ingredient';
 import { BottomSheetComponent } from '../generic-component/bottom-sheet/bottom-sheet.component';
 import { MatDialog } from '@angular/material/dialog';
 import { AddIngredientModalComponent } from './add-ingredient-modal/add-ingredient-modal.component';
+import { InventoryHttpService } from '../services/inventory-http.service';
 
 @Component({
   selector: 'app-fridge',
@@ -20,7 +21,9 @@ export class FridgePage implements OnInit {
   private _bottomSheet = inject(MatBottomSheet);
   private readonly dialogAdd = inject(MatDialog);
 
-  constructor() {}
+  constructor(
+    private inventoryHttpService: InventoryHttpService
+  ) {}
   ngOnInit(): void {
     this.mockUpFridge();
     this.results = [...this.ingredients];
@@ -64,9 +67,14 @@ export class FridgePage implements OnInit {
       const dialogRef = this.dialogAdd.open(AddIngredientModalComponent);
   
       dialogRef.afterClosed().subscribe((result) => {
-        console.log('The dialog was closed');
+        console.log(result);
+        // console.log('The dialog was closed');
         if (result !== undefined) {
-          console.log(result);
+          for (let i = 0; i < result.ingredients.length; i++) {
+            this.inventoryHttpService.postUserItem(result.ingredients[i]).subscribe(msg => {
+              console.log(msg);
+            });
+          }
         }
       });
     }

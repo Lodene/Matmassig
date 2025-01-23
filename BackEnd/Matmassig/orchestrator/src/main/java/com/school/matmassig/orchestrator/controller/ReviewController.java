@@ -80,24 +80,24 @@ public class ReviewController {
 
     // Endpoint: Suppression d'une review
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteReview(@RequestBody Review review, @RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<GenericResponse> deleteReview(@RequestBody Review review, @RequestHeader("Authorization") String authHeader) {
         String email = extractEmailFromToken(authHeader);
         Integer userId = extractUserIdFromToken(authHeader);
         review.setEmail(email);
         review.setUserId(userId);
         publisherService.publishMessage(EXCHANGE_NAME, "review.delete", review);
-        return ResponseEntity.ok("Review delete request sent to RabbitMQ");
+        return ResponseEntity.ok(new GenericResponse("Review delete request sent to RabbitMQ"));
     }
 
     // Endpoint: Récupérer les reviews par userId
     @GetMapping("/getbyuser")
-    public ResponseEntity<String> getReviewsByUser(@RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<GenericResponse> getReviewsByUser(@RequestHeader("Authorization") String authHeader) {
         String email = extractEmailFromToken(authHeader);
         Integer userId = extractUserIdFromToken(authHeader);
         Map<String, Object> payload = new HashMap<>();
         payload.put("userId", userId);
         publisherService.publishMessageWithAdditionalData(EXCHANGE_NAME, "review.getbyuser", payload, email);
-        return ResponseEntity.ok("Get reviews by user request sent to RabbitMQ");
+        return ResponseEntity.ok(new GenericResponse("Get reviews by user request sent to RabbitMQ"));
     }
 
     // Endpoint: Récupérer les reviews par recipeId

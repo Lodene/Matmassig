@@ -13,13 +13,22 @@ export class ReviewHttpService {
   //   return this.http.delete('http://localhost:8080/api/orchestrator/review/create')
   // }
 
-  deleteReview(review: Review): Observable<any> {
+  deleteReview(review: any): Observable<any> {
+    const reviewDTO = new Review(review.id, review.email, review.title, review.comment, review.rating, review.recipeId, review.userId)
+    const token = localStorage.getItem('auth-user');
+    const options = {
+      headers: new HttpHeaders({
+        responseType: 'application/json',
+        Authorization: 'Bearer ' + token,
+      }),
+      body: reviewDTO,
+    };
     return this.http.delete(
-      'http://localhost:8080/api/orchestrator/review/' + review.id
+      'http://localhost:8080/api/orchestrator/review/delete', options
     );
   }
 
-  postReview(review: Review): Observable<any> {
+  postReview(review: any): Observable<any> {
     const token = localStorage.getItem('auth-user');
     const options = {
       headers: new HttpHeaders({
@@ -32,5 +41,16 @@ export class ReviewHttpService {
       review,
       options
     );
+  }
+
+  getReview(): Observable<any> {
+    const token = localStorage.getItem('auth-user');
+    const options = {
+      headers: new HttpHeaders({
+        responseType: 'application/json',
+        Authorization: 'Bearer ' + token,
+      }),
+    };
+    return this.http.get("http://localhost:8080/api/orchestrator/review/getbyuser", options);
   }
 }

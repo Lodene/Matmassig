@@ -22,7 +22,7 @@
   </ion-header>
 
   <div class="filters-wrapper">
-    <ion-searchbar animated="true" placeholder="Filter by name" (ionInput)="handleInput($event)"></ion-searchbar>
+    <ion-searchbar animated="true" placeholder="Filter by content" (ionInput)="handleInput($event)"></ion-searchbar>
     <ion-select label="Star rating" fill="solid" label-placement="floating" (ionCancel)="handleRatingCancel()" (ionDismiss)="handleRatingDismiss()" (ionChange)="handleRatingInput($event)">
       <ion-select-option value="1">⭐</ion-select-option>
       <ion-select-option value="2">⭐⭐</ion-select-option>
@@ -31,9 +31,6 @@
       <ion-select-option value="5">⭐⭐⭐⭐⭐</ion-select-option>
     </ion-select>
   </div>
-
-  <h3>Review : {{ (review$ | async)?.name }}</h3>
-
   <ion-list>
     @for (result of results; track result) {
       <ion-card>

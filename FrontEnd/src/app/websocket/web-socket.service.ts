@@ -42,4 +42,16 @@ export class WebSocketService {
   createdReviewEvent(): Observable<any> {
     return this.webSocket.fromEvent('review-created');
   }
+
+  createdRecipeEvent(): Observable<any> {
+    return this.webSocket.fromEvent('recipe-created');
+  }
+
+  getReviewEvent(): Observable<any> {
+    return this.webSocket.fromEvent('reviewByUser-fetched');
+  }
+
+  deleteReviewEvent():Observable<any> {
+    return this.webSocket.fromEvent('reviewDeleted');
+  }
 }

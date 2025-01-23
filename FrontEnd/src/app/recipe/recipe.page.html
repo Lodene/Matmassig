@@ -24,8 +24,12 @@
       (ionInput)="handleInput($event)"
     ></ion-searchbar>
   </div>
-  <div class="list-wrapper">
-    <ion-list>
+  <div *ngIf="isLoading; else displayBlock" class="spinner-div">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <ng-template class="list-wrapper" #displayBlock>
+      <ion-list>
       @for (result of results; track result.id) {
       <ion-card (click)="openRecipe(result)">
         <ion-card-header>
@@ -39,7 +43,7 @@
       </ion-card>
       }
     </ion-list>
-  </div>
+  </ng-template>
 </ion-content>
 <ion-footer>
   <div class="button-wrapper">

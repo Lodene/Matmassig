@@ -37,6 +37,7 @@ export class RecipePage implements OnInit, AfterContentInit {
   results: Recipe[] = [];
   recipes: Recipe[] = [];
   nameQuery: string = '';
+  isLoading: boolean = true;
 
   private _bottomSheet = inject(MatBottomSheet);
   private readonly dialogAdd = inject(MatDialog);
@@ -52,6 +53,10 @@ export class RecipePage implements OnInit, AfterContentInit {
     this.retrieveRecipeByUser();
     this.createdReviewEvent();
   }
+  ionViewWillEnter() {
+    this.retrieveRecipeByUser();
+    }
+
   ngAfterContentInit(): void {
     this.retrieveRecipeByUser();
   }
@@ -111,7 +116,7 @@ export class RecipePage implements OnInit, AfterContentInit {
 
   retrieveRecipeByUser(): void {
     this.recipeHttpService
-      .getRecipeByUser('1')
+      .getRecipeByUser()
       .subscribe((recipes: unknown) => {
         // console.log(recipes);
         this.webSocket
@@ -123,6 +128,7 @@ export class RecipePage implements OnInit, AfterContentInit {
             );
             this.recipes = [...recipes.list];
             this.results = [...this.recipes];
+            this.isLoading = false;
           });
       });
   }
@@ -196,7 +202,12 @@ export class RecipePage implements OnInit, AfterContentInit {
         }
         this.recipeHttpService.addRecipe(data).subscribe(result => {
           if (!!result) {
-            console.log("recipe added");
+            this.webSocket.createdRecipeEvent().pipe().subscribe(event => {
+              if (!!event.message) {
+                this.openSnackBar(event.message, "Nice!")
+                this.recipes.push(data.recipe);
+              }
+            });
           }
         });
       }
@@ -235,6 +246,7 @@ export class RecipePage implements OnInit, AfterContentInit {
       .createdReviewEvent()
       .pipe()
       .subscribe((event) => {
+        if (!!event.message)
         this.openSnackBar(event.message, 'Nice!');
       });
   }

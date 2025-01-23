@@ -28,6 +28,37 @@ app.post("/reviewCreated", (req: express.Request, res: express.Response) => {
   });
 });
 
+app.post("/recipeCreated", (req: express.Request, res: express.Response) => {
+  res.send("msg received");
+  io.emit("recipe-created", {
+    message: req.body.message
+  });
+});
+app.post("/ItemCreated", (req: express.Request, res: express.Response) => {
+  res.send("msg received");
+  io.emit("item-created", {
+    message: req.body.message
+  });
+});
+
+app.post("/reviewByUser", (req: express.Request, res: express.Response) => {
+  console.log("received a message", req.body);
+  res.send("msg received");
+  io.emit("reviewByUser-fetched", {
+    message: req.body.message,
+  });
+});
+app.post("/reviewDeleted", (req: express.Request, res: express.Response) => {
+  console.log("received a message", req.body);
+  res.send("msg received");
+  io.emit("reviewDeleted", {
+    message: req.body.message,
+  });
+});
+
+
+
+
 io.on("connection", () => {
   // io.emit('users-online', User.getUserList());
   console.log("connected");

@@ -1,4 +1,4 @@
-import { Component, Inject, inject, Input, OnInit } from '@angular/core';
+import { AfterContentInit, AfterViewChecked, Component, Inject, inject, Input, OnInit } from '@angular/core';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { Review } from 'src/models/review';
 import { BottomSheetComponent } from '../generic-component/bottom-sheet/bottom-sheet.component';
@@ -11,6 +11,8 @@ import { Recipe } from 'src/models/recipe';
 import { YesNoDialogComponent } from '../generic-component/yes-no-dialog/yes-no-dialog.component';
 import { WebSocketService } from '../websocket/web-socket.service';
 import { concat, concatMap, Observable } from 'rxjs';
+import { ReviewHttpService } from '../services/review.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-review',
@@ -18,32 +20,38 @@ import { concat, concatMap, Observable } from 'rxjs';
   styleUrls: ['review.page.scss'],
   standalone: false
 })
-export class ReviewPage implements OnInit {
+export class ReviewPage implements OnInit, AfterContentInit {
 
 
   @Input() deleteMode: boolean = false;
   
   reviews: Review[] = [];
-  //  query result
   results: Review[] = [];
   starRating: number = 0;
   nameQuery: string = '';
   readonly dialog = inject(MatDialog);
   private _bottomSheet = inject(MatBottomSheet);
   selectedReviewForDelete: Review[] = []
+  private _snackBar = inject(MatSnackBar);
 
 
-  review$: Observable<any> = new Observable;
 
   constructor(
     private webSocket: WebSocketService,
-    private reviewHttpService: HttpClientService) {}
+    private reviewHttpService: ReviewHttpService) {
+      this.retrieveUserReview();
+    }
+  ionViewWillEnter() {
+    this.retrieveUserReview();
+    }
+  ngAfterContentInit(): void {
+    this.retrieveUserReview();
+  }
     
   ngOnInit(): void {
-    this.mockUpReviews();
-    this.results = [...this.reviews];
-    this.review$ = this.webSocket.getReview().pipe()
-    console.log(this.review$);
+    // this.mockUpReviews();
+    this.retrieveUserReview();
+
   }
 
   handleInput(event: Event) {
@@ -56,6 +64,19 @@ export class ReviewPage implements OnInit {
     this.starRating = Number(value.toLowerCase()) || 0;
     this.filterReviews(this.nameQuery, this.starRating);
   }
+
+  retrieveUserReview() {
+    this.reviewHttpService.getReview().subscribe(result => {
+      this.webSocket.getReviewEvent().pipe().subscribe(reviews => {
+        console.log(reviews);
+        const reviewsParsed = JSON.parse(reviews.message);
+        console.log(reviewsParsed);
+        this.reviews = reviewsParsed.list; 
+        this.results = [...this.reviews];
+      })
+    });
+  }
+
   handleRatingCancel() {
 
   }
@@ -142,10 +163,17 @@ export class ReviewPage implements OnInit {
         
         for (let review of this.selectedReviewForDelete) {
           this.reviewHttpService.deleteReview(review).subscribe(deleteResult => {
-              console.log(deleteResult);
+              this.webSocket.deleteReviewEvent().pipe().subscribe(msg => {
+                if (!!msg.message)
+                this.openSnackBar(msg.message, "Nice!")
+                this.reviews = [...this.reviews];
+              });
           })
         }
       }
     });    
+  }
+  openSnackBar(message: string, action: string) {
+    this._snackBar.open(message, action);
   }
 }
