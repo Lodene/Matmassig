@@ -56,13 +56,14 @@ public class InventoryController {
         return ResponseEntity.ok("Item delete request sent to RabbitMQ");
     }
 
-    @GetMapping("/getbyuser/{userId}")
-    public ResponseEntity<String> getItemsByUser(@PathVariable Integer userId, @RequestHeader("Authorization") String authHeader){
+    @GetMapping("/getbyuser")
+    public ResponseEntity<GenericResponse> getItemsByUser( @RequestHeader("Authorization") String authHeader){
         String email = extractEmailFromToken(authHeader);
+        Integer userId = extractUserIdFromToken(authHeader);
         Map<String, Object> payload = new HashMap<>();
         payload.put("userId", userId);
         publisherService.publishMessageWithAdditionalData(EXCHANGE_NAME, "item.getbyuser", payload, email);
-        return ResponseEntity.ok("Get items by user request sent to RabbitMQ");
+        return ResponseEntity.ok(new GenericResponse("Get items by user request sent to RabbitMQ"));
     }
 
     private String extractEmailFromToken(String authHeader) {

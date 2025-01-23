@@ -48,6 +48,9 @@ public class NotificationService {
                 ResponseEntity<String> response = restTemplate.postForEntity("http://websocket-service:8089/reviewByUser", me, String.class);
             } else if (payload.getMessage().startsWith("your review has been deleted")) {
                 ResponseEntity<String> response = restTemplate.postForEntity("http://websocket-service:8089/reviewDeleted", me, String.class);
+            } else if (payload.getMessage().startsWith("Items from user: ")) {
+                me.setMessage(payload.getMessage().replace("Items from user: ", "{\"list\": ").concat("}"));
+                ResponseEntity<String> response = restTemplate.postForEntity("http://websocket-service:8089/itemsByUser", me, String.class);
             }
 
             else {

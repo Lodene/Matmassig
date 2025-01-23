@@ -5,6 +5,7 @@ import { BottomSheetComponent } from '../generic-component/bottom-sheet/bottom-s
 import { MatDialog } from '@angular/material/dialog';
 import { AddIngredientModalComponent } from './add-ingredient-modal/add-ingredient-modal.component';
 import { InventoryHttpService } from '../services/inventory-http.service';
+import { WebSocketService } from '../websocket/web-socket.service';
 
 @Component({
   selector: 'app-fridge',
@@ -22,21 +23,39 @@ export class FridgePage implements OnInit {
   private readonly dialogAdd = inject(MatDialog);
 
   constructor(
-    private inventoryHttpService: InventoryHttpService
+    private inventoryHttpService: InventoryHttpService,
+    private webSocket: WebSocketService
   ) {}
   ngOnInit(): void {
-    this.mockUpFridge();
-    this.results = [...this.ingredients];
-    console.log(this.results)
+    this.retrieveUserItems();
+    // this.mockUpFridge();
+    // this.results = [...this.ingredients];
+    // console.log(this.results)
   }
 
+  ionViewWillEnter() {
+    this.retrieveUserItems();
+    }
+  
+  retrieveUserItems() {
+    this.inventoryHttpService.getUserItem().subscribe(res => {
+      this.webSocket.getItemsByUser().pipe().subscribe(items => {
+        const itemsParsed = JSON.parse(items.message);
+        this.ingredients = itemsParsed.list;
+        this.results = [...this.ingredients];
+      });
+    })
+  }
   mockUpFridge(): void {
     this.ingredients = [
       new Ingredient(0, "carrot", 2, "https://minecraft.wiki/images/Carrot_JE3_BE2.png?5e9c8"),
       new Ingredient(1, "potato", 5, "https://minecraft.wiki/images/Potato_JE3_BE2.png?27685")
     ];
-    
   }
+
+  
+
+
 
 
   openBottomSheet(): void {

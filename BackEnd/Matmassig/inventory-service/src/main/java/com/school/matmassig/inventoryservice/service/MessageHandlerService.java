@@ -103,7 +103,7 @@ public class MessageHandlerService {
             String itemsJson = objectMapper.writeValueAsString(items);
             Map<String, Object> result = new HashMap<>();
             result.put("email", message.getEmail());
-            result.put("message", itemsJson);
+            result.put("message", "Items from user: " + itemsJson);
             System.out.println("Items récupérés pour l'utilisateur " + message.getUserId());
             sendToEsbQueue(result);
             return result;

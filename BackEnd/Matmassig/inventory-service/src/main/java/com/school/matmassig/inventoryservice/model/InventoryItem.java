@@ -28,6 +28,19 @@ public class InventoryItem {
         this.updatedAt = LocalDateTime.now();
     }
 
+    @Override
+    public String toString() {
+        return "Item : {" +
+                "id:" + id +
+                ", ingredientId:" + ingredientId +
+                ", userId:" + userId +
+                ", quantity:" + quantity +
+                ", createdAt:" +"\"" + createdAt + "\"" +
+                ", updatedAt:" +"\"" + updatedAt + "\"" +
+                '}';
+
+    }
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();

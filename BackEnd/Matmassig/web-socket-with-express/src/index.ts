@@ -42,7 +42,7 @@ app.post("/ItemCreated", (req: express.Request, res: express.Response) => {
 });
 
 app.post("/reviewByUser", (req: express.Request, res: express.Response) => {
-  console.log("received a message", req.body);
+  // console.log("received a message", req.body);
   res.send("msg received");
   io.emit("reviewByUser-fetched", {
     message: req.body.message,
@@ -52,6 +52,14 @@ app.post("/reviewDeleted", (req: express.Request, res: express.Response) => {
   console.log("received a message", req.body);
   res.send("msg received");
   io.emit("reviewDeleted", {
+    message: req.body.message,
+  });
+});
+
+app.post("/itemsByUser", (req: express.Request, res: express.Response) => {
+  console.log("received a message", req.body);
+  res.send("msg received");
+  io.emit("itemsByUser-fetched", {
     message: req.body.message,
   });
 });

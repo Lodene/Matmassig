@@ -54,4 +54,8 @@ export class WebSocketService {
   deleteReviewEvent():Observable<any> {
     return this.webSocket.fromEvent('reviewDeleted');
   }
+
+  getItemsByUser():Observable<any> {
+    return this.webSocket.fromEvent('itemsByUser-fetched');
+  }
 }
