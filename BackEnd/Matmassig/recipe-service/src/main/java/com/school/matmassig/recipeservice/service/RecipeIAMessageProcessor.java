@@ -7,18 +7,26 @@ import com.school.matmassig.recipeservice.model.Recipe;
 import com.school.matmassig.recipeservice.model.RecipeIA;
 import com.school.matmassig.recipeservice.model.RecipeIAMessage;
 import com.school.matmassig.recipeservice.model.RecipeMessage;
+import com.school.matmassig.recipeservice.model.ReviewFromRecipeIAMessage;
 import com.school.matmassig.recipeservice.repository.RecipeIARepository;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class RecipeIAMessageProcessor {
+
+    @Value("${api.external.getAllRecipes.url}")
+    private String externalApiUrlGetAllRecipes;
+
+    @Value("${api.external.getReviewsByRecipe.url}")
+    private String externalApiUrlGetReviewsByRecipe;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -120,10 +128,8 @@ public class RecipeIAMessageProcessor {
         }
     }
 
-    private static final String EXTERNAL_API_URL = "https://example.com/api/recipes";
-
     public List<Recipe> handleGetAllRecipeIA(int page, int size, String email) {
-        String url = EXTERNAL_API_URL + "?page=" + page + "&size=" + size;
+        String url = externalApiUrlGetAllRecipes + "?page=" + page + "&size=" + size;
 
         // Faire la requête GET à l'API externe
         ResponseEntity<Recipe[]> response = restTemplate.getForEntity(url, Recipe[].class);
@@ -140,11 +146,45 @@ public class RecipeIAMessageProcessor {
         return recipes;
     }
 
+    public List<ReviewFromRecipeIAMessage> handleGetReviewbyRecipeIA(String recipeId, String email) {
+        String url = externalApiUrlGetReviewsByRecipe + "/reviews/recipe/" + recipeId;
+
+        // Faire la requête GET à l'API externe
+        ResponseEntity<ReviewFromRecipeIAMessage[]> response = restTemplate.getForEntity(url,
+                ReviewFromRecipeIAMessage[].class);
+
+        if (response.getBody() == null || response.getBody().length == 0) {
+            System.err.println("Aucune critique trouvée pour la recette " + recipeId);
+            return List.of();
+        }
+
+        List<ReviewFromRecipeIAMessage> reviews = Arrays.asList(response.getBody());
+
+        // Publier chaque critique reçue dans l'ESB
+        reviews.forEach(review -> {
+            String reviewJson = convertReviewToJson(review);
+            if (reviewJson != null) {
+                sendNotificationToEsb(email, reviewJson);
+            }
+        });
+
+        return reviews;
+    }
+
     private String convertRecipeToJson(Recipe recipe) {
         try {
             return objectMapper.writeValueAsString(recipe);
         } catch (Exception e) {
             System.err.println("Erreur lors de la conversion de la recette en JSON: " + e.getMessage());
+            return null;
+        }
+    }
+
+    private String convertReviewToJson(ReviewFromRecipeIAMessage review) {
+        try {
+            return objectMapper.writeValueAsString(review);
+        } catch (Exception e) {
+            System.err.println("Erreur lors de la conversion de la critique en JSON: " + e.getMessage());
             return null;
         }
     }

@@ -9,6 +9,7 @@ import com.school.matmassig.recipeservice.model.DeleteRecipeMessage;
 import com.school.matmassig.recipeservice.model.RecipeIAMessage;
 import com.school.matmassig.recipeservice.model.RecipeIAPaginationMessage;
 import com.school.matmassig.recipeservice.model.RecipeMessage;
+import com.school.matmassig.recipeservice.model.ReviewFromRecipeIAMessage;
 import com.school.matmassig.recipeservice.service.RecipeIAMessageProcessor;
 
 @Component
@@ -53,6 +54,13 @@ public class RecipeIAListener {
                             RecipeIAMessage.class);
                     processingService.handleGetAllRecipeIA(recipeMessagegetByRecipe.getPage(),
                             recipeMessagegetByRecipe.getSize(), recipeMessagegetByRecipe.getEmail());
+                    break;
+
+                case "recipeIA.getreviewbyrecipeIA":
+                    ReviewFromRecipeIAMessage recipeMessagegetByRecipe2 = objectMapper.readValue(message,
+                            ReviewFromRecipeIAMessage.class);
+                    processingService.handleGetReviewbyRecipeIA(recipeMessagegetByRecipe2.getrecipeIAId(),
+                            recipeMessagegetByRecipe2.getEmail());
                     break;
 
                 default:
