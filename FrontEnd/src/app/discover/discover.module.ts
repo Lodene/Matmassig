@@ -6,6 +6,7 @@ import { DiscoverPage } from './discover.page';
 import { ExploreContainerComponentModule } from '../explore-container/explore-container.module';
 
 import { DiscoverPageRoutingModule } from './discover-routing.module';
+import { AccountButtonComponent } from '../generic-component/account-button/account-button.component';
 
 @NgModule({
   imports: [
@@ -13,7 +14,8 @@ import { DiscoverPageRoutingModule } from './discover-routing.module';
     CommonModule,
     FormsModule,
     ExploreContainerComponentModule,
-    DiscoverPageRoutingModule
+    DiscoverPageRoutingModule,
+    AccountButtonComponent
   ],
   declarations: [DiscoverPage]
 })

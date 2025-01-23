@@ -1,0 +1,31 @@
+<h2 mat-dialog-title>Add ingredients</h2>
+<form [formGroup]="ingredientForm" (ngSubmit)="onSubmit()">
+  <mat-dialog-content class="main-content">  
+
+    <div formArrayName="ingredients">   
+      <div class="vertical">
+        @for (ing of ingredients.controls; track $index) 
+        {
+          <div class="horizontal" [formGroupName]="$index">
+            <mat-form-field>        
+              <input matInput id="ingredient-{{ $index }}" type="text" formControlName="ingredientName" placeholder="Ingredient name">   
+            </mat-form-field>
+            <mat-form-field class="quantity">        
+              <input matInput id="quantity-{{ $index }}" type="number" min="1" formControlName="quantity">   
+            </mat-form-field>
+            <mat-icon class="delete-btn" (click)="deleteIngredient($index)">
+              delete_forever</mat-icon>
+          </div>
+        }
+        <button mat-button type="button" (click)="addIngredient()"><mat-icon>add</mat-icon></button>
+      </div>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions>
+    <button mat-button mat-dialog-close>Cancel</button>
+    <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
+    <button type="submit" mat-button>Add</button>
+  </mat-dialog-actions>
+
+</form>

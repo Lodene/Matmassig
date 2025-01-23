@@ -4,10 +4,10 @@
       <div class="title-wrapper">
         <span>My Reviews</span>
         <div>
-          <app-account-button></app-account-button>
           <mat-icon (click)="deleteModeActivation()">
           {{getDeleteIcon()}}
-        </mat-icon>  
+          </mat-icon>
+          <app-account-button></app-account-button> 
         </div>
       </div>
     </ion-title>
@@ -55,11 +55,15 @@
 <ion-footer>
   <div class="button-wrapper">
     <div *ngIf="!deleteMode; else deleteDiv">
-      <mat-icon (click)="openBottomSheet()">add</mat-icon> 
+      <ion-fab-button size="small">
+        <ion-icon (click)="openBottomSheet()" name="add"></ion-icon>
+      </ion-fab-button>
     </div>
     <ng-template  #deleteDiv>
       <div>
-        <mat-icon (click)="deleteSelectedReviews()">delete</mat-icon> 
+        <ion-fab-button color="danger" size="small">
+          <ion-icon (click)="deleteSelectedReviews()" name="trash-outline"></ion-icon>
+        </ion-fab-button>
       </div>
     </ng-template>
   </div>  

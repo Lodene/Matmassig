@@ -14,6 +14,7 @@ import { DisplayRecipeModalComponent } from './modal/display-recipe-modal/displa
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
+import { AccountButtonComponent } from "../generic-component/account-button/account-button.component";
 
 @NgModule({
   imports: [
@@ -29,7 +30,8 @@ import { MatCardModule } from '@angular/material/card';
     MatDialogModule,
     MatFormFieldModule,
     MatCardModule,
-  ],
+    AccountButtonComponent
+],
   declarations: [RecipePage, DisplayRecipeModalComponent],
 })
 export class RecipePageModule {}

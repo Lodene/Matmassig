@@ -87,7 +87,7 @@ export class AddRecipeModalComponent implements OnInit {
 
   addIngredient() {
     const ingredientForm = this.formBuilder.group({
-      ingredientName: ['', Validators.required],
+      name: ['', Validators.required],
       quantity: [1, Validators.required]
     });
     this.ingredients.push(ingredientForm);

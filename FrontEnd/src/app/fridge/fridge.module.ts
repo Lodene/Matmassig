@@ -6,6 +6,7 @@ import { FridgePage } from './fridge.page';
 import { ExploreContainerComponentModule } from '../explore-container/explore-container.module';
 
 import { FridgePageRoutingModule } from './fridge-routing.module';
+import { AccountButtonComponent } from '../generic-component/account-button/account-button.component';
 
 @NgModule({
   imports: [
@@ -13,7 +14,8 @@ import { FridgePageRoutingModule } from './fridge-routing.module';
     CommonModule,
     FormsModule,
     ExploreContainerComponentModule,
-    FridgePageRoutingModule
+    FridgePageRoutingModule,
+    AccountButtonComponent
   ],
   declarations: [FridgePage]
 })

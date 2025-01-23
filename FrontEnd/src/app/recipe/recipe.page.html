@@ -3,23 +3,9 @@
     <ion-title>
       <div class="title-wrapper">
         <span>My Recipes</span>
-        <button
-          mat-icon-button
-          [matMenuTriggerFor]="menu"
-          aria-label="Example icon-button with a menu"
-        >
-          <mat-icon>more_vert</mat-icon>
-        </button>
-        <mat-menu #menu="matMenu">
-          <button mat-menu-item>
-            <mat-icon>edit</mat-icon>
-            <span>Edit mode</span>
-          </button>
-          <button mat-menu-item>
-            <mat-icon>delete</mat-icon>
-            <span>Delete mode</span>
-          </button>
-        </mat-menu>
+        <div>
+          <app-account-button></app-account-button>
+        </div>
       </div>
     </ion-title>
   </ion-toolbar>

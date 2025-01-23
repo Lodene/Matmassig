@@ -7,8 +7,8 @@ export class Recipe {
   ingredients: Ingredient[];
   instructions: string;
   // number in minutes
-  cookTime: number;
-  avgReviewScore: number;
+  cookTime?: number;
+  avgReviewScore?: number;
 
   constructor(
     id: number,

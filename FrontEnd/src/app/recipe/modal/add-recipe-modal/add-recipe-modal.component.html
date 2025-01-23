@@ -23,7 +23,7 @@
         {
           <div class="horizontal" [formGroupName]="$index">
             <mat-form-field>        
-              <input matInput id="ingredient-{{ $index }}" type="text" formControlName="ingredientName" placeholder="Ingredient name">   
+              <input matInput id="ingredient-{{ $index }}" type="text" formControlName="name" placeholder="Ingredient name">   
             </mat-form-field>
             <mat-form-field class="quantity">        
               <input matInput id="quantity-{{ $index }}" type="number" min="1" formControlName="quantity">   

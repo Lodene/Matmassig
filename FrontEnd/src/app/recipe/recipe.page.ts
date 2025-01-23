@@ -25,6 +25,7 @@ import { AddEditReviewDialogComponent } from '../review/dialog/add-edit-review-d
 import { ReviewFormModel } from '../review/models/reviewFormModel';
 import { ReviewHttpService } from '../services/review.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-recipe',
@@ -120,9 +121,7 @@ export class RecipePage implements OnInit, AfterContentInit {
             const recipes = JSON.parse(
               '{' + result.message.substring(1, result.message.length)
             );
-            console.log(recipes.list);
             this.recipes = [...recipes.list];
-            console.log(this.recipes);
             this.results = [...this.recipes];
           });
       });
@@ -177,7 +176,29 @@ export class RecipePage implements OnInit, AfterContentInit {
     dialogRef.afterClosed().subscribe((result) => {
       console.log('The dialog was closed');
       if (result !== undefined) {
-        console.log(result);
+        const data: any = {};
+        const recipe: any = {};
+        if (result.recipeName) {
+          recipe.title = result.recipeName;
+        }
+        if (result.recipeDescription) {
+          recipe.description = result.recipeDescription;
+        }
+        if (result.recipeCooking) {
+          recipe.instructions = result.recipeCooking;
+        }
+        data.recipe = recipe;
+        if (result.ingredients) {
+          data.ingredients = [];
+          result.ingredients.forEach((ing: Ingredient) => {
+            data.ingredients.push({"name": ing.name, "quantity": ing.quantity});
+          });
+        }
+        this.recipeHttpService.addRecipe(data).subscribe(result => {
+          if (!!result) {
+            console.log("recipe added");
+          }
+        });
       }
     });
   }

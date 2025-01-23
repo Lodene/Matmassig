@@ -1,7 +1,12 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      My Fridge
+      <div class="title-wrapper">
+        <span>My Fridge</span>
+        <div>
+          <app-account-button></app-account-button>
+        </div>
+      </div>
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -14,8 +19,8 @@
   </ion-header>
   <ion-list>
     @for (result of results; track result.id) {
-      <ion-card color="success">
-        <img alt="img of ingredient" src={{result.imgSource}} />
+      <ion-card>
+        <!--<img alt="img of ingredient" src={{result.imgSource}} />-->
         <ion-card-header>
           <ion-card-title>{{result.name}}</ion-card-title>
         </ion-card-header>
@@ -25,3 +30,10 @@
     }
   </ion-list>
 </ion-content>
+<ion-footer>
+  <div class="button-wrapper">
+    <ion-fab-button size="small">
+      <ion-icon (click)="openBottomSheet()" name="add"></ion-icon> 
+    </ion-fab-button>
+  </div>  
+</ion-footer>
