@@ -1,4 +1,11 @@
-import { Component, inject, OnInit } from '@angular/core';
+import {
+  AfterContentInit,
+  AfterViewChecked,
+  AfterViewInit,
+  Component,
+  inject,
+  OnInit,
+} from '@angular/core';
 import { Ingredient } from 'src/models/ingredient';
 import { Recipe } from 'src/models/recipe';
 import {
@@ -20,7 +27,7 @@ import { WebSocketService } from '../websocket/web-socket.service';
   styleUrls: ['recipe.page.scss'],
   standalone: false,
 })
-export class RecipePage implements OnInit {
+export class RecipePage implements OnInit, AfterContentInit {
   results: Recipe[] = [];
   recipes: Recipe[] = [];
   nameQuery: string = '';
@@ -31,7 +38,13 @@ export class RecipePage implements OnInit {
   constructor(
     private recipeHttpService: RecipeHttpService,
     private webSocket: WebSocketService
-  ) {}
+  ) {
+    this.retrieveRecipeByUser();
+  }
+  ngAfterContentInit(): void {
+    this.retrieveRecipeByUser();
+  }
+
   ngOnInit(): void {
     // this.mockUpRecipe();
     this.retrieveRecipeByUser();
@@ -89,7 +102,7 @@ export class RecipePage implements OnInit {
     this.recipeHttpService
       .getRecipeByUser('1')
       .subscribe((recipes: unknown) => {
-        console.log(recipes);
+        // console.log(recipes);
         this.webSocket
           .getRecipes()
           .pipe()
@@ -103,7 +116,6 @@ export class RecipePage implements OnInit {
             this.results = [...this.recipes];
           });
       });
-
   }
 
   handleInput(event: Event): void {
