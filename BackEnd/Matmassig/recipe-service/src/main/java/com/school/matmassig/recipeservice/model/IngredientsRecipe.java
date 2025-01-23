@@ -15,6 +15,7 @@ public class IngredientsRecipe {
     private Integer ingredientId;
     private Integer quantity;
     private Integer recipeId;
+    private String unit;
 
     // toString
     @Override
@@ -25,6 +26,7 @@ public class IngredientsRecipe {
                 ", ingredientId=" + ingredientId +
                 ", quantity=" + quantity +
                 ", recipeId=" + recipeId +
+                ", unit='" + unit +
                 '}';
     }
 
@@ -33,10 +35,12 @@ public class IngredientsRecipe {
         // Default constructor required by JPA
     }
 
-    public IngredientsRecipe(Integer ingredientId, Integer quantity, Integer recipeId) {
+    public IngredientsRecipe(Integer ingredientId, Integer quantity, Integer recipeId, String name, String unit) {
         this.ingredientId = ingredientId;
         this.quantity = quantity;
         this.recipeId = recipeId;
+        this.name = name;
+        this.unit = unit;
     }
 
     // Getters and Setters
@@ -79,6 +83,14 @@ public class IngredientsRecipe {
 
     public void setRecipeId(Integer recipeId) {
         this.recipeId = recipeId;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
     }
 
 }
