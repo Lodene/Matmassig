@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.school.matmassig.recipeservice.model.DeleteRecipeMessage;
 import com.school.matmassig.recipeservice.model.RecipeIAMessage;
+import com.school.matmassig.recipeservice.model.RecipeIAPaginationMessage;
 import com.school.matmassig.recipeservice.model.RecipeMessage;
 import com.school.matmassig.recipeservice.service.RecipeIAMessageProcessor;
 
@@ -45,6 +46,13 @@ public class RecipeIAListener {
                     RecipeIAMessage recipeMessageGetByUser = objectMapper.readValue(message,
                             RecipeIAMessage.class);
                     processingService.handleGetRecipesByUser(recipeMessageGetByUser);
+                    break;
+
+                case "recipeIA.getall":
+                    RecipeIAMessage recipeMessagegetByRecipe = objectMapper.readValue(message,
+                            RecipeIAMessage.class);
+                    processingService.handleGetAllRecipeIA(recipeMessagegetByRecipe.getPage(),
+                            recipeMessagegetByRecipe.getSize(), recipeMessagegetByRecipe.getEmail());
                     break;
 
                 default:

@@ -9,6 +9,8 @@ public class RecipeIAMessage {
     private Integer recipeIAId;
     private Boolean isFavourite;
     private String email;
+    private Integer page;
+    private Integer size;
 
     // Constructeur par défaut
     public RecipeIAMessage() {
@@ -61,5 +63,21 @@ public class RecipeIAMessage {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Integer getPage() {
+        return page;
+    }
+
+    public void setPage(Integer page) {
+        this.page = page;
+    }
+
+    public Integer getSize() {
+        return size;
+    }
+
+    public void setSize(Integer size) {
+        this.size = size;
     }
 }
