@@ -9,12 +9,19 @@ import com.school.matmassig.recipeservice.model.RecipeIAMessage;
 import com.school.matmassig.recipeservice.model.RecipeMessage;
 import com.school.matmassig.recipeservice.repository.RecipeIARepository;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class RecipeIAMessageProcessor {
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     private final ListenerRecipeIAService service;
     private final RabbitTemplate rabbitTemplate;
@@ -23,11 +30,12 @@ public class RecipeIAMessageProcessor {
 
     public RecipeIAMessageProcessor(ListenerRecipeIAService service, RabbitTemplate rabbitTemplate,
             ObjectMapper objectMapper,
-            RecipeIARepository recipeRepository) {
+            RecipeIARepository recipeRepository, RestTemplate restTemplate) {
         this.service = service;
         this.rabbitTemplate = rabbitTemplate;
         this.objectMapper = objectMapper;
         this.recipeRepository = recipeRepository;
+        this.restTemplate = restTemplate;
     }
 
     public void handleCreateRecipe(RecipeIAMessage recipeMessage) {
@@ -109,6 +117,35 @@ public class RecipeIAMessageProcessor {
         } catch (Exception e) {
             System.err.println("Failed to send message to ESB queue: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    private static final String EXTERNAL_API_URL = "https://example.com/api/recipes";
+
+    public List<Recipe> handleGetAllRecipeIA(int page, int size, String email) {
+        String url = EXTERNAL_API_URL + "?page=" + page + "&size=" + size;
+
+        // Faire la requête GET à l'API externe
+        ResponseEntity<Recipe[]> response = restTemplate.getForEntity(url, Recipe[].class);
+
+        if (response.getBody() == null) {
+            return List.of(); // Retourne une liste vide si aucune donnée n'est reçue
+        }
+
+        List<Recipe> recipes = Arrays.asList(response.getBody());
+
+        // Publier chaque recette reçue dans l'ESB
+        recipes.forEach(recipe -> sendNotificationToEsb(email, convertRecipeToJson(recipe)));
+
+        return recipes;
+    }
+
+    private String convertRecipeToJson(Recipe recipe) {
+        try {
+            return objectMapper.writeValueAsString(recipe);
+        } catch (Exception e) {
+            System.err.println("Erreur lors de la conversion de la recette en JSON: " + e.getMessage());
+            return null;
         }
     }
 }

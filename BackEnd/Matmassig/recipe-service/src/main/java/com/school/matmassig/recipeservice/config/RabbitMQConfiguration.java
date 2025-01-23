@@ -86,4 +86,9 @@ public class RabbitMQConfiguration {
     public Binding recipeIAGetByUserBinding(Queue recipeIAQueue, TopicExchange topicExchange) {
         return BindingBuilder.bind(recipeIAQueue).to(topicExchange).with("recipeIA.getbyuser");
     }
+
+    @Bean
+    public Binding recipeIAGetAll(Queue recipeIAQueue, TopicExchange topicExchange) {
+        return BindingBuilder.bind(recipeIAQueue).to(topicExchange).with("recipeIA.getall");
+    }
 }
