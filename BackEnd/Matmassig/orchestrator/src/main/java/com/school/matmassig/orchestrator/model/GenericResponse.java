@@ -1,10 +1,10 @@
 package com.school.matmassig.orchestrator.model;
 
-public class RecipeResponse {
+public class GenericResponse {
 
     private String response;
 
-    public RecipeResponse(String response) {
+    public GenericResponse(String response) {
         this.response = response;
     }
 

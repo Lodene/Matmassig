@@ -3,7 +3,11 @@
     <ion-title>
       <div class="title-wrapper">
         <span>My Recipes</span>
-        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+        <button
+          mat-icon-button
+          [matMenuTriggerFor]="menu"
+          aria-label="Example icon-button with a menu"
+        >
           <mat-icon>more_vert</mat-icon>
         </button>
         <mat-menu #menu="matMenu">
@@ -16,7 +20,7 @@
             <span>Delete mode</span>
           </button>
         </mat-menu>
-      </div>     
+      </div>
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -28,29 +32,33 @@
     </ion-toolbar>
   </ion-header>
   <div>
-    <ion-searchbar animated="true" placeholder="Filter by name" (ionInput)="handleInput($event)"></ion-searchbar>
+    <ion-searchbar
+      animated="true"
+      placeholder="Filter by name"
+      (ionInput)="handleInput($event)"
+    ></ion-searchbar>
   </div>
   <div class="list-wrapper">
     <ion-list>
-    @for (result of results; track result.id) {
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>{{result.title}}</ion-card-title>
-        <ion-card-subtitle>Cooking time:  {{result.cookTime}} min</ion-card-subtitle>
-      </ion-card-header>
-    
-      <ion-card-content class="recipe-description">
-        {{result.description}}
-      </ion-card-content>
-    </ion-card>
-  }
+      @for (result of results; track result.id) {
+      <ion-card (click)="openRecipe(result)">
+        <ion-card-header>
+          <ion-card-title>{{result.title}}</ion-card-title>
+          <!-- <ion-card-subtitle>Cooking time:  {{result.cookTime}} min</ion-card-subtitle> !-->
+        </ion-card-header>
+
+        <ion-card-content class="recipe-description">
+          {{result.description}}
+        </ion-card-content>
+      </ion-card>
+      }
     </ion-list>
   </div>
 </ion-content>
 <ion-footer>
   <div class="button-wrapper">
     <ion-fab-button size="small">
-      <ion-icon (click)="openBottomSheet()" name="add"></ion-icon> 
+      <ion-icon (click)="openBottomSheet()" name="add"></ion-icon>
     </ion-fab-button>
-  </div>  
+  </div>
 </ion-footer>

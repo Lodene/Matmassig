@@ -1,6 +1,7 @@
 package com.school.matmassig.orchestrator.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.school.matmassig.orchestrator.model.GenericResponse;
 import com.school.matmassig.orchestrator.model.Review;
 import com.school.matmassig.orchestrator.model.DeleteReviewRequest;
 import com.school.matmassig.orchestrator.service.RabbitMQPublisherService;
@@ -30,13 +31,13 @@ public class ReviewController {
 
     // Endpoint: Création d'une review
     @PostMapping("/create")
-    public ResponseEntity<String> createReview(@RequestBody Review review, @RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<GenericResponse> createReview(@RequestBody Review review, @RequestHeader("Authorization") String authHeader) {
         System.out.println("Received request to create review: " + review);
 
         // Vérification du header Authorization
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             System.err.println("Authorization header is missing or invalid: " + authHeader);
-            return ResponseEntity.status(403).body("Authorization header is missing or invalid.");
+            return ResponseEntity.status(403).body(new GenericResponse("Authorization header is missing or invalid."));
         }
 
         try {
@@ -58,11 +59,11 @@ public class ReviewController {
             // Publication du message dans RabbitMQ
             publisherService.publishMessage(EXCHANGE_NAME, "review.create", review);
             System.out.println("Message sent to RabbitMQ for review creation.");
-            return ResponseEntity.ok("Review creation request sent to RabbitMQ with email.");
+            return ResponseEntity.ok(new GenericResponse("Review creation request sent to RabbitMQ with email."));
         } catch (Exception e) {
             System.err.println("Error processing create review request: " + e.getMessage());
             e.printStackTrace();
-            return ResponseEntity.status(500).body("Internal server error while creating review.");
+            return ResponseEntity.status(500).body(new GenericResponse("Internal server error while creating review."));
         }
     }
 

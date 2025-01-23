@@ -12,17 +12,18 @@ const io = new Server(httpServer, { cors: { origin: "*" } });
 app.use(cors());
 app.use(express.json());
 
-app.post("/", (req: express.Request, res: express.Response) => {
+app.post("/recipeByUser", (req: express.Request, res: express.Response) => {
   console.log("received a message", req.body);
-
-  // const body = req.body;
-  // const message = body.message as string;
-  // console.log(message + "}");
   res.send("msg received");
-  // const response = JSON.parse("{" + message.replace(message[0], "") + "}");
-  // console.log(response);
-
   io.emit("recipe-fetched", {
+    message: req.body.message,
+  });
+});
+
+app.post("/reviewCreated", (req: express.Request, res: express.Response) => {
+  console.log("received a message", req.body);
+  res.send("msg received");
+  io.emit("review-created", {
     message: req.body.message,
   });
 });

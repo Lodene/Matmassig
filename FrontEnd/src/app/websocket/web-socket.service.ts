@@ -38,4 +38,8 @@ export class WebSocketService {
   getRecipes(): Observable<any> {
     return this.webSocket.fromEvent('recipe-fetched');
   }
+
+  createdReviewEvent(): Observable<any> {
+    return this.webSocket.fromEvent('review-created');
+  }
 }

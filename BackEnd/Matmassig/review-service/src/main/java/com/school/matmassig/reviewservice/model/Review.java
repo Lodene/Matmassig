@@ -22,13 +22,13 @@ public class Review {
     // toString
     @Override
     public String toString() {
-        return "Review{" +
-                "id=" + id +
-                ", recipeId=" + recipeId +
-                ", userId=" + userId +
-                ", rating=" + rating +
-                ", comment='" + comment + '\'' +
-                ", createdAt=" + createdAt +
+        return "\"Review\": {" +
+                "\"id\":" + id +
+                ", \"recipeId\":" + recipeId +
+                ", \"userId\":" + userId +
+                ", \"rating\":" + rating +
+                ", \"comment\":\"" + comment + "\"" +
+                ", \"createdAt\":" + "\"" + createdAt +"\"" +
                 '}';
     }
 

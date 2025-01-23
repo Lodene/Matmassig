@@ -32,9 +32,14 @@ public class NotificationService {
             System.out.println("Email : " + payload.getEmail());
             System.out.println("Texte : " + payload.getMessage());
             MessageEntity me = new MessageEntity(payload.getMessage(), payload.getEmail());
+            // fixme: refacto toute cette merde
             if (payload.getMessage().startsWith("User recipes fetched successfully: ")) {
                 me.setMessage(payload.getMessage().replace("User recipes fetched successfully:", "{\"list\": ").concat("}"));
-                ResponseEntity<String> response = restTemplate.postForEntity("http://websocket-service:8089/", me, String.class);
+                ResponseEntity<String> response = restTemplate.postForEntity("http://websocket-service:8089/recipeByUser", me, String.class);
+            } else if (payload.getMessage().startsWith("your review has been created")) {
+                ResponseEntity<String> response = restTemplate.postForEntity("http://websocket-service:8089/reviewCreated", me, String.class);
+
+            } else {
 
             }
 

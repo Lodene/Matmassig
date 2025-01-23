@@ -1,0 +1,22 @@
+<h2 mat-dialog-title>Recipe's detail</h2>
+<mat-dialog-content class="main-content">
+  <div class="card-wrapper">
+    <mat-card appearance="outlined">
+      <mat-card-content>
+        <h4>Name : {{ recipe.title }}</h4>
+        <h5>Description: {{ recipe.description }}</h5>
+        <p>
+          {{ recipe.instructions }}
+        </p>
+      </mat-card-content>
+    </mat-card>
+    <div class="button-wrapper">
+      <button mat-button (click)="addReview()">Add a review</button>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-button mat-dialog-close>Close</button>
+  <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
+</mat-dialog-actions>
