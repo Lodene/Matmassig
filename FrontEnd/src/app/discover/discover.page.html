@@ -18,4 +18,12 @@
     </ion-toolbar>
   </ion-header>
 
+  <div *ngIf="isLoading; else displayBlock" class="spinner-div">
+    <h1>We're searching the best recipes for you</h1>
+    <mat-spinner></mat-spinner>
+  </div>
+  <ng-template #displayBlock>
+
+  </ng-template>
+
 </ion-content>

@@ -7,6 +7,7 @@ import { ExploreContainerComponentModule } from '../explore-container/explore-co
 
 import { DiscoverPageRoutingModule } from './discover-routing.module';
 import { AccountButtonComponent } from '../generic-component/account-button/account-button.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import { AccountButtonComponent } from '../generic-component/account-button/acco
     FormsModule,
     ExploreContainerComponentModule,
     DiscoverPageRoutingModule,
-    AccountButtonComponent
+    AccountButtonComponent,
+    MatProgressSpinnerModule
   ],
   declarations: [DiscoverPage]
 })
