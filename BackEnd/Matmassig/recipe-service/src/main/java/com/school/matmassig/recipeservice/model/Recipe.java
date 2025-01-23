@@ -61,14 +61,14 @@ public class Recipe {
     @Override
     public String toString() {
         return "{" +
-                "id:" + id +
-                ", title:" + "\"" + title + "\"" +
-                ", description:" + "\"" + description + "\"" +
-                ", ingredientsRecipeId:" + ingredientsRecipeId +
-                ", instructions:" + "\"" +instructions + "\"" +
-                ", userId:" + userId +
-                ", createdAt:" + "\"" + createdAt + "\"" +
-                ", updatedAt:" + "\"" +  updatedAt + "\"" +
+                "\"id\":" + id +
+                ", \"title\":" + "\"" + title + "\"" +
+                ", \"description\":" + "\"" + description + "\"" +
+                ", \"ingredientsRecipeId\":" + ingredientsRecipeId +
+                ", \"instructions\":" + "\"" +instructions + "\"" +
+                ", \"userId\":" + userId +
+                ", \"createdAt\":" + "\"" + createdAt + "\"" +
+                ", \"updatedAt\":" + "\"" +  updatedAt + "\"" +
                 '}';
     }
 

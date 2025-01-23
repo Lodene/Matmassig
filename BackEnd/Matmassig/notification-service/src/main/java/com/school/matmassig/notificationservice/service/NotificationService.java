@@ -33,6 +33,7 @@ public class NotificationService {
             System.out.println("Texte : " + payload.getMessage());
             MessageEntity me = new MessageEntity(payload.getMessage(), payload.getEmail());
             if (payload.getMessage().startsWith("User recipes fetched successfully: ")) {
+                me.setMessage(payload.getMessage().replace("User recipes fetched successfully:", "{\"list\": ").concat("}"));
                 ResponseEntity<String> response = restTemplate.postForEntity("http://websocket-service:8089/", me, String.class);
 
             }

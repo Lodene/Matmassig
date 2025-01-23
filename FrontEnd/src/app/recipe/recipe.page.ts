@@ -94,11 +94,16 @@ export class RecipePage implements OnInit {
           .getRecipes()
           .pipe()
           .subscribe((result) => {
-            this.recipes = result.message;
-            console.log(result, this.recipes);
+            const recipes = JSON.parse(
+              '{' + result.message.substring(1, result.message.length)
+            );
+            console.log(recipes.list);
+            this.recipes = [...recipes.list];
+            console.log(this.recipes);
+            this.results = [...this.recipes];
           });
       });
-    this.results = [...this.recipes];
+
   }
 
   handleInput(event: Event): void {

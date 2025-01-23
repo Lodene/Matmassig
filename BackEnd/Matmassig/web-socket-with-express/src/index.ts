@@ -14,25 +14,22 @@ app.use(express.json());
 
 app.post("/", (req: express.Request, res: express.Response) => {
   console.log("received a message", req.body);
+
+  // const body = req.body;
+  // const message = body.message as string;
+  // console.log(message + "}");
   res.send("msg received");
-  let message: string = req.body.message;
-  const sanitizedMessage = new String(message.replace(/\uFFFD/g, ""));
-  let receipes =
-    "{list: " + sanitizedMessage.substring(1, message.length) + "}";
-
-  console.log(receipes.normalize("NFC"));
-
-  const response = JSON.parse(receipes.normalize("NFC"));
-  console.log(response);
+  // const response = JSON.parse("{" + message.replace(message[0], "") + "}");
+  // console.log(response);
 
   io.emit("recipe-fetched", {
-    message: response,
+    message: req.body.message,
   });
 });
 
-io.on("connection", (client) => {
+io.on("connection", () => {
   // io.emit('users-online', User.getUserList());
-  console.log("connected", client);
+  console.log("connected");
   io.emit("review-created", {
     name: "i'm a review",
   });
