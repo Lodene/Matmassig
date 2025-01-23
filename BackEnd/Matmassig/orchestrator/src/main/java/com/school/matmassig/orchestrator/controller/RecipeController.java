@@ -3,6 +3,7 @@ package com.school.matmassig.orchestrator.controller;
 import com.school.matmassig.orchestrator.model.RecipeMessage;
 import com.school.matmassig.orchestrator.model.PaginationRequest;
 import com.school.matmassig.orchestrator.model.DeleteRecipeRequest;
+import com.school.matmassig.orchestrator.model.RecipeResponse;
 import com.school.matmassig.orchestrator.service.RabbitMQPublisherService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -67,7 +68,7 @@ public class RecipeController {
 
     // Endpoint: Récupérer les recettes par userId
     @GetMapping("/getbyuser")
-    public ResponseEntity<String> getRecipesByUser(@RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<RecipeResponse> getRecipesByUser(@RequestHeader("Authorization") String authHeader) {
         System.out.println("DEBUG: Get recipes by user request received");
         Integer userId = extractUserIdFromToken(authHeader);
         System.out.println("DEBUG: User ID: " + userId);
@@ -75,19 +76,19 @@ public class RecipeController {
         Map<String, Object> payload = new HashMap<>();
         payload.put("userId", userId);
         publisherService.publishMessageWithAdditionalData(EXCHANGE_NAME, "recipe.getbyuser", payload, email);
-        return ResponseEntity.ok("Get recipes by user request sent to RabbitMQ");
+        return ResponseEntity.ok(new RecipeResponse("msg sent to RabbitMQ"));
     }
 
     // Endpoint: Récupérer les recettes par recipeId
     @GetMapping("/getbyrecipe/{recipeId}")
-    public ResponseEntity<String> getRecipesByRecipe(@PathVariable Integer recipeId, @RequestHeader("Authorization") String authHeader){
+    public ResponseEntity<RecipeResponse> getRecipesByRecipe(@PathVariable Integer recipeId, @RequestHeader("Authorization") String authHeader){
         System.out.println("DEBUG: Get recipes by recipe request received");
         System.out.println("DEBUG: Recipe ID: " + recipeId);
         String email = extractEmailFromToken(authHeader);
         Map<String, Object> payload = new HashMap<>();
         payload.put("recipeId", recipeId);
         publisherService.publishMessageWithAdditionalData(EXCHANGE_NAME, "recipe.getbyrecipe", payload, email);
-        return ResponseEntity.ok("Get recipes by recipe request sent to RabbitMQ");
+        return ResponseEntity.ok(new RecipeResponse("message sent to the rabbitMQ"));
     }
 
     @GetMapping("/getall")

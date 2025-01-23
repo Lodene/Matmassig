@@ -8,16 +8,17 @@ import { Observable } from 'rxjs';
 export class RecipeHttpService {
   constructor(private http: HttpClient) {}
 
-  getRecipeByUser(userId: string): Observable<any> {
+  getRecipeByUser(userId: string): Observable<unknown> {
     const token = localStorage.getItem('auth-user');
     const options = {
       headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
+        responseType: 'application/json',
+        Authorization: 'Bearer ' + token,
       }),
     };
     return this.http.get(
-      'http://localhost:8080/api/orchestrator/recipe/getbyuser/1'
+      'http://localhost:8080/api/orchestrator/recipe/getbyuser/1',
+      options
     );
   }
 }

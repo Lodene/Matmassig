@@ -2,14 +2,23 @@ package com.school.matmassig.notificationservice.service;
 
 import java.util.Map;
 
+import com.school.matmassig.notificationservice.models.MessageEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 public class NotificationService {
 
     private WebSocketService webSocketService;
+
+    private final RestTemplate restTemplate;
+
+    public NotificationService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     public void connectAndSend(String message) {
         try {
@@ -22,7 +31,15 @@ public class NotificationService {
 
             System.out.println("Email : " + payload.getEmail());
             System.out.println("Texte : " + payload.getMessage());
+            MessageEntity me = new MessageEntity(payload.getMessage(), payload.getEmail());
+            if (payload.getMessage().startsWith("User recipes fetched successfully: ")) {
+                ResponseEntity<String> response = restTemplate.postForEntity("http://websocket-service:8089/", me, String.class);
 
+            }
+
+
+
+            /*
             if (webSocketService == null) {
                 webSocketService = new WebSocketService();
                 webSocketService.connectToWebSocket(payload);
@@ -31,6 +48,7 @@ public class NotificationService {
             webSocketService.sendMessage(payload);
             System.out.println(
                     "Message envoyé à l'email : " + payload.getEmail() + " avec le texte : " + payload.getMessage());
+        */
         } catch (Exception e) {
             System.err.println("Erreur lors de la connexion ou de l'envoi du message : " + e.getMessage());
             e.printStackTrace();

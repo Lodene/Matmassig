@@ -38,6 +38,7 @@ export class ReviewPage implements OnInit {
   constructor(
     private webSocket: WebSocketService,
     private reviewHttpService: HttpClientService) {}
+    
   ngOnInit(): void {
     this.mockUpReviews();
     this.results = [...this.reviews];

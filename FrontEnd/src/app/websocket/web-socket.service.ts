@@ -4,22 +4,18 @@ import { Observable } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class WebSocketService {
-  constructor(private webSocket: Socket,
-    private authService: AuthService
-  ) {
+  constructor(private webSocket: Socket, private authService: AuthService) {
     this.webSocket = new Socket({
       url: 'http://localhost:8089/',
-      options: {}
+      options: {},
     });
-
-
   }
-   // this method is used to start connection/handhshake of socket with server
+  // this method is used to start connection/handhshake of socket with server
   connectSocket(message: string) {
-      this.webSocket.emit('connect', message);
+    // this.webSocket.emit('connect', message);
   }
   // this method is used to get response from server
   receiveStatus() {
@@ -32,12 +28,14 @@ export class WebSocketService {
   }
 
   getReview(): Observable<any> {
-    return this.webSocket.fromEvent('review-created')
+    return this.webSocket.fromEvent('review-created');
   }
 
   getToken(): Observable<any> {
     return this.webSocket.fromEvent('login-successfully');
   }
 
-
+  getRecipes(): Observable<any> {
+    return this.webSocket.fromEvent('recipe-fetched');
+  }
 }

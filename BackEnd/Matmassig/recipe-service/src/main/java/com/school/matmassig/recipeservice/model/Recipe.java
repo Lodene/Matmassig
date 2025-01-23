@@ -60,15 +60,15 @@ public class Recipe {
 
     @Override
     public String toString() {
-        return "Recipe{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", ingredientsRecipeId=" + ingredientsRecipeId +
-                ", instructions='" + instructions + '\'' +
-                ", userId=" + userId +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
+        return "{" +
+                "id:" + id +
+                ", title:" + "\"" + title + "\"" +
+                ", description:" + "\"" + description + "\"" +
+                ", ingredientsRecipeId:" + ingredientsRecipeId +
+                ", instructions:" + "\"" +instructions + "\"" +
+                ", userId:" + userId +
+                ", createdAt:" + "\"" + createdAt + "\"" +
+                ", updatedAt:" + "\"" +  updatedAt + "\"" +
                 '}';
     }
 
