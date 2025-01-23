@@ -1,18 +1,22 @@
 package com.school.matmassig.recipeservice.controller;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.school.matmassig.recipeservice.model.Ingredient;
 import com.school.matmassig.recipeservice.model.IngredientsRecipe;
 import com.school.matmassig.recipeservice.model.Recipe;
 import com.school.matmassig.recipeservice.model.dto.RecipeWithIngredients;
 import com.school.matmassig.recipeservice.model.dto.RecipeRequest;
 import com.school.matmassig.recipeservice.service.RecipeService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 @RestController
 @RequestMapping("/api/recipes")
@@ -88,4 +92,5 @@ public class RecipeController {
         List<RecipeWithIngredients> recipes = recipeService.getRecipesForUser(userId);
         return ResponseEntity.ok(recipes);
     }
+
 }
